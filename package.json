@@ -4,7 +4,7 @@
   "description": "Made by Alessia Amore, Andrea Di Claudio, Nikolett Dékány",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "start": "concurrently --raw \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "cd server && npm run start:dev",
     "dev:client": "cd client && npx expo start"
   },
