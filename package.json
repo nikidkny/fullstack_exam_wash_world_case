@@ -1,0 +1,25 @@
+{
+  "name": "fullstack_exam_wash_world_case",
+  "version": "1.0.0",
+  "description": "Made by Alessia Amore, Andrea Di Claudio, Nikolett Dékány",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run start:dev",
+    "dev:client": "cd client && npx expo start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikidkny/fullstack_exam_wash_world_case.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikidkny/fullstack_exam_wash_world_case/issues"
+  },
+  "homepage": "https://github.com/nikidkny/fullstack_exam_wash_world_case#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
