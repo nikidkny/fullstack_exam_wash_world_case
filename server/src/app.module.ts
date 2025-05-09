@@ -8,7 +8,7 @@ import { dbConfig } from '../data.source';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot(dbConfig.options),
+    TypeOrmModule.forRoot(dbConfig),
   ],
   controllers: [AppController],
   providers: [AppService],
