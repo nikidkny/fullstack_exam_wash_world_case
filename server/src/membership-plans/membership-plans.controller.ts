@@ -1,15 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { MembershipPlansService } from './membership-plans.service';
-import { CreateMembershipPlanDto } from './dto/create-membership-plan.dto';
-import { UpdateMembershipPlanDto } from './dto/update-membership-plan.dto';
 
 @Controller('membership-plans')
 export class MembershipPlansController {
@@ -17,10 +7,15 @@ export class MembershipPlansController {
     private readonly membershipPlansService: MembershipPlansService,
   ) {}
 
-  @Post()
-  create(@Body() createMembershipPlanDto: CreateMembershipPlanDto) {
-    return this.membershipPlansService.create(createMembershipPlanDto);
+  @Post('seed-gold')
+  async seedGoldPlan() {
+    return await this.membershipPlansService.create();
   }
+
+  // @Post()
+  // create(@Body() createMembershipPlanDto: CreateMembershipPlanDto) {
+  //   return this.membershipPlansService.create(createMembershipPlanDto);
+  // }
 
   @Get()
   findAll() {
@@ -32,13 +27,13 @@ export class MembershipPlansController {
     return this.membershipPlansService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateMembershipPlanDto: UpdateMembershipPlanDto,
-  ) {
-    return this.membershipPlansService.update(+id, updateMembershipPlanDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateMembershipPlanDto: UpdateMembershipPlanDto,
+  // ) {
+  //   return this.membershipPlansService.update(+id, updateMembershipPlanDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

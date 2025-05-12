@@ -10,7 +10,7 @@ export class MembershipPlan {
   name: string;
 
   @Column()
-  isBusiness: boolean;
+  is_business: boolean;
 
   @Column()
   price: number;

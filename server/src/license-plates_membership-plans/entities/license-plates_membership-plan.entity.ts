@@ -22,7 +22,7 @@ export class LicensePlateMembershipPlan {
   end_date: Date;
 
   @Column()
-  isActive: boolean;
+  is_active: boolean;
 
   @ManyToOne(() => User, (user) => user.licensePlateMembershipPlans)
   @JoinColumn({ name: 'user_id' })
