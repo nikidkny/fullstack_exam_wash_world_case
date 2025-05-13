@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { LocationsService } from './locations.service';
 
 @Controller('locations')
@@ -11,25 +18,25 @@ export class LocationsController {
   }
 
   @Get()
-  findAll() {
-    return this.locationsService.findAll();
+  async findAll() {
+    return await this.locationsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.locationsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.locationsService.findOne(+id);
   }
 
   // @Patch(':id')
   // update(
-  //   @Param('id') id: string,
-  //   @Body() updateLocationDto: UpdateLocationDto,
-  // ) {
-  //   return this.locationsService.update(+id, updateLocationDto);
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() updateData: Partial<Location>,
+  // ): Promise<Location> {
+  //   return this.locationsService.update(id, updateData);
   // }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.locationsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.locationsService.remove(id);
   }
 }
