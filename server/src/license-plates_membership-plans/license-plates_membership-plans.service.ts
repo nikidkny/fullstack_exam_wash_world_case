@@ -1,31 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLicensePlatesMembershipPlanDto } from './dto/create-license-plates_membership-plan.dto';
 import { UpdateLicensePlatesMembershipPlanDto } from './dto/update-license-plates_membership-plan.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { LicensePlateMembershipPlan } from './entities/license-plates_membership-plan.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class LicensePlatesMembershipPlansService {
-  create(
-    createLicensePlatesMembershipPlanDto: CreateLicensePlatesMembershipPlanDto,
-  ) {
-    return 'This action adds a new licensePlatesMembershipPlan';
+
+  constructor(
+    @InjectRepository(LicensePlateMembershipPlan)
+    private licensePlateMembershipPlanRepository: Repository<LicensePlateMembershipPlan>
+  ) { }
+
+  create() {
+    //TODO 
+    // - create start date
+    // - create end date
+    // - get the user fro the param
+    // - get the license plate from the param
+    // - get the membership plan from the param
   }
 
-  findAll() {
-    return `This action returns all licensePlatesMembershipPlans`;
-  }
+  async findByPlateId(licensePlateId: number) {
+    const found = await this.licensePlateMembershipPlanRepository.findOne({
+      where: { licensePlate: { id: licensePlateId } },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} licensePlatesMembershipPlan`;
-  }
-
-  update(
-    id: number,
-    updateLicensePlatesMembershipPlanDto: UpdateLicensePlatesMembershipPlanDto,
-  ) {
-    return `This action updates a #${id} licensePlatesMembershipPlan`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} licensePlatesMembershipPlan`;
+    return found;
   }
 }

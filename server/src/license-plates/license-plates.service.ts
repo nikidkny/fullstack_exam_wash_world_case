@@ -1,19 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateLicensePlateDto } from './dto/create-license-plate.dto';
 import { UpdateLicensePlateDto } from './dto/update-license-plate.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { LicensePlate } from './entities/license-plate.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class LicensePlatesService {
-  create(createLicensePlateDto: CreateLicensePlateDto) {
-    return 'This action adds a new licensePlate';
+
+  constructor(
+    @InjectRepository(LicensePlate)
+    private licensPlatesRepository: Repository<LicensePlate>,
+  ) { }
+
+  async create(plate_number: string): Promise<LicensePlate> {
+    try {
+          const newLicensePlate = this.licensPlatesRepository.create({
+            plate_number
+          });
+    
+          return await this.licensPlatesRepository.save(newLicensePlate);
+        } catch (e) {
+          console.log(e);
+          throw new InternalServerErrorException({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Failed to create licenseplate',
+          });
+        }
   }
 
   findAll() {
     return `This action returns all licensePlates`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} licensePlate`;
+  async findByPlate(plate: string) {
+    const plateFound = await this.licensPlatesRepository.findOne({
+      where: { plate_number: plate }
+    });
+
+    if (!plate) {
+      throw new NotFoundException(`Car with plate ${plate} not found`);
+    }
+
+    return plateFound;
   }
 
   update(id: number, updateLicensePlateDto: UpdateLicensePlateDto) {
