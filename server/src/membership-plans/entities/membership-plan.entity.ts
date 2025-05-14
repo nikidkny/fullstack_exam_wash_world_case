@@ -12,7 +12,7 @@ export class MembershipPlan {
   @Column()
   is_business: boolean;
 
-  @Column()
+  @Column({ type: 'float' })
   price: number;
 
   @OneToMany(

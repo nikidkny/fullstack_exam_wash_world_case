@@ -11,13 +11,26 @@ export class MembershipPlansService {
   ) {}
 
   async create() {
-    const newPlan = this.membershipPlanRepository.create({
-      name: 'gold',
-      price: 139,
-      is_business: false,
-    });
+    //seeding the plans into the db, checking if they are already added to avoid duplicates
+    const plans = [
+      { name: 'gold', price: 139, is_business: false },
+      { name: 'premium', price: 169, is_business: false },
+      { name: 'brilliant/all inclusive', price: 199, is_business: false },
+      { name: 'gold', price: 111.2, is_business: true },
+      { name: 'premium', price: 135.2, is_business: true },
+      { name: 'brilliant/all inclusive', price: 159.2, is_business: true },
+    ];
 
-    return await this.membershipPlanRepository.save(newPlan);
+    for (const plan of plans) {
+      const existing = await this.membershipPlanRepository.findOne({
+        where: { name: plan.name, is_business: plan.is_business },
+      });
+
+      if (!existing) {
+        const newPlan = this.membershipPlanRepository.create(plan);
+        await this.membershipPlanRepository.save(newPlan);
+      }
+    }
   }
 
   findAll() {
