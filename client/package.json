@@ -9,9 +9,13 @@
     "web": "DARK_MODE=media expo start --web"
   },
   "dependencies": {
-    "@gluestack-ui/icon": "^0.1.27",
+    "@gluestack-style/react": "^1.0.57",
+    "@gluestack-ui/config": "^1.1.20",
+    "@gluestack-ui/icon": "^0.1.26",
+    "@gluestack-ui/input": "^0.1.38",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
     "@gluestack-ui/overlay": "^0.1.22",
+    "@gluestack-ui/themed": "^1.1.71",
     "@gluestack-ui/toast": "^1.0.9",
     "@react-navigation/bottom-tabs": "^7.3.12",
     "@react-navigation/native": "^7.1.8",

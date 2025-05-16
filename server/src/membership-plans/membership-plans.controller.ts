@@ -7,8 +7,8 @@ export class MembershipPlansController {
     private readonly membershipPlansService: MembershipPlansService,
   ) {}
 
-  @Post('seed-gold')
-  async seedGoldPlan() {
+  @Post('seed')
+  async seedMembershipPlans() {
     return await this.membershipPlansService.create();
   }
 
