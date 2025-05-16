@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from 'src/auth/type/interfaces';
 import * as bcrypt from "bcrypt"
+import { error } from 'console';
 
 @Injectable()
 export class UsersService {
@@ -14,8 +15,36 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) { }
 
-  async create(first_name: string, last_name: string, email: string, password:string, phone_number: number) {
+  async create(first_name: string, last_name: string, email: string, password: string, phone_number: number) {
     try {
+
+      //Check fields
+      const invalidFields: string[] = [];
+
+      if (!first_name?.trim()) invalidFields.push('first_name');
+      if (!last_name?.trim()) invalidFields.push('last_name');
+      if (!email?.trim()) invalidFields.push('email');
+      if (!password?.trim()) invalidFields.push('password');
+      if (phone_number == null) invalidFields.push('phone_number');
+
+      if (invalidFields.length > 0) {
+        throw new BadRequestException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Missing or invalid input values',
+          values: invalidFields
+        });
+      }
+
+
+      // Check if user exists
+      const userFound = await this.findByEmail(email);
+      if (userFound) {
+        throw new ConflictException({
+          statusCode: HttpStatus.CONFLICT,
+          message: 'User already exists with this email',
+        });
+      }
+
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = this.usersRepository.create({
         first_name,
@@ -25,12 +54,18 @@ export class UsersService {
         phone_number
       });
 
-      return await this.usersRepository.save(newUser);
+      // return await this.usersRepository.save(newUser); TODO implement
     } catch (e) {
       console.log(e);
+      if (e instanceof BadRequestException || e instanceof ConflictException) {
+        throw e;
+      }
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Failed to create user',
+        error: {
+          message: e.message,
+        },
       });
     }
   }

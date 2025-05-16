@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateLicensePlateDto } from './dto/create-license-plate.dto';
 import { UpdateLicensePlateDto } from './dto/update-license-plate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,18 +15,28 @@ export class LicensePlatesService {
 
   async create(plate_number: string): Promise<LicensePlate> {
     try {
-          const newLicensePlate = this.licensPlatesRepository.create({
-            plate_number
-          });
-    
-          return await this.licensPlatesRepository.save(newLicensePlate);
-        } catch (e) {
-          console.log(e);
-          throw new InternalServerErrorException({
-            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            message: 'Failed to create licenseplate',
-          });
-        }
+
+      const licensePlateFound = await this.findByPlate(plate_number);
+      // Create LicensePlate if not exists
+      if (licensePlateFound) {
+        throw new ConflictException({
+          statusCode: HttpStatus.CONFLICT,
+          message: 'License Plate already registered',
+        });
+      };
+
+      const newLicensePlate = this.licensPlatesRepository.create({
+        plate_number
+      });
+
+      return await this.licensPlatesRepository.save(newLicensePlate);
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerErrorException({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to create licenseplate',
+      });
+    }
   }
 
   findAll() {

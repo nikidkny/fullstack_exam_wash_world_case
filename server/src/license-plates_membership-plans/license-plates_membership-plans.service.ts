@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateLicensePlatesMembershipPlanDto } from './dto/create-license-plates_membership-plan.dto';
 import { UpdateLicensePlatesMembershipPlanDto } from './dto/update-license-plates_membership-plan.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,7 +13,19 @@ export class LicensePlatesMembershipPlansService {
     private licensePlateMembershipPlanRepository: Repository<LicensePlateMembershipPlan>
   ) { }
 
-  create() {
+  async create() {
+
+    try {
+      // const licensePlateMembershipPlanFound = await this.findByPlateId(id)
+      // if (licensePlateMembershipPlanFound) {
+      //   throw new ConflictException({
+      //     statusCode: HttpStatus.CONFLICT,
+      //     message: 'Car already has a membership',
+      //   });
+      // }
+    } catch (e) {
+
+    }
     //TODO 
     // - create start date
     // - create end date
@@ -29,4 +41,5 @@ export class LicensePlatesMembershipPlansService {
 
     return found;
   }
+
 }

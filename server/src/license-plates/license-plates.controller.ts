@@ -9,7 +9,7 @@ export class LicensePlatesController {
 
   @Post()
   create(@Body() createLicensePlateDto: CreateLicensePlateDto) {
-    return this.licensePlatesService.create(createLicensePlateDto);
+    // return this.licensePlatesService.create(createLicensePlateDto);
   }
 
   @Get()
@@ -19,7 +19,7 @@ export class LicensePlatesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.licensePlatesService.findOne(+id);
+    // return this.licensePlatesService.findOne(+id);
   }
 
   @Patch(':id')

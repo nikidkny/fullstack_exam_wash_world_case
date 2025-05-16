@@ -9,8 +9,10 @@ export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('signup')
-  async signup(@Body() body: SignupDto) {
+  async signup(@Body() body) {
     try {
+      console.log(body);
+      
       const result = await this.authService.signup(body);
       return {
         statusCode: HttpStatus.OK,
@@ -18,10 +20,7 @@ export class AuthController {
         data: result,
       };
     } catch (error) {
-      return {
-        statusCode: error.status || 500,
-        message: error.message || 'An error occurred during signup',
-      };
+      throw error
     }
   }
 
