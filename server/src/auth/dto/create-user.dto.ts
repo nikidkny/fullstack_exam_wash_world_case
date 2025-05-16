@@ -1,8 +1,3 @@
-export interface LoginDto {
-  username: string;
-  password: string;
-}
-
 export interface SignupDto {
   first_name: string;
   last_name: string;

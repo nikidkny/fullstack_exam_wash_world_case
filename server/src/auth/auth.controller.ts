@@ -1,8 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { LoginDto, SignupDto } from './type/interfaces';
+import { LoginDto } from './dto/login-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,37 +9,27 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() body) {
     try {
-      console.log(body);
-      
-      const result = await this.authService.signup(body);
+      await this.authService.signup(body);
       return {
         statusCode: HttpStatus.OK,
-        message: 'Singup successful',
-        data: result,
+        message: 'Singup successful'
       };
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  //TODO implement login logic with the db and replace the following logic
-  // @Post('login')
-  // async login(@Body() loginDto: LoginDto) {
-  //   try {
-  //     const result = await this.authService.login(loginDto);
-  //     return {
-  //       statusCode: HttpStatus.OK,
-  //       message: 'Login successful',
-  //       data: result,
-  //     };
-  //   } catch (error) {
-  //     throw new HttpException(
-  //       {
-  //         statusCode: HttpStatus.UNAUTHORIZED,
-  //         message: 'Invalid credentials',
-  //       },
-  //       HttpStatus.UNAUTHORIZED,
-  //     );
-  //   }
-  // }
+  @Post('login')
+  async login(@Body() body: LoginDto) {
+    try {
+      const loginToken = await this.authService.login(body.email, body.password);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'login successful',
+        data: loginToken,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

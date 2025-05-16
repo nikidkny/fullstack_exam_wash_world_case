@@ -11,8 +11,8 @@ import { MembershipPlansModule } from 'src/membership-plans/membership-plans.mod
 @Module({
   imports: [
     JwtModule.register({
-      secret: process.env.JWT_SECRET, // Use a strong secret or environment variable
-      signOptions: { expiresIn: '1h' }, // Set token expiration (optional)
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1h' },
     }),
     UsersModule,
     LicensePlatesModule,

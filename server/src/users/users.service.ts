@@ -1,12 +1,9 @@
 import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SignupDto } from 'src/auth/type/interfaces';
 import * as bcrypt from "bcrypt"
-import { error } from 'console';
 
 @Injectable()
 export class UsersService {
