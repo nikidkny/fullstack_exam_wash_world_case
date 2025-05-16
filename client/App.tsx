@@ -15,7 +15,6 @@ import SignupScreen from './screens/SignupScreen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 
-console.log('DARK_MODE:', process.env.DARK_MODE);
 // Create navigators
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
