@@ -22,7 +22,7 @@ export class AuthService {
     console.log("User response:", responseUser); //TODO test once creating users
     
     // // Create LicensePlate
-    // const responseLicensePlate = await this.licensePlateService.create(body.license_plate);
+    const responseLicensePlate = await this.licensePlateService.create(body.plate_number);
 
     // //TODO pass license plate in the following
     // // Create a membership

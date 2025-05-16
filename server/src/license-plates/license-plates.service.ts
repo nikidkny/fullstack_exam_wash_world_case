@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateLicensePlateDto } from './dto/create-license-plate.dto';
 import { UpdateLicensePlateDto } from './dto/update-license-plate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,8 +13,18 @@ export class LicensePlatesService {
     private licensPlatesRepository: Repository<LicensePlate>,
   ) { }
 
-  async create(plate_number: string): Promise<LicensePlate> {
+  async create(plate_number: string) {
     try {
+      //Check fields
+      let invalidFields: string = "";
+      if (!plate_number?.trim()) invalidFields = 'plate_number';
+      if (invalidFields) {
+        throw new BadRequestException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Missing or invalid input values',
+          values: invalidFields
+        });
+      }
 
       const licensePlateFound = await this.findByPlate(plate_number);
       // Create LicensePlate if not exists
@@ -29,12 +39,18 @@ export class LicensePlatesService {
         plate_number
       });
 
-      return await this.licensPlatesRepository.save(newLicensePlate);
+      // return await this.licensPlatesRepository.save(newLicensePlate);
     } catch (e) {
       console.log(e);
+      if (e instanceof BadRequestException || e instanceof ConflictException) {
+        throw e;
+      }
       throw new InternalServerErrorException({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Failed to create licenseplate',
+        message: 'Failed to create license plate',
+        error: {
+          message: e.message,
+        },
       });
     }
   }
@@ -47,10 +63,6 @@ export class LicensePlatesService {
     const plateFound = await this.licensPlatesRepository.findOne({
       where: { plate_number: plate }
     });
-
-    if (!plate) {
-      throw new NotFoundException(`Car with plate ${plate} not found`);
-    }
 
     return plateFound;
   }

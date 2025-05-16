@@ -9,7 +9,7 @@ export interface SignupDto {
   email: string;
   password: string;
   phone_number: number;
-  license_plate: string;
+  plate_number: string;
   membership_plan_id: number;
 }
 
