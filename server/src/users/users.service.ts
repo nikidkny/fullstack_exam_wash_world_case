@@ -54,7 +54,7 @@ export class UsersService {
         phone_number
       });
 
-      // return await this.usersRepository.save(newUser); TODO implement
+      return await this.usersRepository.save(newUser);
     } catch (e) {
       console.log(e);
       if (e instanceof BadRequestException || e instanceof ConflictException) {

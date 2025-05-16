@@ -13,20 +13,15 @@ export class AuthService {
     private readonly licensePlateMembershipPlanService: LicensePlatesMembershipPlansService
   ) { }
 
-  //TODO test 
   async signup(body: SignupDto) {
-
     // Create User
     const responseUser = await this.userService.create(body.first_name, body.last_name, body.email, body.password, body.phone_number);
 
-    console.log("User response:", responseUser); //TODO test once creating users
-    
     // // Create LicensePlate
     const responseLicensePlate = await this.licensePlateService.create(body.plate_number);
 
-    // //TODO pass license plate in the following
-    // // Create a membership
-    // const responseLicensePlateMemberShipPlan = await this.licensePlateMembershipPlanService.create()
+    // Create a membership
+    const responseLicensePlateMemberShipPlan = await this.licensePlateMembershipPlanService.create(responseUser, responseLicensePlate, body.membership_plan_id)
   };
 
 }

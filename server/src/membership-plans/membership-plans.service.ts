@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MembershipPlan } from './entities/membership-plan.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,7 +8,7 @@ export class MembershipPlansService {
   constructor(
     @InjectRepository(MembershipPlan)
     private membershipPlanRepository: Repository<MembershipPlan>,
-  ) {}
+  ) { }
 
   async create() {
     const newPlan = this.membershipPlanRepository.create({
@@ -23,9 +23,16 @@ export class MembershipPlansService {
   findAll() {
     return `This action returns all membershipPlans`;
   }
+  async findById(id: number): Promise<MembershipPlan> {
+    const membershipPlan = await this.membershipPlanRepository.findOne({
+      where: { id }
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} membershipPlan`;
+    if (!membershipPlan) {
+      throw new NotFoundException(`membership plan  with ID ${id} not found`);
+    }
+
+    return membershipPlan;
   }
 
   // update(id: number, updateMembershipPlanDto: UpdateMembershipPlanDto) {

@@ -39,7 +39,7 @@ export class LicensePlatesService {
         plate_number
       });
 
-      // return await this.licensPlatesRepository.save(newLicensePlate);
+      return await this.licensPlatesRepository.save(newLicensePlate);
     } catch (e) {
       console.log(e);
       if (e instanceof BadRequestException || e instanceof ConflictException) {
