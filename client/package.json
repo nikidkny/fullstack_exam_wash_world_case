@@ -9,10 +9,14 @@
     "web": "DARK_MODE=media expo start --web"
   },
   "dependencies": {
+    "@expo/html-elements": "^0.4.2",
     "@gluestack-style/react": "^1.0.57",
+    "@gluestack-ui/button": "^1.0.14",
     "@gluestack-ui/config": "^1.1.20",
+    "@gluestack-ui/form-control": "^0.1.19",
     "@gluestack-ui/icon": "^0.1.26",
     "@gluestack-ui/input": "^0.1.38",
+    "@gluestack-ui/link": "^0.1.29",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
     "@gluestack-ui/overlay": "^0.1.22",
     "@gluestack-ui/themed": "^1.1.71",
@@ -20,6 +24,7 @@
     "@react-navigation/bottom-tabs": "^7.3.12",
     "@react-navigation/native": "^7.1.8",
     "@react-navigation/native-stack": "^7.3.12",
+    "@react-navigation/stack": "^7.3.2",
     "@reduxjs/toolkit": "^2.8.1",
     "@tanstack/react-query": "^5.75.7",
     "axios": "^1.9.0",

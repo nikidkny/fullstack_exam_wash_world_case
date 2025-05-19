@@ -17,10 +17,11 @@ import SignupScreen from './screens/auth/SignupScreen';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
+import { RootStackParamList } from './navigationType';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator();
 // Create a QueryClient instance for React Query
 const queryClient = new QueryClient();
@@ -97,11 +98,14 @@ export default function App() {
   );
 }
 
-// Basic reusable styles
 const styles = StyleSheet.create({
-  container: {
+  screenContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  contentContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
