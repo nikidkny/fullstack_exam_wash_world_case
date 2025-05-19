@@ -1,14 +1,22 @@
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { Box, Text, ScrollView } from "@gluestack-ui/themed";
+import NavigationBar from "@/components/ui/NavigationBar";
+import LocationCard from "@/components/ui/LocationCard";
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Home Screen</Text>
-    </View>
+    <Box flex={1} bg="$white">
+      <NavigationBar />
+
+      <ScrollView pt="$16" px="$4">
+        <Text fontSize="$xl" fontWeight="$bold" mb="$4">
+          Your Destinations
+        </Text>
+
+        {locations.map((location) => (
+          <LocationCard name={location.name} address={location.address} open_hours={location.open_hours} has_self_wash={location.has_self_wash} />
+        ))}
+      </ScrollView>
+    </Box>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  text: { fontSize: 20 }
-});

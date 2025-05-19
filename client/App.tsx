@@ -1,23 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet } from 'react-native';
-import { RootState, store } from './store/store';
-import * as SecureStore from 'expo-secure-store';
-import {reloadJwtFromStorage} from "./screens/auth/userSlice";
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { StatusBar } from "expo-status-bar";
+import { Button, StyleSheet } from "react-native";
+import { RootState, store } from "./store/store";
+import * as SecureStore from "expo-secure-store";
+import { reloadJwtFromStorage } from "./screens/auth/userSlice";
+import { Provider, useDispatch, useSelector } from "react-redux";
 // Navigation components
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 // Screens
-import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import LoginScreen from './screens/auth/LoginScreen';
-import SignupScreen from './screens/auth/SignupScreen';
+import HomeScreen from "./screens/HomeScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import LoginScreen from "./screens/auth/LoginScreen";
+import SignupScreen from "./screens/auth/SignupScreen";
 // React Query for server state management
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
-import { useEffect } from 'react';
-import { RootStackParamList } from './navigationType';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { RootStackParamList } from "./navigationType";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -53,7 +54,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-            <Button title="Logout" onPress={() => console.log('Log out')} />
+            <Button title="Logout" onPress={() => console.log("Log out")} />
           ),
         }}
       />
@@ -71,15 +72,16 @@ function MainApp() {
 
   useEffect(() => {
     async function getToken() {
-      const storedToken = await SecureStore.getItemAsync('jwt');
-    
+      const storedToken = await SecureStore.getItemAsync("jwt");
+
       if (storedToken) {
         dispatch(reloadJwtFromStorage(storedToken));
       }
     }
     getToken();
-  }, [dispatch]);  
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreens />}</NavigationContainer>;
+  }, [dispatch]);
+  //delete ! from token to see login/signup
+  return <NavigationContainer>{!token ? <TabNavigator /> : <AuthScreens />}</NavigationContainer>;
 }
 
 /**
@@ -88,7 +90,7 @@ function MainApp() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <GluestackUIProvider>
+      <GluestackUIProvider config={config}>
         <Provider store={store}>
           <MainApp />
           <StatusBar style="auto" />
@@ -101,12 +103,12 @@ export default function App() {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   contentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
