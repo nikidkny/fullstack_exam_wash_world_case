@@ -13,13 +13,11 @@ export const authStyle = StyleSheet.create({
     color: 'blue',
     marginTop: 10,
     textDecorationLine: 'underline',
-    paddingBottom: 40,
   },
   signupLink: {
     fontSize: 18,
     color: 'blue',
     textDecorationLine: 'underline',
-    paddingBottom: 120,
   },
   input: {
     borderColor: 'black',

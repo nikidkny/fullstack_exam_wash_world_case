@@ -28,23 +28,34 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     return digitsOnly.replace(/(\d{2})(?=\d)/g, '$1 ').trim();
   };
 
+  //TODO fetch all membership
 
-  //TODO improve logic
   const handleEmailNext = async () => {
     //TODO validation
-    //TODO api call to check user existense
+    // - check if email is in valid format
+    // - api call to check user existense (create a slice or whatever is called and userApi)
+    // - test error handlisnf and display
     setStep(2);
   };
 
   const handlePersonalInfoNext = async () => {
     //TODO validation
+    // - first name
+    // - last name
+    // - phone number
+    // - password matching some patter and repeat password the same as password
+    // - test error handling and display
     setStep(3);
   };
 
-
+  const handleLicensePlate = async () => {
+    //TODO validation
+    // - Check if license plate exists
+    handleSignup()
+  };
 
   const handleSignup = () => {
-    console.log('Signup with:', { email, password });
+    console.log('Signup with:', { firstName, lastName, email, password, phoneNumber, plateNumber, membershipPlanId });
     // TODO: Dispatch signup action
   };
 
@@ -193,7 +204,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             </Input>
           </FormControl>
 
-          {/* Password Input */}
+          {/* Repeat Password Input */}
           <FormControl style={authStyle.formControl}>
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>Repeat Password</FormControlLabelText>
@@ -205,8 +216,8 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             >
               <InputField
                 placeholder="••••••••"
-                value={password}
-                onChangeText={setPassword}
+                value={repeatPassword}
+                onChangeText={setRepeatPassword}
                 secureTextEntry
                 style={authStyle.inputField}
               />
@@ -272,8 +283,8 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
         </>
       )}
 
-      {/* Signup Link */}
-      {step >= 1 && (
+      {/* login Link */}
+      {step <= 1 && (
         <>
           <TouchableOpacity onPress={onSwitch} style={{ paddingTop: 20 }}>
             <Text style={authStyle.signupLink}>login with existing account</Text>
