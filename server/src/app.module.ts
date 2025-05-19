@@ -10,6 +10,7 @@ import { LicensePlatesModule } from './license-plates/license-plates.module';
 import { WashHistoryModule } from './wash-history/wash-history.module';
 import { LicensePlatesMembershipPlansModule } from './license-plates_membership-plans/license-plates_membership-plans.module';
 import { MembershipPlansModule } from './membership-plans/membership-plans.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MembershipPlansModule } from './membership-plans/membership-plans.modul
     WashHistoryModule,
     LicensePlatesMembershipPlansModule,
     MembershipPlansModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

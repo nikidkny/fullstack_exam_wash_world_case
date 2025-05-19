@@ -1,23 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet } from 'react-native';
-import { store } from './store/store';
-import { Provider } from 'react-redux';
+import { StatusBar } from "expo-status-bar";
+import { Button, StyleSheet } from "react-native";
+import { RootState, store } from "./store/store";
+import * as SecureStore from "expo-secure-store";
+import { reloadJwtFromStorage } from "./screens/auth/userSlice";
+import { Provider, useDispatch, useSelector } from "react-redux";
 // Navigation components
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 // Screens
-import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import LoginScreen from './screens/LoginScreen';
-import SignupScreen from './screens/SignupScreen';
+import HomeScreen from "./screens/HomeScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import LoginScreen from "./screens/auth/LoginScreen";
+import SignupScreen from "./screens/auth/SignupScreen";
 // React Query for server state management
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { RootStackParamList } from "./navigationType";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator();
 // Create a QueryClient instance for React Query
 const queryClient = new QueryClient();
@@ -49,7 +54,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-            <Button title="Logout" onPress={() => console.log('Log out')} />
+            <Button title="Logout" onPress={() => console.log("Log out")} />
           ),
         }}
       />
@@ -62,9 +67,21 @@ function TabNavigator() {
  * depending on whether the user is authenticated.
  */
 function MainApp() {
-  const token = 'd'; // TODO: Replace with logic to check for a real JWT/token
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.user.token);
 
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreens />}</NavigationContainer>;
+  useEffect(() => {
+    async function getToken() {
+      const storedToken = await SecureStore.getItemAsync("jwt");
+
+      if (storedToken) {
+        dispatch(reloadJwtFromStorage(storedToken));
+      }
+    }
+    getToken();
+  }, [dispatch]);
+  //delete ! from token to see login/signup
+  return <NavigationContainer>{!token ? <TabNavigator /> : <AuthScreens />}</NavigationContainer>;
 }
 
 /**
@@ -73,7 +90,7 @@ function MainApp() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <GluestackUIProvider>
+      <GluestackUIProvider config={config}>
         <Provider store={store}>
           <MainApp />
           <StatusBar style="auto" />
@@ -83,12 +100,15 @@ export default function App() {
   );
 }
 
-// Basic reusable styles
 const styles = StyleSheet.create({
-  container: {
+  screenContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  contentContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
