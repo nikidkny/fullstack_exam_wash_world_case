@@ -6,7 +6,7 @@ export const authStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     rowGap: 20,
-    paddingTop: 200,
+    paddingTop: 100,
   },
   loginLink: {
     fontSize: 18,
