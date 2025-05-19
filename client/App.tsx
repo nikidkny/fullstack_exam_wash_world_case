@@ -11,8 +11,7 @@ import { NavigationContainer } from '@react-navigation/native';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import LoginScreen from './screens/auth/LoginScreen';
-import SignupScreen from './screens/auth/SignupScreen';
+import AuthScreen from './screens/auth/AuthScreen';
 // React Query for server state management
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
@@ -22,22 +21,8 @@ import { RootStackParamList } from './navigationType';
 // Create navigators
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const AuthStack = createNativeStackNavigator();
 // Create a QueryClient instance for React Query
 const queryClient = new QueryClient();
-
-/**
- * Stack navigator for unauthenticated users.
- * Includes Login and Signup screens.
- */
-function AuthScreens() {
-  return (
-    <AuthStack.Navigator>
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="Signup" component={SignupScreen} />
-    </AuthStack.Navigator>
-  );
-}
 
 /**
  * Bottom tab navigator shown to authenticated users.
@@ -79,7 +64,7 @@ function MainApp() {
     }
     getToken();
   }, [dispatch]);  
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreens />}</NavigationContainer>;
+  return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreen />}</NavigationContainer>;
 }
 
 /**

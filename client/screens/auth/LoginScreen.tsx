@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import {
   FormControl,
   FormControlLabel,
@@ -9,10 +7,9 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { RootStackParamList } from '@/navigationType';
+import { authStyle } from './authStyle';
 
-export default function LoginScreen() {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Signup'>>();
+export default function LoginScreen({ onSwitch }: { onSwitch: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,13 +18,8 @@ export default function LoginScreen() {
     // TODO: Dispatch login action
   };
 
-  const goToSignup = () => {
-    navigation.navigate('Signup');
-  };
-
-
   return (
-    <View style={[styles.container]}>
+    <View style={[authStyle.container]}>
       <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 24 }}>Login</Text>
 
       {/* Email Input */}
@@ -106,31 +98,9 @@ export default function LoginScreen() {
       </Button>
 
       {/* Signup Link */}
-      <TouchableOpacity onPress={goToSignup} style={styles.container}>
-        <Text style={styles.signupLink}>Don't have an account?</Text>
-        <Text style={styles.signupLink}>Sign up</Text>
+      <TouchableOpacity onPress={onSwitch} style={authStyle.container}>
+        <Text style={authStyle.signupLink}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    rowGap: 20,
-    paddingTop: 200,
-  },
-  signupLink: {
-    fontSize: 18,
-    color: 'blue',
-    marginTop: 10,
-    textDecorationLine: 'underline',
-    paddingBottom:40
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-  },
-});
