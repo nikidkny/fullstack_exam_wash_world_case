@@ -19,7 +19,6 @@ export default function LocationCard({ name, address, open_hours, has_self_wash 
       {/* Top section: icon and title */}
       <HStack className="items-center mb-4">
         <Avatar className="mr-3">
-          <AvatarFallbackText>{name.slice(0, 2).toUpperCase()}</AvatarFallbackText>
           <AvatarImage
             source={{
               uri: "https://gluestack.github.io/public-blog-video-assets/john.png", // Replace with location image if available
@@ -39,7 +38,7 @@ export default function LocationCard({ name, address, open_hours, has_self_wash 
           🕒 {open_hours}
         </Text>
         <Text size="sm" className={`font-medium ${has_self_wash ? "text-green-600" : "text-red-500"}`}>
-          {has_self_wash ? "✅ Self-wash available" : "❌ No self-wash"}
+          {has_self_wash ? "✅ Self-wash available" : "❌ No self-wash available"}
         </Text>
       </VStack>
     </Card>
