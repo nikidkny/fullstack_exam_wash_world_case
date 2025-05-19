@@ -15,9 +15,18 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState(0);
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [plateNumber, setPlateNumber] = useState('');
   const [membershipPlanId, setMembershipPlanId] = useState(0);
+
+  const formatDanishPhone = (input: string) => {
+    // Remove all non-digit characters
+    const digitsOnly = input.replace(/\D/g, '').slice(0, 8);
+
+    // Format as "12 34 56 78"
+    return digitsOnly.replace(/(\d{2})(?=\d)/g, '$1 ').trim();
+  };
+
 
   const handleSignup = () => {
     console.log('Signup with:', { email, password });
@@ -26,7 +35,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
 
 
   return (
-     <ScrollView contentContainerStyle={authStyle.container}
+    <ScrollView contentContainerStyle={authStyle.container}
       keyboardShouldPersistTaps="handled"
     >
       <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 24 }}>Signup</Text>
@@ -70,8 +79,8 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
           />
         </Input>
       </FormControl>
-      
-       {/* Email Input */}
+
+      {/* Email Input */}
       <FormControl style={authStyle.formControl}>
         <FormControlLabel>
           <FormControlLabelText style={{ fontSize: 18 }}>Email</FormControlLabelText>
@@ -92,7 +101,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
         </Input>
       </FormControl>
 
-       {/* phone_number Input */}
+      {/* phone_number Input */}
       <FormControl style={authStyle.formControl}>
         <FormControlLabel>
           <FormControlLabelText style={{ fontSize: 18 }}>Phone Number</FormControlLabelText>
@@ -104,9 +113,13 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
         >
           <InputField
             placeholder="28 28 28 28"
-            // value={phoneNumber}
-            // onChange={setPhoneNumber}
+            value={phoneNumber}
+            onChangeText={(text) => {
+              const formatted = formatDanishPhone(text);
+              setPhoneNumber(formatted);
+            }}
             keyboardType="numeric"
+            inputMode='numeric'
             autoCapitalize="none"
             style={authStyle.inputField}
           />
@@ -174,7 +187,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
       </Button>
 
       {/* Signup Link */}
-      <TouchableOpacity onPress={onSwitch} style={{paddingTop:50}}>
+      <TouchableOpacity onPress={onSwitch} style={{ paddingTop: 50 }}>
         <Text style={authStyle.signupLink}>login with existing account</Text>
       </TouchableOpacity>
     </ScrollView>
