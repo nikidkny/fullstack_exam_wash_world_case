@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { RootStackParamList } from '@/navigationType';
 
 export default function LoginScreen() {
-  const { width: screenWidth } = Dimensions.get("window");
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Signup'>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
