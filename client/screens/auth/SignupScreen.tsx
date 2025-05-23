@@ -17,12 +17,12 @@ import { AppDispatch } from '@/store/store';
 export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const dispatch = useDispatch<AppDispatch>();
   const [step, setStep] = useState(1);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('test@test.com'); //TODO remove after everything working
-  const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [firstName, setFirstName] = useState('John');
+  const [lastName, setLastName] = useState('Doe');
+  const [password, setPassword] = useState('123456A');
+  const [repeatPassword, setRepeatPassword] = useState('123456A');
+  const [phoneNumber, setPhoneNumber] = useState("12 12 12 12");
   const [plateNumber, setPlateNumber] = useState('');
   const [membershipPlanId, setMembershipPlanId] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -97,7 +97,6 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       console.log(errors);
-
       return;
     }
 
@@ -106,8 +105,22 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   };
 
   const handleLicensePlate = async () => {
-    //TODO validation
-    // - Check if license plate exists
+    setErrors({});
+    const newErrors: Record<string, string> = {};
+
+    const trimmedPlate = plateNumber.trim().toUpperCase();
+    const licensePlateRegex = /^[A-Z0-9]{8}$/;
+
+    if (!trimmedPlate) {
+      newErrors.licensePlate = "License plate cannot be empty.";
+    } else if (!licensePlateRegex.test(trimmedPlate)) {
+      newErrors.licensePlate = "License plate must be 2–8 characters, uppercase letters and numbers only.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     handleSignup()
   };
 
@@ -194,7 +207,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
                 style={authStyle.inputField}
               />
             </Input>
-                <FormControlError>
+            <FormControlError>
               <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
                 {errors.firstName}
               </FormControlErrorText>
@@ -242,7 +255,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
                 style={authStyle.inputField}
               />
             </Input>
-                <FormControlError>
+            <FormControlError>
               <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
                 {errors.phone}
               </FormControlErrorText>
@@ -267,7 +280,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
                 style={authStyle.inputField}
               />
             </Input>
-                <FormControlError>
+            <FormControlError>
               <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
                 {errors.password}
               </FormControlErrorText>
@@ -292,7 +305,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
                 style={authStyle.inputField}
               />
             </Input>
-                <FormControlError>
+            <FormControlError>
               <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
                 {errors.repeatPassword}
               </FormControlErrorText>
@@ -329,12 +342,15 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
               <InputField
                 placeholder="ABC123"
                 value={plateNumber}
-                onChangeText={setPlateNumber}
+                onChangeText={(text) => {
+                  const uppercased = text.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+                  setPlateNumber(uppercased);
+                }}
                 autoCapitalize="characters"
                 style={authStyle.inputField}
               />
             </Input>
-                <FormControlError>
+            <FormControlError>
               <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
                 {errors.licensePlate}
               </FormControlErrorText>
@@ -346,7 +362,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             size="xl"
             variant="solid"
             action="primary"
-            onPress={handleSignup}
+            onPress={handleLicensePlate}
             accessibilityLabel="Singup Button"
             style={{
               width: '90%',
