@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { MembershipPlan } from './entities/membership-plan.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,9 +33,24 @@ export class MembershipPlansService {
     }
   }
 
-  findAll() {
-    return `This action returns all membershipPlans`;
+  async findAll(): Promise<MembershipPlan[]> {
+    try {
+      const membershipPlansFound = await this.membershipPlanRepository.find();
+      if (!membershipPlansFound) {
+        throw new NotFoundException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: `Membership plans not found`,
+        })
+      }
+
+      console.log(membershipPlansFound);
+      return membershipPlansFound;
+    } catch (error) {
+      console.error(error) ;
+      throw error;
+    }
   }
+
   async findById(id: number): Promise<MembershipPlan> {
     const membershipPlan = await this.membershipPlanRepository.findOne({
       where: { id }

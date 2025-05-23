@@ -96,8 +96,6 @@ export class UsersService {
     return userFound;
   }
 
-
-
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
