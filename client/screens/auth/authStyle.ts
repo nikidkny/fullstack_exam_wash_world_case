@@ -33,7 +33,6 @@ export const authStyle = StyleSheet.create({
   },
   formControl: {
      width: '90%',
-      marginTop: 16
   },
   errorText: {
     color: 'red',

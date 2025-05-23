@@ -84,7 +84,16 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.usersRepository.findOne({ where: { email } });
+    const userFound = await this.usersRepository.findOne({ where: { email } });
+
+    if (!userFound) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: `User with email ${email} does not exists`,
+      })
+    }
+
+    return userFound;
   }
 
 

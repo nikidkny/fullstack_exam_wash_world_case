@@ -22,15 +22,32 @@ export const signup = createAsyncThunk(
     'auth/signup',
     async (createUserDto: CreateUserDto, thunkAPI) => {
         try {
-            const data = await UsersAPI.signup(createUserDto);
+            const response = await UsersAPI.signup(createUserDto);
 
-            return data;
+            return response;
         } catch (error) {
             console.error('Signup error:', error);
             if (error instanceof Error) {
                 return thunkAPI.rejectWithValue(error.message);
             }
-            return thunkAPI.rejectWithValue('Unknown error');
+            return thunkAPI.rejectWithValue('Unknown error while signup');
+        }
+    }
+);
+
+export const checkUserEmail = createAsyncThunk(
+    'auth/email',
+    async (email: string, thunkAPI) => {
+        try {
+            const response = await UsersAPI.checkUserEmail(email);
+
+            return response;
+        } catch (error) {
+            console.error('check email:', error);
+            if (error instanceof Error) {
+                return thunkAPI.rejectWithValue(error.message);
+            }
+            return thunkAPI.rejectWithValue('Unknown error while checking email');
         }
     }
 );
@@ -61,6 +78,15 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(signup.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(checkUserEmail.pending, (state) => {
+                state.error = null;
+            })
+            .addCase(checkUserEmail.fulfilled, (state, action) => {
+                state.error = null;
+            })
+            .addCase(checkUserEmail.rejected, (state, action) => {
                 state.error = action.payload as string;
             });
     },
