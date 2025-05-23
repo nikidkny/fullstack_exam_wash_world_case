@@ -1,4 +1,4 @@
-import { CreateUserDto } from "../createUserDto";
+import { CreateUserDto } from "./createUserDto";
 
 export class UsersAPI {
   static authURl = 'http://localhost:3000/auth/';
@@ -40,7 +40,7 @@ export class UsersAPI {
       if (!response.ok) {
         return;
       }
-      
+
       return(`User with email ${email} already exists`);
 
     } catch (error) {

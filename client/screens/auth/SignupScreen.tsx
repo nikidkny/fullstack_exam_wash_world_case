@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { authStyle } from './authStyle';
 import {
@@ -8,16 +8,29 @@ import {
   FormControlError,
   FormControlErrorText,
 } from '@/components/ui/form-control';
+import {
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectItem,
+  SelectDragIndicatorWrapper,
+  SelectDragIndicator
+} from '@/components/ui/select';
 import { Input, InputField } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useDispatch } from 'react-redux';
-import { checkUserEmail } from './userSlice';
-import { AppDispatch } from '@/store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store/store';
+import { checkUserEmail, signup } from './authSlice';
+import { getAll } from './membershipPlans/membershipPlansSlice';
+import { CreateUserDto } from './users/createUserDto';
 
 export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const dispatch = useDispatch<AppDispatch>();
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('test@test.com'); //TODO remove after everything working
+  const [email, setEmail] = useState('test@test.com');
   const [firstName, setFirstName] = useState('John');
   const [lastName, setLastName] = useState('Doe');
   const [password, setPassword] = useState('123456A');
@@ -26,8 +39,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const [plateNumber, setPlateNumber] = useState('A2E2DSSS');
   const [membershipPlanId, setMembershipPlanId] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
+  const membershipPlans = useSelector((state: RootState) => state.membershipPlans.membershipPlans);
 
   const formatDanishPhone = (input: string) => {
     // Remove all non-digit characters
@@ -37,7 +49,14 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     return digitsOnly.replace(/(\d{2})(?=\d)/g, '$1 ').trim();
   };
 
-  //TODO fetch all membership without waiting for the response since it is needed in the last step
+  useEffect(() => {
+    if (!membershipPlans || (Array.isArray(membershipPlans) && membershipPlans.length === 0)) {
+      console.log("Fetching value...:");
+      dispatch(getAll());
+    }
+    console.log("Getting Cached value...");
+
+  }, [dispatch, membershipPlans]);
 
   const handleEmailNext = async () => {
     setErrors({});
@@ -50,14 +69,16 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     }
 
     try {
-      const result = await dispatch(checkUserEmail(email.trim()));
-      if (checkUserEmail.fulfilled.match(result)) {
-        setStep(2);
-      } else {
-        // If rejected or custom error returned
-        setErrors({ email: (result.payload as string) || "Email check failed" });
+      const resultAction = await dispatch(checkUserEmail(email));
+
+      if (checkUserEmail.rejected.match(resultAction)) {
+        const error = resultAction.payload as string;
+        setErrors({ email: error });
+        return;
       }
 
+      // If email is valid and not in use, proceed to the next step
+      setStep(2);
     } catch (err) {
       setErrors({ email: "Something went wrong. Please try again." });
       console.error(err);
@@ -117,16 +138,35 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
       newErrors.licensePlate = "License plate must be 2–8 characters, uppercase letters and numbers only.";
     }
 
+
+    if (membershipPlanId === 0) {
+      newErrors.membershipPlanId = "Choose Dropdown.";
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
+
     handleSignup()
   };
 
   const handleSignup = () => {
-    console.log('Signup with:', { firstName, lastName, email, password, phoneNumber, plateNumber, membershipPlanId });
-    // TODO: Dispatch signup action
+    const phoneNumberNoSpaces = phoneNumber.replace(/\s+/g, '');
+    const phone_number = Number(phoneNumberNoSpaces)
+    console.log('Signup with:', { firstName, lastName, email, password, phone_number, plateNumber, membershipPlanId });
+
+    const newUser: CreateUserDto = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      password,
+      phone_number,
+      plate_number: plateNumber,
+      membership_plan_id: membershipPlanId
+    };
+
+    dispatch(signup(newUser));
   };
 
 
@@ -355,6 +395,32 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
                 {errors.licensePlate}
               </FormControlErrorText>
             </FormControlError>
+
+
+            <Text style={{ fontSize: 18 }} >Membership</Text>
+            <Select onValueChange={(value) => setMembershipPlanId(Number(value))}>
+              <SelectTrigger>
+                <SelectInput placeholder="Select option" />
+              </SelectTrigger>
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent>
+                  {Array.isArray(membershipPlans) &&
+                    membershipPlans.map((plan) => (
+                      <SelectItem
+                        key={plan.id}
+                        label={plan.name}
+                        value={plan.id.toString()}
+                      />
+                    ))}
+                </SelectContent>
+              </SelectPortal>
+            </Select>
+            <FormControlError>
+              <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
+                {errors.membershipPlanId}
+              </FormControlErrorText>
+            </FormControlError>
           </FormControl>
 
           {/* Signup Button */}
@@ -377,18 +443,21 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
           </Button>
 
         </>
-      )}
+      )
+      }
 
       {/* login Link */}
-      {step <= 1 && (
-        <>
-          <TouchableOpacity onPress={onSwitch} style={{ paddingTop: 20 }}>
-            <Text style={authStyle.signupLink}>login with existing account</Text>
-          </TouchableOpacity>
-        </>
-      )}
+      {
+        step <= 1 && (
+          <>
+            <TouchableOpacity onPress={onSwitch} style={{ paddingTop: 20 }}>
+              <Text style={authStyle.signupLink}>login with existing account</Text>
+            </TouchableOpacity>
+          </>
+        )
+      }
 
-    </ScrollView>
+    </ScrollView >
 
   );
 }

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as SecureStore from 'expo-secure-store';
-import { CreateUserDto } from './createUserDto';
-import { UsersAPI } from './userApi';
+import { CreateUserDto } from './users/createUserDto';
+import { UsersAPI } from './users/userApi';
 
 interface UserState {
     token: string | null;
@@ -40,10 +40,16 @@ export const checkUserEmail = createAsyncThunk(
     async (email: string, thunkAPI) => {
         try {
             const response = await UsersAPI.checkUserEmail(email);
+            console.log('API response:', response);
 
-            return response;
+            // If response is undefined, user doesn't exist → allow signup
+            if (response === undefined) {
+                return null;
+            }
+
+            return thunkAPI.rejectWithValue(`User with email ${email} already exists`);
         } catch (error) {
-            console.error('check email:', error);
+            console.error('checkUserEmail error:', error);
             if (error instanceof Error) {
                 return thunkAPI.rejectWithValue(error.message);
             }
@@ -53,7 +59,7 @@ export const checkUserEmail = createAsyncThunk(
 );
 
 // Create user slice
-const userSlice = createSlice({
+const authSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
@@ -93,5 +99,5 @@ const userSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { reloadJwtFromStorage, logout } = userSlice.actions;
-export default userSlice.reducer;
+export const { reloadJwtFromStorage, logout } = authSlice.actions;
+export default authSlice.reducer;

@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet } from 'react-native';
 import { RootState, store } from './store/store';
 import * as SecureStore from 'expo-secure-store';
-import {reloadJwtFromStorage} from "./screens/auth/userSlice";
 import { Provider, useDispatch, useSelector } from 'react-redux';
 // Navigation components
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -17,6 +16,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
+import { reloadJwtFromStorage } from './screens/auth/authSlice';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -52,7 +52,7 @@ function TabNavigator() {
  */
 function MainApp() {
   const dispatch = useDispatch();
-  const token = useSelector((state: RootState) => state.user.token);
+  const token = useSelector((state: RootState) => state.auth.token);
 
   useEffect(() => {
     async function getToken() {

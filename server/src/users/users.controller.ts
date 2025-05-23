@@ -17,6 +17,20 @@ import { log } from 'console';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('')
+  async getAll() {;
+     try {
+          const usersFound = await this.usersService.findAll();
+          return {
+            statusCode: HttpStatus.OK,
+            message: 'Users successful',
+            data: usersFound,
+          };
+        } catch (error) {
+          throw error;
+        }
+  }
+
   @Get(':email')
   async findByEmail(@Param('email') email: string) {;
      try {

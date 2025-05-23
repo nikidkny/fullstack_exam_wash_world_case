@@ -1,9 +1,9 @@
 export class MembershipPlansAPI {
-  static baseURl = 'http://localhost:3000/auth/';
+  static baseURl = 'http://localhost:3000/membership-plans/';
 
   static async getAll() {
     try {
-      const response = await fetch(this.baseURl + '', {
+      const response = await fetch(this.baseURl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

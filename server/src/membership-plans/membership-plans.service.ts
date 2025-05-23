@@ -43,7 +43,6 @@ export class MembershipPlansService {
         })
       }
 
-      console.log(membershipPlansFound);
       return membershipPlansFound;
     } catch (error) {
       console.error(error) ;
