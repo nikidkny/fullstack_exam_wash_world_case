@@ -23,7 +23,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const [password, setPassword] = useState('123456A');
   const [repeatPassword, setRepeatPassword] = useState('123456A');
   const [phoneNumber, setPhoneNumber] = useState("12 12 12 12");
-  const [plateNumber, setPlateNumber] = useState('');
+  const [plateNumber, setPlateNumber] = useState('A2E2DSSS');
   const [membershipPlanId, setMembershipPlanId] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
