@@ -11,12 +11,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import AuthScreen from './screens/auth/AuthScreen';
+import PersonalInfo from './screens/settings/PersonalInfo';
+import PaymentMethods from './screens/settings/PaymentMethods';
+import MembershipSettings from './screens/settings/MembershipSettings';
+import WashHistory from './screens/settings/WashHistory';
+import BillingHistory from './screens/settings/BillingHistory';
 // React Query for server state management
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
 import { reloadJwtFromStorage } from './screens/auth/authSlice';
+import { config } from '@gluestack-ui/config';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -34,7 +40,7 @@ function TabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStack}
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
@@ -43,6 +49,24 @@ function TabNavigator() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+/** Stack navigation*/
+export default function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="PersonalInfo"
+        component={PersonalInfo}
+        options={{ headerTitle: 'Edit Personal Information' }}
+      />
+      <Stack.Screen name="PaymentMethods" component={PaymentMethods} />
+      <Stack.Screen name="MembershipSettings" component={MembershipSettings} />
+      <Stack.Screen name="WashHistory" component={WashHistory} />
+      <Stack.Screen name="BillingHistory" component={BillingHistory} />
+    </Stack.Navigator>
   );
 }
 
@@ -57,13 +81,13 @@ function MainApp() {
   useEffect(() => {
     async function getToken() {
       const storedToken = await SecureStore.getItemAsync('jwt');
-    
+
       if (storedToken) {
         dispatch(reloadJwtFromStorage(storedToken));
       }
     }
     getToken();
-  }, [dispatch]);  
+  }, [dispatch]);
   return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreen />}</NavigationContainer>;
 }
 
@@ -73,9 +97,12 @@ function MainApp() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <GluestackUIProvider>
+      <GluestackUIProvider config={config}>
         <Provider store={store}>
-          <MainApp />
+          <NavigationContainer>
+            <TabNavigator />
+            {/* <MainApp />*/}
+          </NavigationContainer>
           <StatusBar style="auto" />
         </Provider>
       </GluestackUIProvider>
