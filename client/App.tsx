@@ -76,6 +76,7 @@ function MainApp() {
       }
 
       await ensureMembershipPlansExist();
+      // await ensureLocansionExist();
     }
     getToken();
   }, [dispatch]);
@@ -102,7 +103,36 @@ function MainApp() {
 
       if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
 
-      console.log('🎉 Membership plans seeded');
+      console.log('Membership plans seeded');
+    } catch (error: any) {
+      console.error('Error while checking/seeding:', error.message);
+    }
+  }
+
+  async function ensureLocansionExist() {
+    try {
+      const checkResponse = await fetch('http://localhost:3000/locations/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      
+      if (!checkResponse.ok) throw new Error('Failed to check locations');
+      
+      const { data } = await checkResponse.json();
+
+      if (data.length > 0) {
+        return;
+      }
+
+      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!seedResponse.ok) throw new Error('Failed to seed locations plans');
+
+      console.log(' locations  seeded');
     } catch (error: any) {
       console.error('Error while checking/seeding:', error.message);
     }
