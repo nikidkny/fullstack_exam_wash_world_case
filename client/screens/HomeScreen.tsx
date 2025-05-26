@@ -35,7 +35,7 @@ export default function HomeScreen() {
         <FlatList
           data={locations}
           keyExtractor={(item) => item.id?.toString() ?? ""}
-          contentContainerStyle={{ paddingTop: 64, paddingHorizontal: 16 }}
+          contentContainerStyle={{ paddingTop: 80, paddingHorizontal: 16 }}
           ListHeaderComponent={
             <Text fontSize="$xl" color="$black" fontWeight="$bold" mb="$4">
               Your Destinations
