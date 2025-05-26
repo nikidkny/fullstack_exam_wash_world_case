@@ -17,21 +17,26 @@ import { CreateUserDto } from './users/createUserDto';
 import { useMembershipPlans } from './membershipPlans/hooks/useMembershipPlans';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useSignup } from './membershipPlans/hooks/useSignup';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/navigationType';
 
-export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
+export default function SignupScreen() {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Signup'>>();
   const dispatch = useDispatch<AppDispatch>();
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('te@test.com');
+  const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('John');
   const [lastName, setLastName] = useState('Doe');
   const [password, setPassword] = useState('123456A');
   const [repeatPassword, setRepeatPassword] = useState('123456A');
   const [phoneNumber, setPhoneNumber] = useState("12 12 12 12");
-  const [plateNumber, setPlateNumber] = useState('A2E2DSSS');
+  const [plateNumber, setPlateNumber] = useState('');
   const [membershipPlanId, setMembershipPlanId] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { membershipPlans } = useMembershipPlans();
   const { signup: signupUser } = useSignup();
+  
 
 
   const formatDanishPhone = (input: string) => {
@@ -86,7 +91,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
 
     // Phone number validation
     if (!phoneNumber.trim() || phoneNumber.length != 11) {
-      newErrors.phone = "Must be a valid phone number.";
+      newErrors.phoneNumber = "Must be a valid phone number.";
     }
 
     // Password validation
@@ -130,13 +135,14 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
+    } else {
+      handleSignup()
     }
 
-    handleSignup()
   };
 
   const handleSignup = async () => {
-    
+
     const phoneNumberNoSpaces = phoneNumber.replace(/\s+/g, '');
     const phone_number = Number(phoneNumberNoSpaces)
 
@@ -153,8 +159,18 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     const result = await signupUser(newUser);
     if (!result.success) {
       if (result.error?.includes("License Plate"))
-        console.log("INCLUDES LICENSEPLATE");
       setErrors({ licensePlate: result.error! })
+    } else {
+      setEmail('');
+      setFirstName('');
+      setLastName('');
+      setPassword('');
+      setRepeatPassword('');
+      setPhoneNumber('');
+      setPlateNumber('');
+      setMembershipPlanId(0);
+
+      navigation.goBack();
     }
   };
 
@@ -229,7 +245,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>First Name</FormControlLabelText>
             </FormControlLabel>
-            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.email && { borderColor: 'red' }]}>
+            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.firstName && { borderColor: 'red' }]}>
               <InputField
                 placeholder="John"
                 value={firstName}
@@ -250,7 +266,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>Last Name</FormControlLabelText>
             </FormControlLabel>
-            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.email && { borderColor: 'red' }]}>
+            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.lastName && { borderColor: 'red' }]}>
               <InputField
                 placeholder="Doe"
                 value={lastName}
@@ -272,7 +288,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>Phone Number</FormControlLabelText>
             </FormControlLabel>
-            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.email && { borderColor: 'red' }]}>
+            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.phoneNumber && { borderColor: 'red' }]}>
               <InputField
                 placeholder="28 28 28 28"
                 value={phoneNumber}
@@ -288,7 +304,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             </Input>
             <FormControlError>
               <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
-                {errors.phone}
+                {errors.phoneNumber}
               </FormControlErrorText>
             </FormControlError>
           </FormControl>
@@ -298,11 +314,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>Password</FormControlLabelText>
             </FormControlLabel>
-            <Input
-              variant="outline"
-              size="xl"
-              style={authStyle.input}
-            >
+            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.password && { borderColor: 'red' }]}>
               <InputField
                 placeholder="••••••••"
                 value={password}
@@ -323,11 +335,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>Repeat Password</FormControlLabelText>
             </FormControlLabel>
-            <Input
-              variant="outline"
-              size="xl"
-              style={authStyle.input}
-            >
+           <Input variant="outline" size="xl" style={[authStyle.input, !!errors.repeatPassword && { borderColor: 'red' }]}>
               <InputField
                 placeholder="••••••••"
                 value={repeatPassword}
@@ -369,7 +377,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>License Plate</FormControlLabelText>
             </FormControlLabel>
-            <Input variant="outline" size="xl" style={authStyle.input}>
+            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.licensePlate && { borderColor: 'red' }]}>
               <InputField
                 placeholder="ABC123"
                 value={plateNumber}
@@ -439,7 +447,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
       {
         step <= 1 && (
           <>
-            <TouchableOpacity onPress={onSwitch} style={{ paddingTop: 20 }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingTop: 20 }}>
               <Text style={authStyle.signupLink}>login with existing account</Text>
             </TouchableOpacity>
           </>

@@ -8,10 +8,14 @@ import {
 import { Input, InputField } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { authStyle } from './authStyle';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/navigationType';
 
-export default function LoginScreen({ onSwitch }: { onSwitch: () => void }) {
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
 
   const handleLogin = () => {
     console.log('Login with:', { email, password });
@@ -98,7 +102,7 @@ export default function LoginScreen({ onSwitch }: { onSwitch: () => void }) {
       </Button>
 
       {/* Signup Link */}
-      <TouchableOpacity onPress={onSwitch} style={authStyle.container}>
+      <TouchableOpacity onPress={() => navigation.navigate("Signup")} style={authStyle.container}>
         <Text style={authStyle.signupLink}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
     </View>

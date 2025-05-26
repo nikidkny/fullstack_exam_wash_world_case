@@ -10,7 +10,6 @@ import { NavigationContainer } from '@react-navigation/native';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import AuthScreen from './screens/auth/AuthScreen';
 // React Query for server state management
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
@@ -18,12 +17,25 @@ import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
 import { reloadJwtFromStorage } from './screens/auth/authSlice';
 import Toast from 'react-native-toast-message';
+import LoginScreen from './screens/auth/LoginScreen';
+import SignupScreen from './screens/auth/SignupScreen';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 // Create a QueryClient instance for React Query
 const queryClient = new QueryClient();
+
+const AuthStack = createNativeStackNavigator();
+
+function AuthNavigator() {
+  return (
+    <AuthStack.Navigator initialRouteName="Login">
+      <AuthStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <AuthStack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+    </AuthStack.Navigator>
+  );
+}
 
 /**
  * Bottom tab navigator shown to authenticated users.
@@ -62,10 +74,41 @@ function MainApp() {
       if (storedToken) {
         dispatch(reloadJwtFromStorage(storedToken));
       }
+
+      await ensureMembershipPlansExist();
     }
     getToken();
   }, [dispatch]);
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreen />}</NavigationContainer>;
+
+  async function ensureMembershipPlansExist() {
+    try {
+      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!checkResponse.ok) throw new Error('Failed to check membership plans');
+
+      const { data } = await checkResponse.json();
+
+      if (data.length > 0) {
+        return;
+      }
+
+      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
+
+      console.log('🎉 Membership plans seeded');
+    } catch (error: any) {
+      console.error('Error while checking/seeding:', error.message);
+    }
+  }
+
+  return <NavigationContainer>{token ? <TabNavigator /> : <AuthNavigator />}</NavigationContainer>;
 }
 
 /**
