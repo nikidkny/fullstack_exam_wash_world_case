@@ -1,5 +1,5 @@
 import { Text, ScrollView } from '@gluestack-ui/themed';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
@@ -14,16 +14,27 @@ import {
   FileTextIcon,
 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUserById } from '@/store/userSlice';
+import { RootState } from '@/store/store';
 
 export default function ProfileScreen() {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [user, setUser] = useState({
-    firstName: 'Testing',
-    lastName: 'Person',
-    email: 'testperson@gmail.com',
-    address: '1234 Test Street, Springfield',
-  });
-
+  const user = useSelector((state: RootState) => state.auth.user);
+  const userData = useSelector((state: RootState) => state.user.data);
+  // const [user, setUser] = useState({
+  //   firstName: 'Testing',
+  //   lastName: 'Person',
+  //   email: 'testperson@gmail.com',
+  //   address: '1234 Test Street, Springfield',
+  // });
+  useEffect(() => {
+    if (user?.userId) {
+      dispatch(fetchUserById(user.userId));
+    }
+  }, [dispatch, user?.userId]);
+  console.log('user', user);
   return (
     <ScrollView>
       <Text style={styles.heading}>Hey {user.firstName}!</Text>

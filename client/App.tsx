@@ -77,10 +77,26 @@ export default function ProfileStack() {
         component={PersonalInfo}
         options={{ headerTitle: 'Edit Personal Information' }}
       />
-      <Stack.Screen name="PaymentMethods" component={PaymentMethods} />
-      <Stack.Screen name="MembershipSettings" component={MembershipSettings} />
-      <Stack.Screen name="WashHistory" component={WashHistory} />
-      <Stack.Screen name="BillingHistory" component={BillingHistory} />
+      <Stack.Screen
+        name="PaymentMethods"
+        component={PaymentMethods}
+        options={{ headerTitle: 'Edit Payment Methods' }}
+      />
+      <Stack.Screen
+        name="MembershipSettings"
+        component={MembershipSettings}
+        options={{ headerTitle: 'Edit Membership Details' }}
+      />
+      <Stack.Screen
+        name="WashHistory"
+        component={WashHistory}
+        options={{ headerTitle: 'See Wash History' }}
+      />
+      <Stack.Screen
+        name="BillingHistory"
+        component={BillingHistory}
+        options={{ headerTitle: 'See Billing History' }}
+      />
     </Stack.Navigator>
   );
 }
