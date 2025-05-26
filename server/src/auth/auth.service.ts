@@ -46,7 +46,7 @@ export class AuthService {
     if (invalidFields.length > 0) {
       throw new BadRequestException({
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Missing or invalid input values',
+        message: 'Missing or invalid values',
         values: invalidFields
       });
     }
@@ -71,7 +71,16 @@ export class AuthService {
     const payload = { sub: userFound.id, email: userFound.email };
     const token = this.jwtService.sign(payload);
 
-    return token;
+    return {
+      access_token: token,
+      user: {
+        id: userFound.id,
+        email: userFound.email,
+        first_name: userFound.first_name,
+        last_name: userFound.last_name,
+        phone_number: userFound.phone_number,
+      },
+    }
   }
 
 }

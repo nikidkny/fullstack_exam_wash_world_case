@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet } from 'react-native';
-import { RootState, store } from './store/store';
+import { AppDispatch, RootState, store } from './store/store';
 import * as SecureStore from 'expo-secure-store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 // Navigation components
@@ -15,7 +15,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
-import { reloadJwtFromStorage } from './screens/auth/authSlice';
+import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
 import Toast from 'react-native-toast-message';
 import LoginScreen from './screens/auth/LoginScreen';
 import SignupScreen from './screens/auth/SignupScreen';
@@ -42,6 +42,7 @@ function AuthNavigator() {
  * Includes Home and Profile tabs.
  */
 function TabNavigator() {
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -51,7 +52,8 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-            <Button title="Logout" onPress={() => console.log('Log out')} />
+                        <Button title="Logout" onPress={() => dispatch(logout())} />
+
           ),
         }}
       />
