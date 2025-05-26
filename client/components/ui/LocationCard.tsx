@@ -15,7 +15,7 @@ type LocationCardProps = {
 
 export default function LocationCard({ name, address, open_hours, has_self_wash }: LocationCardProps) {
   return (
-    <Card className="p-5 rounded-lg max-w-[360px] m-3">
+    <Card className="p-5 rounded-lg max-w-[360px] m-3 bg-gray-100">
       {/* Top section: icon and title */}
       <HStack className="items-center mb-4">
         <Avatar className="mr-3">

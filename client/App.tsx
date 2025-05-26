@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { RootStackParamList } from "./navigationType";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
+import "./global.css";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
