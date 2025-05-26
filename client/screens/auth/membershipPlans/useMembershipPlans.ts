@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
-import { getAll } from '../membershipPlansSlice';
+import { getAll } from './membershipPlansSlice';
 
 export const useMembershipPlans = () => {
     const dispatch = useDispatch<AppDispatch>();

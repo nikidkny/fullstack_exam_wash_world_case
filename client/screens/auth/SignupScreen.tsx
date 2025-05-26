@@ -14,12 +14,12 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { checkUserEmail } from './authSlice';
 import { CreateUserDto } from './users/createUserDto';
-import { useMembershipPlans } from './membershipPlans/hooks/useMembershipPlans';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useSignup } from './membershipPlans/hooks/useSignup';
+import { useSignup } from './users/useSignup';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/navigationType';
+import { useMembershipPlans } from './membershipPlans/useMembershipPlans';
 
 export default function SignupScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Signup'>>();
@@ -36,7 +36,6 @@ export default function SignupScreen() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { membershipPlans } = useMembershipPlans();
   const { signup: signupUser } = useSignup();
-  
 
 
   const formatDanishPhone = (input: string) => {
@@ -159,19 +158,22 @@ export default function SignupScreen() {
     const result = await signupUser(newUser);
     if (!result.success) {
       if (result.error?.includes("License Plate"))
-      setErrors({ licensePlate: result.error! })
-    } else {
-      setEmail('');
-      setFirstName('');
-      setLastName('');
-      setPassword('');
-      setRepeatPassword('');
-      setPhoneNumber('');
-      setPlateNumber('');
-      setMembershipPlanId(0);
-
-      navigation.goBack();
+        setErrors({ licensePlate: result.error! })
+      return;
     }
+    setEmail('');
+    setFirstName('');
+    setLastName('');
+    setPassword('');
+    setRepeatPassword('');
+    setPhoneNumber('');
+    setPlateNumber('');
+    setMembershipPlanId(0);
+
+    setTimeout(() => {
+      navigation.goBack();
+    }, 500); // 1.5 seconds is enough
+
   };
 
 
@@ -335,7 +337,7 @@ export default function SignupScreen() {
             <FormControlLabel>
               <FormControlLabelText style={{ fontSize: 18 }}>Repeat Password</FormControlLabelText>
             </FormControlLabel>
-           <Input variant="outline" size="xl" style={[authStyle.input, !!errors.repeatPassword && { borderColor: 'red' }]}>
+            <Input variant="outline" size="xl" style={[authStyle.input, !!errors.repeatPassword && { borderColor: 'red' }]}>
               <InputField
                 placeholder="••••••••"
                 value={repeatPassword}
