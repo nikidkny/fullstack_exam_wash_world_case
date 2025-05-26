@@ -3,14 +3,16 @@ import { Button, StyleSheet } from 'react-native';
 import { AppDispatch, RootState, store } from './store/store';
 import * as SecureStore from 'expo-secure-store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
+
 // Navigation components
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import AuthScreen from './screens/auth/AuthScreen';
+import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/SignupScreen";
 import PersonalInfo from './screens/settings/PersonalInfo';
 import PaymentMethods from './screens/settings/PaymentMethods';
 import MembershipSettings from './screens/settings/MembershipSettings';
@@ -26,6 +28,7 @@ import Toast from 'react-native-toast-message';
 import LoginScreen from './screens/auth/LoginScreen';
 import SignupScreen from './screens/auth/SignupScreen';
 import { config } from '@gluestack-ui/config';
+import "./global.css";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
