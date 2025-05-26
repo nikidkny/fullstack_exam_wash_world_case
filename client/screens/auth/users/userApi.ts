@@ -1,4 +1,5 @@
 import { CreateUserDto } from "./createUserDto";
+import { LoginUserDto } from "./loginUserDto";
 
 export class UsersAPI {
   static authURl = 'http://localhost:3000/auth/';
@@ -23,6 +24,29 @@ export class UsersAPI {
       return data;
     } catch (error) {
       console.error('Signup API error:', error);
+      throw error;
+    }
+  }
+
+  static async login(userDto: LoginUserDto) {
+    try {
+      const response = await fetch(this.authURl + 'login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userDto),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      return data;
+    } catch (error) {
+      console.log('Login API error:', error);
       throw error;
     }
   }

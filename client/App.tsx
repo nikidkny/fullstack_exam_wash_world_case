@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet } from 'react-native';
-import { RootState, store } from './store/store';
+import { AppDispatch, RootState, store } from './store/store';
 import * as SecureStore from 'expo-secure-store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 // Navigation components
@@ -21,7 +21,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
-import { reloadJwtFromStorage } from './screens/auth/authSlice';
+import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
+import Toast from 'react-native-toast-message';
+import LoginScreen from './screens/auth/LoginScreen';
+import SignupScreen from './screens/auth/SignupScreen';
 import { config } from '@gluestack-ui/config';
 
 // Create navigators
@@ -30,11 +33,23 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 // Create a QueryClient instance for React Query
 const queryClient = new QueryClient();
 
+const AuthStack = createNativeStackNavigator();
+
+function AuthNavigator() {
+  return (
+    <AuthStack.Navigator initialRouteName="Login">
+      <AuthStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <AuthStack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+    </AuthStack.Navigator>
+  );
+}
+
 /**
  * Bottom tab navigator shown to authenticated users.
  * Includes Home and Profile tabs.
  */
 function TabNavigator() {
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -44,7 +59,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-            <Button title="Logout" onPress={() => console.log('Log out')} />
+            <Button title="Logout" onPress={() => dispatch(logout())} />
           ),
         }}
       />
@@ -85,10 +100,70 @@ function MainApp() {
       if (storedToken) {
         dispatch(reloadJwtFromStorage(storedToken));
       }
+
+      await ensureMembershipPlansExist();
+      // await ensureLocansionExist();
     }
     getToken();
   }, [dispatch]);
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreen />}</NavigationContainer>;
+
+  async function ensureMembershipPlansExist() {
+    try {
+      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!checkResponse.ok) throw new Error('Failed to check membership plans');
+
+      const { data } = await checkResponse.json();
+
+      if (data.length > 0) {
+        return;
+      }
+
+      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
+
+      console.log('Membership plans seeded');
+    } catch (error: any) {
+      console.error('Error while checking/seeding:', error.message);
+    }
+  }
+
+  async function ensureLocansionExist() {
+    try {
+      const checkResponse = await fetch('http://localhost:3000/locations/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!checkResponse.ok) throw new Error('Failed to check locations');
+
+      const { data } = await checkResponse.json();
+
+      if (data.length > 0) {
+        return;
+      }
+
+      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!seedResponse.ok) throw new Error('Failed to seed locations plans');
+
+      console.log(' locations  seeded');
+    } catch (error: any) {
+      console.error('Error while checking/seeding:', error.message);
+    }
+  }
+
+  return <NavigationContainer>{token ? <TabNavigator /> : <AuthNavigator />}</NavigationContainer>;
 }
 
 /**
@@ -99,10 +174,9 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider config={config}>
         <Provider store={store}>
-          <NavigationContainer>
-            <TabNavigator />
-            {/* <MainApp />*/}
-          </NavigationContainer>
+          <Toast />
+          <MainApp />
+
           <StatusBar style="auto" />
         </Provider>
       </GluestackUIProvider>
