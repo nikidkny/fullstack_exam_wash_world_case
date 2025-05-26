@@ -16,10 +16,10 @@ import SignupScreen from "./screens/auth/SignupScreen";
 // React Query for server state management
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { RootStackParamList } from "./navigationType";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 import "./global.css";
+import WashFlowScreen from "./screens/WashFlowScreen";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -32,6 +32,12 @@ const queryClient = new QueryClient();
  * Stack navigator for unauthenticated users.
  * Includes Login and Signup screens.
  */
+
+export type RootStackParamList = {
+  Home: undefined;
+  WashFlowScreen: { locationId: number; locationName: string };
+};
+
 function AuthScreens() {
   return (
     <AuthStack.Navigator>
@@ -41,6 +47,18 @@ function AuthScreens() {
   );
 }
 
+const HomeStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    <Stack.Screen
+      name="WashFlowScreen"
+      component={WashFlowScreen}
+      options={({ route }) => ({
+        title: `${route.params?.locationName ?? "Unknown"}`,
+      })}
+    />
+  </Stack.Navigator>
+);
 /**
  * Bottom tab navigator shown to authenticated users.
  * Includes Home and Profile tabs.
@@ -48,7 +66,7 @@ function AuthScreens() {
 function TabNavigator() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}

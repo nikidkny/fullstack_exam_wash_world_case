@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallbackText, AvatarImage } from "@/components/ui/avatar";
-import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -15,22 +14,17 @@ type LocationCardProps = {
 
 export default function LocationCard({ name, address, open_hours, has_self_wash }: LocationCardProps) {
   return (
-    <Card className="p-5 rounded-lg max-w-[360px] m-3">
+    <Card className="p-5 rounded-lg max-w-[360px] m-3 bg-gray-100">
       {/* Top section: icon and title */}
       <HStack className="items-center mb-4">
         <Avatar className="mr-3">
-          <AvatarImage
-            source={{
-              uri: "https://gluestack.github.io/public-blog-video-assets/john.png", // Replace with location image if available
-            }}
-            alt="location image"
-          />
+          <AvatarImage source={require("./../../assets/WashWorld_lokation-e1618300360483.jpeg")} alt="location image" />
         </Avatar>
         <Heading size="md">{name}</Heading>
       </HStack>
 
       {/* Middle: location info */}
-      <VStack className="mb-4 space-y-1">
+      <VStack className="mb-3 space-y-1 flex gap-3">
         <Text size="sm" className="text-gray-600">
           📍 {address}
         </Text>
