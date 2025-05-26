@@ -18,14 +18,22 @@ export class AuthService {
 
   //TODO check if this is correct when implementing the front end if split the logic
   async signup(body: SignupDto) {
-    // Create User
-    const responseUser = await this.userService.create(body.first_name, body.last_name, body.email, body.password, body.phone_number);
+    console.log(body);
 
-    // // Create LicensePlate
-    const responseLicensePlate = await this.licensePlateService.create(body.plate_number);
+    try {
+      // // Create LicensePlate
+      const responseLicensePlate = await this.licensePlateService.create(body.plate_number);
 
-    // Create a membership
-    const responseLicensePlateMemberShipPlan = await this.licensePlateMembershipPlanService.create(responseUser, responseLicensePlate, body.membership_plan_id)
+
+      // Create User
+      const responseUser = await this.userService.create(body.first_name, body.last_name, body.email, body.password, body.phone_number);
+
+      // Create a membership
+      const responseLicensePlateMemberShipPlan = await this.licensePlateMembershipPlanService.create(responseUser, responseLicensePlate, body.membership_plan_id)
+    } catch (error) {
+      throw (error);
+    }
+
   };
 
   async login(email: string, password: string) {

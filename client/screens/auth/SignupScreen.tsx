@@ -8,30 +8,20 @@ import {
   FormControlError,
   FormControlErrorText,
 } from '@/components/ui/form-control';
-import {
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectItem,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator
-} from '@/components/ui/select';
 import { Input, InputField } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/store/store';
-import { checkUserEmail, signup } from './authSlice';
-import { getAll } from './membershipPlans/membershipPlansSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store/store';
+import { checkUserEmail } from './authSlice';
 import { CreateUserDto } from './users/createUserDto';
 import { useMembershipPlans } from './membershipPlans/hooks/useMembershipPlans';
+import { Dropdown } from 'react-native-element-dropdown';
+import { useSignup } from './membershipPlans/hooks/useSignup';
 
 export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const dispatch = useDispatch<AppDispatch>();
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('test@test.com');
+  const [email, setEmail] = useState('te@test.com');
   const [firstName, setFirstName] = useState('John');
   const [lastName, setLastName] = useState('Doe');
   const [password, setPassword] = useState('123456A');
@@ -40,7 +30,9 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const [plateNumber, setPlateNumber] = useState('A2E2DSSS');
   const [membershipPlanId, setMembershipPlanId] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const { membershipPlans, error } = useMembershipPlans();
+  const { membershipPlans } = useMembershipPlans();
+  const { signup: signupUser } = useSignup();
+
 
   const formatDanishPhone = (input: string) => {
     // Remove all non-digit characters
@@ -132,7 +124,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     }
 
     if (membershipPlanId === 0) {
-      newErrors.membershipPlanId = "Choose Dropdown.";
+      newErrors.membershipPlanId = "Please choose Membership";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -143,10 +135,10 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     handleSignup()
   };
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
+    
     const phoneNumberNoSpaces = phoneNumber.replace(/\s+/g, '');
     const phone_number = Number(phoneNumberNoSpaces)
-    console.log('Signup with:', { firstName, lastName, email, password, phone_number, plateNumber, membershipPlanId });
 
     const newUser: CreateUserDto = {
       first_name: firstName,
@@ -158,13 +150,20 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
       membership_plan_id: membershipPlanId
     };
 
-    dispatch(signup(newUser));
+    const result = await signupUser(newUser);
+    if (!result.success) {
+      if (result.error?.includes("License Plate"))
+        console.log("INCLUDES LICENSEPLATE");
+      setErrors({ licensePlate: result.error! })
+    }
   };
 
 
   return (
-    <ScrollView contentContainerStyle={authStyle.container}
-      keyboardShouldPersistTaps="handled"
+    <ScrollView
+      contentContainerStyle={authStyle.container}
+      keyboardShouldPersistTaps="always"
+      nestedScrollEnabled
     >
       <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 24 }}>Signup</Text>
 
@@ -390,24 +389,22 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
 
 
             <Text style={{ fontSize: 18 }} >Membership</Text>
-            <Select onValueChange={(value) => setMembershipPlanId(Number(value))}>
-              <SelectTrigger>
-                <SelectInput placeholder="Select option" />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectBackdrop />
-                <SelectContent>
-                  {Array.isArray(membershipPlans) &&
-                    membershipPlans.map((plan) => (
-                      <SelectItem
-                        key={plan.id}
-                        label={plan.name}
-                        value={plan.id.toString()}
-                      />
-                    ))}
-                </SelectContent>
-              </SelectPortal>
-            </Select>
+            {Array.isArray(membershipPlans) && (
+
+              <Dropdown
+                data={membershipPlans.map((plan) => ({
+                  label: plan.name,
+                  value: plan.id.toString(),
+                }))}
+                labelField="label"
+                valueField="value"
+                placeholder="Select option"
+                value={membershipPlanId?.toString()}
+                onChange={(item) => setMembershipPlanId(Number(item.value))}
+              />
+
+            )
+            }
             <FormControlError>
               <FormControlErrorText style={{ color: 'red', marginTop: 4 }}>
                 {errors.membershipPlanId}

@@ -40,7 +40,6 @@ export const checkUserEmail = createAsyncThunk(
     async (email: string, thunkAPI) => {
         try {
             const response = await UsersAPI.checkUserEmail(email);
-            console.log('API response:', response);
 
             // If response is undefined, user doesn't exist → allow signup
             if (response === undefined) {

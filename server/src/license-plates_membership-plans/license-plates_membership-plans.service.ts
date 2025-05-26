@@ -34,7 +34,6 @@ export class LicensePlatesMembershipPlansService {
         });
       }
 
-
       // Check if user exists
       const lpmFound = await this.findByCompositeKey(user.id, licensePlate.id,membership_plan_id);
       if (lpmFound) {
@@ -61,6 +60,9 @@ export class LicensePlatesMembershipPlansService {
         licensePlate,
         membershipPlan
       });
+
+      console.log(lpm);
+      
 
       return await this.licensePlateMembershipPlanRepository.save(lpm);
     } catch (e) {

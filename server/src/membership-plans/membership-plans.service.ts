@@ -13,12 +13,12 @@ export class MembershipPlansService {
   async create() {
     //seeding the plans into the db, checking if they are already added to avoid duplicates
     const plans = [
-      { name: 'gold', price: 139, is_business: false },
-      { name: 'premium', price: 169, is_business: false },
-      { name: 'brilliant/all inclusive', price: 199, is_business: false },
-      { name: 'gold', price: 111.2, is_business: true },
-      { name: 'premium', price: 135.2, is_business: true },
-      { name: 'brilliant/all inclusive', price: 159.2, is_business: true },
+      { name: 'Gold', price: 139, is_business: false },
+      { name: 'Premium', price: 169, is_business: false },
+      { name: 'Brilliant (All Inclusive)', price: 199, is_business: false },
+      { name: 'Gold Business', price: 111, is_business: true },
+      { name: 'Premium Business', price: 135, is_business: true },
+      { name: 'Brilliant (All Inclusive) Business', price: 159, is_business: true },
     ];
 
     for (const plan of plans) {

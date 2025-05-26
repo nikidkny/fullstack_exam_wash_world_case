@@ -1,12 +1,13 @@
 import { StyleSheet } from 'react-native';
 
 export const authStyle = StyleSheet.create({
-  container: {
+   container: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     rowGap: 20,
     paddingTop: 100,
+    zIndex: 0, 
   },
   loginLink: {
     fontSize: 18,
@@ -32,7 +33,9 @@ export const authStyle = StyleSheet.create({
     paddingVertical: 12
   },
   formControl: {
-     width: '90%',
+    width: '90%',
+    zIndex: 10, // Ensure dropdowns are rendered above other components
+    position: 'relative', // Needed for stacking context
   },
   errorText: {
     color: 'red',

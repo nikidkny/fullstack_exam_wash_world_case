@@ -10,7 +10,6 @@ export const useMembershipPlans = () => {
 
     useEffect(() => {
     if (!membershipPlans || Array.isArray(membershipPlans) && membershipPlans.length === 0) {
-        console.log("Fetching data");
         dispatch(getAll());
     }
 }, [dispatch, membershipPlans]);

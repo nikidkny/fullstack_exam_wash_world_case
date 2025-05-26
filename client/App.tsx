@@ -17,6 +17,7 @@ import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
 import { reloadJwtFromStorage } from './screens/auth/authSlice';
+import Toast from 'react-native-toast-message';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -57,13 +58,13 @@ function MainApp() {
   useEffect(() => {
     async function getToken() {
       const storedToken = await SecureStore.getItemAsync('jwt');
-    
+
       if (storedToken) {
         dispatch(reloadJwtFromStorage(storedToken));
       }
     }
     getToken();
-  }, [dispatch]);  
+  }, [dispatch]);
   return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreen />}</NavigationContainer>;
 }
 
@@ -75,6 +76,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider>
         <Provider store={store}>
+          <Toast />
           <MainApp />
           <StatusBar style="auto" />
         </Provider>
