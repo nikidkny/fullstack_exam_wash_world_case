@@ -1,19 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet } from 'react-native';
-import { store } from './store/store';
-import { Provider } from 'react-redux';
+import { StatusBar } from "expo-status-bar";
+import { Button, StyleSheet } from "react-native";
+import { store } from "./store/store";
+import { Provider } from "react-redux";
 // Navigation components
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 // Screens
-import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import LoginScreen from './screens/LoginScreen';
-import SignupScreen from './screens/SignupScreen';
+import HomeScreen from "./screens/HomeScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/SignupScreen";
 // React Query for server state management
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
+import "./global.css";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -49,7 +50,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-            <Button title="Logout" onPress={() => console.log('Log out')} />
+            <Button title="Logout" onPress={() => console.log("Log out")} />
           ),
         }}
       />
@@ -62,7 +63,7 @@ function TabNavigator() {
  * depending on whether the user is authenticated.
  */
 function MainApp() {
-  const token = 'd'; // TODO: Replace with logic to check for a real JWT/token
+  const token = "d"; // TODO: Replace with logic to check for a real JWT/token
 
   return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreens />}</NavigationContainer>;
 }
@@ -87,8 +88,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
