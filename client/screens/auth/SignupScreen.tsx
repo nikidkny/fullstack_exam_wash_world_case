@@ -26,6 +26,7 @@ import { AppDispatch, RootState } from '@/store/store';
 import { checkUserEmail, signup } from './authSlice';
 import { getAll } from './membershipPlans/membershipPlansSlice';
 import { CreateUserDto } from './users/createUserDto';
+import { useMembershipPlans } from './membershipPlans/hooks/useMembershipPlans';
 
 export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +40,7 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
   const [plateNumber, setPlateNumber] = useState('A2E2DSSS');
   const [membershipPlanId, setMembershipPlanId] = useState(0);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const membershipPlans = useSelector((state: RootState) => state.membershipPlans.membershipPlans);
+  const { membershipPlans, error } = useMembershipPlans();
 
   const formatDanishPhone = (input: string) => {
     // Remove all non-digit characters
@@ -49,14 +50,6 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     return digitsOnly.replace(/(\d{2})(?=\d)/g, '$1 ').trim();
   };
 
-  useEffect(() => {
-    if (!membershipPlans || (Array.isArray(membershipPlans) && membershipPlans.length === 0)) {
-      console.log("Fetching value...:");
-      dispatch(getAll());
-    }
-    console.log("Getting Cached value...");
-
-  }, [dispatch, membershipPlans]);
 
   const handleEmailNext = async () => {
     setErrors({});
@@ -137,7 +130,6 @@ export default function SignupScreen({ onSwitch }: { onSwitch: () => void }) {
     } else if (!licensePlateRegex.test(trimmedPlate)) {
       newErrors.licensePlate = "License plate must be 2–8 characters, uppercase letters and numbers only.";
     }
-
 
     if (membershipPlanId === 0) {
       newErrors.membershipPlanId = "Choose Dropdown.";
