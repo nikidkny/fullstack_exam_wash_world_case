@@ -69,7 +69,7 @@ function TabNavigator() {
 }
 
 /** Stack navigation*/
-export default function ProfileStack() {
+export function ProfileStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ headerShown: false }} />

@@ -53,7 +53,7 @@ export class UsersAPI {
 
   static async checkUserEmail(email: string) {
     try {
-      const response = await fetch(this.usersURl + email, {
+      const response = await fetch(this.usersURl + "/email/" + email, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
