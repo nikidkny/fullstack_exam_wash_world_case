@@ -18,6 +18,7 @@ import PaymentMethods from './screens/settings/PaymentMethods';
 import MembershipSettings from './screens/settings/MembershipSettings';
 import WashHistory from './screens/settings/WashHistory';
 import BillingHistory from './screens/settings/BillingHistory';
+
 // React Query for server state management
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
@@ -27,8 +28,6 @@ import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
 import Toast from 'react-native-toast-message';
 import LoginScreen from './screens/auth/LoginScreen';
 import SignupScreen from './screens/auth/SignupScreen';
-import { config } from '@gluestack-ui/config';
-import "./global.css";
 
 // Create navigators
 const Tab = createBottomTabNavigator();

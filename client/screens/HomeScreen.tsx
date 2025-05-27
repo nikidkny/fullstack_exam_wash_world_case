@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 export default function HomeScreen() {
+
   const user = useSelector((state: RootState) => state.auth.user);
 
   return (
