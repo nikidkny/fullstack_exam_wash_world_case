@@ -1,4 +1,3 @@
-import { Card } from 'src/cards/entities/card.entity';
 import { LicensePlateMembershipPlan } from 'src/license-plates_membership-plans/entities/license-plates_membership-plan.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
@@ -27,7 +26,4 @@ export class User {
     (licensePlateMembershipPlans) => licensePlateMembershipPlans.user,
   )
   licensePlateMembershipPlans: LicensePlateMembershipPlan[];
-
-  @OneToMany(() => Card, (card) => card.user)
-  cards: Card[];
 }

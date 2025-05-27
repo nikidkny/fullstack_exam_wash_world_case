@@ -2,14 +2,12 @@
 import { LicensePlate } from 'src/license-plates/entities/license-plate.entity';
 import { MembershipPlan } from 'src/membership-plans/entities/membership-plan.entity';
 import { User } from 'src/users/entities/user.entity';
-import { WashHistory } from 'src/wash-history/entities/wash-history.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
   Column,
-  OneToMany,
 } from 'typeorm';
 
 @Entity('license_plates_membership_plans')
@@ -43,7 +41,4 @@ export class LicensePlateMembershipPlan {
   )
   @JoinColumn({ name: 'membership_plan_id' })
   membershipPlan: MembershipPlan;
-
-  @OneToMany(() => WashHistory, (wash) => wash.licensePlateMembershipPlan)
-  washes: WashHistory[];
 }

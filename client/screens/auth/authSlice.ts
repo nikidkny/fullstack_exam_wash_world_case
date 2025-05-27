@@ -91,56 +91,41 @@ const authSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-    builder
-      .addCase(signup.pending, (state) => {
-        state.user = null;
-        state.error = null;
-      })
-      .addCase(signup.fulfilled, (state, action: PayloadAction<CreateUserDto>) => {
-        const user = action.payload;
-        // Transform the user data
-        state.user = {
-          firstName: user.first_name || '',
-          lastName: user.last_name || '',
-          email: user.email || '',
-          phoneNumber: user.phone_number || '',
-          userId: user.id || null,
-        };
-        state.error = null;
-      })
-      .addCase(signup.rejected, (state, action) => {
-        state.error = action.payload as string;
-      })
-      .addCase(checkUserEmail.pending, (state) => {
-        state.error = null;
-      })
-      .addCase(checkUserEmail.fulfilled, (state, action) => {
-        state.error = null;
-      })
-      .addCase(checkUserEmail.rejected, (state, action) => {
-        state.error = action.payload as string;
-      })
-      .addCase(login.fulfilled, (state, action) => {
-        const { access_token, user } = action.payload.data;
-        if (access_token && user) {
-          console.log(access_token);
-
-          SecureStore.setItemAsync('jwt', access_token);
-          state.token = access_token;
-          // Transform the user data
-          state.user = {
-            firstName: user.first_name || '',
-            lastName: user.last_name || '',
-            email: user.email || '',
-            phoneNumber: user.phone_number || '',
-            userId: user.id || null,
-          };
-          state.error = null;
-        } else {
-          state.error = 'Invalid login response';
-        }
-      });
-  },
+        builder
+            .addCase(signup.pending, (state) => {
+                state.user = null;
+                state.error = null;
+            })
+            .addCase(signup.fulfilled, (state, action: PayloadAction<CreateUserDto>) => {
+                state.user = action.payload;
+                state.error = null;
+            })
+            .addCase(signup.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(checkUserEmail.pending, (state) => {
+                state.error = null;
+            })
+            .addCase(checkUserEmail.fulfilled, (state, action) => {
+                state.error = null;
+            })
+            .addCase(checkUserEmail.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(login.fulfilled, (state, action) => {
+                const { access_token, user } = action.payload.data;
+                if (access_token && user) {
+                    console.log(access_token);
+                    
+                    SecureStore.setItemAsync('jwt', access_token);
+                    state.token = access_token;
+                    state.user = user;
+                    state.error = null;
+                } else {
+                    state.error = 'Invalid login response';
+                }
+            });
+    },
 });
 
 // Export actions and reducer
