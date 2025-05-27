@@ -4,9 +4,9 @@ import { AppDispatch, RootState, store } from './store/store';
 import * as SecureStore from 'expo-secure-store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 // Navigation components
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
@@ -53,7 +53,6 @@ function TabNavigator() {
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
                         <Button title="Logout" onPress={() => dispatch(logout())} />
-
           ),
         }}
       />
