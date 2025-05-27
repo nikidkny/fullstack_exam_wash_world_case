@@ -87,7 +87,7 @@ const authSlice = createSlice({
             state.token = null;
             state.user = null;
             state.error = null;
-            SecureStore.deleteItemAsync('userToken');
+            SecureStore.deleteItemAsync('jwt');
         },
     },
     extraReducers: (builder) => {
