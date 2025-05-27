@@ -1,9 +1,8 @@
-import { RootState } from "@/store/store";
-import { StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
+import { RootState } from '@/store/store';
+import { StyleSheet, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 export default function HomeScreen() {
-
   const user = useSelector((state: RootState) => state.auth.user);
 
   return (
@@ -15,5 +14,5 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  text: { fontSize: 20 }
+  text: { fontSize: 20 },
 });

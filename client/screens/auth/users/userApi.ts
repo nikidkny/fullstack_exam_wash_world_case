@@ -1,5 +1,5 @@
-import { CreateUserDto } from "./createUserDto";
-import { LoginUserDto } from "./loginUserDto";
+import { CreateUserDto } from './createUserDto';
+import { LoginUserDto } from './loginUserDto';
 
 export class UsersAPI {
   static authURl = 'http://localhost:3000/auth/';
@@ -53,23 +53,47 @@ export class UsersAPI {
 
   static async checkUserEmail(email: string) {
     try {
-
-      const response = await fetch(this.usersURl + email, {
+      const response = await fetch(this.usersURl + "/email/" + email, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
 
       if (!response.ok) {
         return;
       }
 
-      return(`User with email ${email} already exists`);
-
+      return `User with email ${email} already exists`;
     } catch (error) {
       console.error('Email API error:', error);
       throw error;
     }
-  };
+  }
+
+  static async getUserById(userId: number) {
+    try {
+      const url = this.usersURl + userId;
+      console.log('GET', url);
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Response status:', response.status);
+        console.error('Response text:', text);
+        throw new Error('Failed to fetch user details');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Get User API error:', error);
+      throw error;
+    }
+  }
 }
