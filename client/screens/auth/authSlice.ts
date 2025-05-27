@@ -41,7 +41,7 @@ export const login = createAsyncThunk(
     async (loginUserDto: LoginUserDto, thunkAPI) => {
         try {
             const response = await UsersAPI.login(loginUserDto);
-
+            
             return response;
         } catch (error) {
             console.log('Login error:', error);

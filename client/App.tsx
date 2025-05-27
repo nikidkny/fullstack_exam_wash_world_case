@@ -52,7 +52,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-                        <Button title="Logout" onPress={() => dispatch(logout())} />
+            <Button title="Logout" onPress={() => dispatch(logout())} />
 
           ),
         }}
@@ -118,9 +118,9 @@ function MainApp() {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      
+
       if (!checkResponse.ok) throw new Error('Failed to check locations');
-      
+
       const { data } = await checkResponse.json();
 
       if (data.length > 0) {
