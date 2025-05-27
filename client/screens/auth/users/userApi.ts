@@ -2,8 +2,8 @@ import { CreateUserDto } from './createUserDto';
 import { LoginUserDto } from './loginUserDto';
 
 export class UsersAPI {
-  static authURl = 'http://10.0.0.8:3000/auth/';
-  static usersURl = 'http://10.0.0.8:3000/users/';
+  static authURl = 'http://localhost:3000/auth/';
+  static usersURl = 'http://localhost:3000/users/';
 
   static async signup(userDto: CreateUserDto) {
     try {
@@ -53,7 +53,7 @@ export class UsersAPI {
 
   static async checkUserEmail(email: string) {
     try {
-      const response = await fetch(this.usersURl + email, {
+      const response = await fetch(this.usersURl + '/email/' + email, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -70,6 +70,7 @@ export class UsersAPI {
       throw error;
     }
   }
+
   static async getUserById(userId: number) {
     try {
       const url = this.usersURl + userId;

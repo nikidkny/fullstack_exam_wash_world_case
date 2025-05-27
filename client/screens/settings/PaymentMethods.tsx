@@ -52,6 +52,7 @@ export default function PaymentMethods() {
   };
 
   console.log('id type' + typeof user?.userId);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Payment Method</Text>
@@ -112,6 +113,7 @@ export default function PaymentMethods() {
       </View>
       <View style={styles.section}>
         <Text style={styles.label}>CVC</Text>
+
         {isEditing ? (
           <Input variant="outline" size="xl" style={styles.input}>
             <InputField
@@ -194,6 +196,7 @@ const styles = StyleSheet.create({
     color: 'lightgray',
     fontSize: 16,
   },
+
   value: {
     fontSize: 16,
   },

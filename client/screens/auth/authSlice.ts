@@ -83,7 +83,7 @@ const authSlice = createSlice({
       state.token = null;
       state.user = null;
       state.error = null;
-      SecureStore.deleteItemAsync('userToken');
+      SecureStore.deleteItemAsync('jwt');
     },
   },
   extraReducers: (builder) => {
@@ -93,15 +93,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signup.fulfilled, (state, action: PayloadAction<CreateUserDto>) => {
-        const user = action.payload;
-        // Transform the user data
-        state.user = {
-          firstName: user.first_name || '',
-          lastName: user.last_name || '',
-          email: user.email || '',
-          phoneNumber: user.phone_number || '',
-          userId: user.id || null,
-        };
+        state.user = action.payload;
         state.error = null;
       })
       .addCase(signup.rejected, (state, action) => {
@@ -123,14 +115,7 @@ const authSlice = createSlice({
 
           SecureStore.setItemAsync('jwt', access_token);
           state.token = access_token;
-          // Transform the user data
-          state.user = {
-            firstName: user.first_name || '',
-            lastName: user.last_name || '',
-            email: user.email || '',
-            phoneNumber: user.phone_number || '',
-            userId: user.id || null,
-          };
+          state.user = user;
           state.error = null;
         } else {
           state.error = 'Invalid login response';

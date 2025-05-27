@@ -18,15 +18,15 @@ import PaymentMethods from './screens/settings/PaymentMethods';
 import MembershipSettings from './screens/settings/MembershipSettings';
 import WashHistory from './screens/settings/WashHistory';
 import BillingHistory from './screens/settings/BillingHistory';
+
 // React Query for server state management
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
 import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
-// import Toast from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import { config } from '@gluestack-ui/config';
-// import './global.css';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -69,7 +69,8 @@ function TabNavigator() {
 }
 
 /** Stack navigation*/
-export default function ProfileStack() {
+
+export function ProfileStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ headerShown: false }} />
@@ -126,7 +127,7 @@ function MainApp() {
 
   async function ensureMembershipPlansExist() {
     try {
-      const checkResponse = await fetch('http://10.0.0.8:3000/membership-plans', {
+      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -139,7 +140,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://10.0.0.8:3000/membership-plans/seed', {
+      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -154,7 +155,7 @@ function MainApp() {
 
   async function ensureLocansionExist() {
     try {
-      const checkResponse = await fetch('http://10.0.0.8:3000/locations/', {
+      const checkResponse = await fetch('http://localhost:3000/locations/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -167,7 +168,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://10.0.0.8:3000/locations/seed', {
+      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -191,7 +192,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider config={config}>
         <Provider store={store}>
-          {/* <Toast /> */}
+          <Toast />
           <MainApp />
           <StatusBar style="auto" />
         </Provider>

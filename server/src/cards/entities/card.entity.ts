@@ -27,4 +27,13 @@ export class Card {
 
   @Column()
   expiry_date: string;
+
+  // @Column({ type: 'bigint' })
+  // card_number: string;
+
+  // @Column({ type: 'bigint' })
+  // cvc: string;
+
+  // @Column({ type: 'date' })
+  // expiry_date: string;
 }

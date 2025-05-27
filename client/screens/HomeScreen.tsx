@@ -7,7 +7,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome {user?.firstName}</Text>
+      <Text style={styles.text}>Welcome {user?.first_name}</Text>
     </View>
   );
 }
