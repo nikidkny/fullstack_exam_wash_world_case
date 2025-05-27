@@ -3,13 +3,22 @@ import { Button, StyleSheet } from 'react-native';
 import { AppDispatch, RootState, store } from './store/store';
 import * as SecureStore from 'expo-secure-store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
+
 // Navigation components
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import LoginScreen from './screens/auth/LoginScreen';
+import SignupScreen from './screens/auth/SignupScreen';
+import PersonalInfo from './screens/settings/PersonalInfo';
+import PaymentMethods from './screens/settings/PaymentMethods';
+import MembershipSettings from './screens/settings/MembershipSettings';
+import WashHistory from './screens/settings/WashHistory';
+import BillingHistory from './screens/settings/BillingHistory';
+
 // React Query for server state management
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
@@ -17,8 +26,7 @@ import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
 import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
 import Toast from 'react-native-toast-message';
-import LoginScreen from './screens/auth/LoginScreen';
-import SignupScreen from './screens/auth/SignupScreen';
+import { config } from '@gluestack-ui/config';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -48,7 +56,7 @@ function TabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStack}
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
@@ -57,6 +65,40 @@ function TabNavigator() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+/** Stack navigation*/
+export default function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="PersonalInfo"
+        component={PersonalInfo}
+        options={{ headerTitle: 'Edit Personal Information' }}
+      />
+      <Stack.Screen
+        name="PaymentMethods"
+        component={PaymentMethods}
+        options={{ headerTitle: 'Edit Payment Methods' }}
+      />
+      <Stack.Screen
+        name="MembershipSettings"
+        component={MembershipSettings}
+        options={{ headerTitle: 'Edit Membership Details' }}
+      />
+      <Stack.Screen
+        name="WashHistory"
+        component={WashHistory}
+        options={{ headerTitle: 'See Wash History' }}
+      />
+      <Stack.Screen
+        name="BillingHistory"
+        component={BillingHistory}
+        options={{ headerTitle: 'See Billing History' }}
+      />
+    </Stack.Navigator>
   );
 }
 
@@ -117,7 +159,6 @@ function MainApp() {
         headers: { 'Content-Type': 'application/json' },
       });
 
-
       if (!checkResponse.ok) throw new Error('Failed to check locations');
 
       const { data } = await checkResponse.json();
@@ -148,10 +189,11 @@ function MainApp() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <GluestackUIProvider>
+      <GluestackUIProvider config={config}>
         <Provider store={store}>
           <Toast />
           <MainApp />
+
           <StatusBar style="auto" />
         </Provider>
       </GluestackUIProvider>
