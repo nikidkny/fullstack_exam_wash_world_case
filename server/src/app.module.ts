@@ -11,9 +11,6 @@ import { WashHistoryModule } from './wash-history/wash-history.module';
 import { LicensePlatesMembershipPlansModule } from './license-plates_membership-plans/license-plates_membership-plans.module';
 import { MembershipPlansModule } from './membership-plans/membership-plans.module';
 import { AuthModule } from './auth/auth.module';
-import { CardsModule } from './cards/cards.module';
-import { BillingsHistoryModule } from './billings_history/billings_history.module';
-
 
 @Module({
   imports: [
@@ -25,9 +22,7 @@ import { BillingsHistoryModule } from './billings_history/billings_history.modul
     WashHistoryModule,
     LicensePlatesMembershipPlansModule,
     MembershipPlansModule,
-    AuthModule,
-    CardsModule,
-    BillingsHistoryModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
