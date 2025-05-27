@@ -5,14 +5,14 @@ import * as SecureStore from 'expo-secure-store';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 
 // Navigation components
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import LoginScreen from "./screens/LoginScreen";
-import SignupScreen from "./screens/SignupScreen";
+import LoginScreen from './screens/auth/LoginScreen';
+import SignupScreen from './screens/auth/SignupScreen';
 import PersonalInfo from './screens/settings/PersonalInfo';
 import PaymentMethods from './screens/settings/PaymentMethods';
 import MembershipSettings from './screens/settings/MembershipSettings';
@@ -24,11 +24,9 @@ import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
 import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
-import Toast from 'react-native-toast-message';
-import LoginScreen from './screens/auth/LoginScreen';
-import SignupScreen from './screens/auth/SignupScreen';
+// import Toast from 'react-native-toast-message';
 import { config } from '@gluestack-ui/config';
-import "./global.css";
+// import './global.css';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
@@ -128,7 +126,7 @@ function MainApp() {
 
   async function ensureMembershipPlansExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
+      const checkResponse = await fetch('http://10.0.0.8:3000/membership-plans', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -141,7 +139,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
+      const seedResponse = await fetch('http://10.0.0.8:3000/membership-plans/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -156,7 +154,7 @@ function MainApp() {
 
   async function ensureLocansionExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/locations/', {
+      const checkResponse = await fetch('http://10.0.0.8:3000/locations/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -169,7 +167,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
+      const seedResponse = await fetch('http://10.0.0.8:3000/locations/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -193,9 +191,8 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider config={config}>
         <Provider store={store}>
-          <Toast />
+          {/* <Toast /> */}
           <MainApp />
-
           <StatusBar style="auto" />
         </Provider>
       </GluestackUIProvider>

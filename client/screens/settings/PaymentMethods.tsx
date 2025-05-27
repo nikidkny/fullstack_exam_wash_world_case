@@ -1,38 +1,57 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { getCardsByUserId, createCard } from '@/store/cardSlice';
+import { get } from '@gluestack-style/react';
 
 export default function PaymentMethods() {
-  const route = useRoute();
-  const { user } = route.params;
+  // const route = useRoute();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const card = useSelector((state: RootState) => state.card.cards);
+  console.log('PaymentMethods user:', user);
+  console.log('PaymentMethods cards:', card);
+  // fetch the cards details from cards table using userId
+  useEffect(() => {
+    if (user?.userId) {
+      // only do it it if the result from the cards table is not empty
+      dispatch(getCardsByUserId(user.userId));
+    }
+  }, [user]);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editedCardholderName, setEditedCardholderName] = useState(user.cardholderName || '');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
-
+  const [cardholderName, setCardholderName] = useState(card.cardholder_name || '');
+  const [cardNumber, setCardNumber] = useState(card.card_number || '');
+  const [expiryDate, setExpiryDate] = useState(card.expiry_date || '');
+  const [cvc, setCvc] = useState(card.cvc || '');
   const handleUpdatePaymentMethod = () => {
-    if (!cardNumber || !expiryDate || !cvv) {
+    if (!cardNumber || !expiryDate || !cvc) {
       Alert.alert('Missing info', 'Please fill in all fields.');
       return;
     }
 
+    const cardDto = {
+      user_id: user?.userId,
+      cardholder_name: cardholderName,
+      card_number: cardNumber, // Remove spaces
+      expiry_date: expiryDate,
+      cvc: cvc,
+    };
     // Add API call here to update payment method
-    console.log('Updating payment method:', {
-      cardNumber,
-      expiryDate,
-      cvv,
-    });
+    console.log('Payload being sent:', cardDto);
+    dispatch(createCard(cardDto));
 
     Alert.alert('Success', 'Your payment method was updated!');
     setIsEditing(false);
   };
 
+  console.log('id type' + typeof user?.userId);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Payment Method</Text>
@@ -41,16 +60,18 @@ export default function PaymentMethods() {
         {isEditing ? (
           <Input variant="outline" size="xl" style={[styles.input]}>
             <InputField
-              placeholder="Name on card"
-              value={editedCardholderName}
-              onChangeText={setEditedCardholderName}
+              placeholder="Cardholder Name"
+              value={cardholderName}
+              onChangeText={setCardholderName}
               keyboardType="default"
               autoCapitalize="words"
               style={styles.inputField}
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{user.cardholderName}</Text>
+          <Text style={cardholderName ? styles.value : styles.placeholder}>
+            {cardholderName || 'Cardholder Name'}
+          </Text>
         )}
       </View>
       <View style={styles.section}>
@@ -66,7 +87,9 @@ export default function PaymentMethods() {
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{cardNumber || 'Not set'}</Text>
+          <Text style={cardNumber ? styles.value : styles.placeholder}>
+            {cardNumber || '1234 5678 9012 3456'}
+          </Text>
         )}
       </View>
       <View style={styles.section}>
@@ -82,24 +105,26 @@ export default function PaymentMethods() {
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{expiryDate || 'Not set'}</Text>
+          <Text style={expiryDate ? styles.value : styles.placeholder}>
+            {expiryDate || 'MM/YY'}
+          </Text>
         )}
       </View>
       <View style={styles.section}>
-        <Text style={styles.label}>CVV</Text>
+        <Text style={styles.label}>CVC</Text>
         {isEditing ? (
           <Input variant="outline" size="xl" style={styles.input}>
             <InputField
               placeholder="123"
-              value={cvv}
-              onChangeText={setCvv}
+              value={cvc}
+              onChangeText={setCvc}
               keyboardType="number-pad"
               secureTextEntry
               style={styles.inputField}
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{cvv ? '***' : 'Not set'}</Text>
+          <Text style={cvc ? styles.value : styles.placeholder}>{cvc ? '***' : '123'}</Text>
         )}
       </View>
       <View style={styles.row}>
@@ -164,6 +189,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
     marginBottom: 4,
+  },
+  placeholder: {
+    color: 'lightgray',
+    fontSize: 16,
   },
   value: {
     fontSize: 16,
