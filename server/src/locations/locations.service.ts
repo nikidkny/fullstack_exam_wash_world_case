@@ -37,7 +37,9 @@ export class LocationsService {
   }
 
   async findAll(): Promise<Location[]> {
-    return await this.locationRepository.find();
+    const locations = await this.locationRepository.find();
+    
+    return locations;
   }
 
   async findOne(id: number): Promise<Location> {

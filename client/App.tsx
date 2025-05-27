@@ -1,37 +1,38 @@
-import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet } from "react-native";
-import { store } from "./store/store";
-import { Provider } from "react-redux";
+import { StatusBar } from 'expo-status-bar';
+import { Button, StyleSheet } from 'react-native';
+import { AppDispatch, RootState, store } from './store/store';
+import * as SecureStore from 'expo-secure-store';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 // Navigation components
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 // Screens
-import HomeScreen from "./screens/HomeScreen";
-import ProfileScreen from "./screens/ProfileScreen";
-import LoginScreen from "./screens/LoginScreen";
-import SignupScreen from "./screens/SignupScreen";
+import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
 // React Query for server state management
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
-import "./global.css";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
+import { useEffect } from 'react';
+import { RootStackParamList } from './navigationType';
+import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
+import Toast from 'react-native-toast-message';
+import LoginScreen from './screens/auth/LoginScreen';
+import SignupScreen from './screens/auth/SignupScreen';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
-const AuthStack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 // Create a QueryClient instance for React Query
 const queryClient = new QueryClient();
 
-/**
- * Stack navigator for unauthenticated users.
- * Includes Login and Signup screens.
- */
-function AuthScreens() {
+const AuthStack = createNativeStackNavigator();
+
+function AuthNavigator() {
   return (
-    <AuthStack.Navigator>
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="Signup" component={SignupScreen} />
+    <AuthStack.Navigator initialRouteName="Login">
+      <AuthStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <AuthStack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
     </AuthStack.Navigator>
   );
 }
@@ -41,6 +42,7 @@ function AuthScreens() {
  * Includes Home and Profile tabs.
  */
 function TabNavigator() {
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -50,7 +52,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-            <Button title="Logout" onPress={() => console.log("Log out")} />
+            <Button title="Logout" onPress={() => dispatch(logout())} />
           ),
         }}
       />
@@ -63,9 +65,81 @@ function TabNavigator() {
  * depending on whether the user is authenticated.
  */
 function MainApp() {
-  const token = "d"; // TODO: Replace with logic to check for a real JWT/token
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.auth.token);
 
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthScreens />}</NavigationContainer>;
+  useEffect(() => {
+    async function getToken() {
+      const storedToken = await SecureStore.getItemAsync('jwt');
+
+      if (storedToken) {
+        dispatch(reloadJwtFromStorage(storedToken));
+      }
+
+      await ensureMembershipPlansExist();
+      // await ensureLocansionExist();
+    }
+    getToken();
+  }, [dispatch]);
+
+  async function ensureMembershipPlansExist() {
+    try {
+      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!checkResponse.ok) throw new Error('Failed to check membership plans');
+
+      const { data } = await checkResponse.json();
+
+      if (data.length > 0) {
+        return;
+      }
+
+      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
+
+      console.log('Membership plans seeded');
+    } catch (error: any) {
+      console.error('Error while checking/seeding:', error.message);
+    }
+  }
+
+  async function ensureLocansionExist() {
+    try {
+      const checkResponse = await fetch('http://localhost:3000/locations/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+
+      if (!checkResponse.ok) throw new Error('Failed to check locations');
+
+      const { data } = await checkResponse.json();
+
+      if (data.length > 0) {
+        return;
+      }
+
+      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!seedResponse.ok) throw new Error('Failed to seed locations plans');
+
+      console.log(' locations  seeded');
+    } catch (error: any) {
+      console.error('Error while checking/seeding:', error.message);
+    }
+  }
+
+  return <NavigationContainer>{token ? <TabNavigator /> : <AuthNavigator />}</NavigationContainer>;
 }
 
 /**
@@ -76,6 +150,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider>
         <Provider store={store}>
+          <Toast />
           <MainApp />
           <StatusBar style="auto" />
         </Provider>
@@ -84,12 +159,15 @@ export default function App() {
   );
 }
 
-// Basic reusable styles
 const styles = StyleSheet.create({
-  container: {
+  screenContainer: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  contentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
