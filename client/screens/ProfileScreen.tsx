@@ -37,7 +37,7 @@ export default function ProfileScreen() {
   console.log('user', user);
   return (
     <ScrollView>
-      <Text style={styles.heading}>Hey {user.firstName}!</Text>
+      <Text style={styles.heading}>Hey {user.first_name}!</Text>
       <SettingRow
         label="Personal Information"
         icon={<UserIcon size={20} color="black" />}

@@ -1,7 +1,6 @@
 import { CreateUserDto } from './createUserDto';
 import { LoginUserDto } from './loginUserDto';
 
-
 export class UsersAPI {
   static authURl = 'http://localhost:3000/auth/';
   static usersURl = 'http://localhost:3000/users/';
@@ -59,14 +58,20 @@ export class UsersAPI {
         headers: {
           'Content-Type': 'application/json',
         },
-
       });
 
       if (!response.ok) {
         return;
       }
 
-static async getUserById(userId: number) {
+      return `User with email ${email} already exists`;
+    } catch (error) {
+      console.error('Email API error:', error);
+      throw error;
+    }
+  }
+
+  static async getUserById(userId: number) {
     try {
       const url = this.usersURl + userId;
       console.log('GET', url);
