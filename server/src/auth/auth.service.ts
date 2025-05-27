@@ -16,7 +16,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) { }
 
-  //TODO check if this is correct when implementing the front end if split the logic
   async signup(body: SignupDto) {
     console.log(body);
 
