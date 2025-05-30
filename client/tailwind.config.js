@@ -7,8 +7,11 @@ module.exports = {
     // "./src/**/*.{html,js,jsx,ts,tsx}",
     // "./src/core-components/**/**/*.{html,js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
+
     "./screens/**/*.{js,jsx,ts,tsx}",
     "./screens/auth/**/*.{js,jsx,ts,tsx}",
+
+
     "./App.{js,jsx,ts,tsx}",
   ],
   presets: [require("nativewind/preset")],
@@ -119,6 +122,10 @@ module.exports = {
           900: "rgb(var(--color-info-900)/<alpha-value>)",
           950: "rgb(var(--color-info-950)/<alpha-value>)",
         },
+        error: {},
+        success: {},
+        warning: {},
+        info: {},
         typography: {
           0: "rgb(var(--color-typography-0)/<alpha-value>)",
           50: "rgb(var(--color-typography-50)/<alpha-value>)",

@@ -12,6 +12,25 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) { }
 
+
+  async findAll() {
+      try {
+      const usersFound = await this.usersRepository.find();
+      if (!usersFound) {
+        throw new NotFoundException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: `users  not found`,
+        })
+      }
+
+      return usersFound;
+    } catch (error) {
+      console.error(error) ;
+      throw error;
+    }
+  };
+
+
   async create(first_name: string, last_name: string, email: string, password: string, phone_number: number) {
     try {
 
@@ -34,7 +53,9 @@ export class UsersService {
 
 
       // Check if user exists
-      const userFound = await this.findByEmail(email);
+
+      const userFound = await this.usersRepository.findOne({ where: { email } });
+
       if (userFound) {
         throw new ConflictException({
           statusCode: HttpStatus.CONFLICT,
@@ -67,10 +88,6 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
   async findById(id: number): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { id }
@@ -83,8 +100,19 @@ export class UsersService {
     return user;
   }
 
+
   async findByEmail(email: string): Promise<User | null> {
-    return await this.usersRepository.findOne({ where: { email } });
+    const userFound = await this.usersRepository.findOne({ where: { email } });
+
+    if (!userFound) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: `User with email ${email} does not exists`,
+      })
+    }
+
+    return userFound;
+
   }
 
 

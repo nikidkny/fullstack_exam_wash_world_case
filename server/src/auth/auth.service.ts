@@ -18,14 +18,24 @@ export class AuthService {
 
   //TODO check if this is correct when implementing the front end if split the logic
   async signup(body: SignupDto) {
-    // Create User
-    const responseUser = await this.userService.create(body.first_name, body.last_name, body.email, body.password, body.phone_number);
 
-    // // Create LicensePlate
-    const responseLicensePlate = await this.licensePlateService.create(body.plate_number);
+    console.log(body);
 
-    // Create a membership
-    const responseLicensePlateMemberShipPlan = await this.licensePlateMembershipPlanService.create(responseUser, responseLicensePlate, body.membership_plan_id)
+    try {
+      // // Create LicensePlate
+      const responseLicensePlate = await this.licensePlateService.create(body.plate_number);
+
+
+      // Create User
+      const responseUser = await this.userService.create(body.first_name, body.last_name, body.email, body.password, body.phone_number);
+
+      // Create a membership
+      const responseLicensePlateMemberShipPlan = await this.licensePlateMembershipPlanService.create(responseUser, responseLicensePlate, body.membership_plan_id)
+    } catch (error) {
+      throw (error);
+    }
+
+
   };
 
   async login(email: string, password: string) {
@@ -38,7 +48,9 @@ export class AuthService {
     if (invalidFields.length > 0) {
       throw new BadRequestException({
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Missing or invalid input values',
+
+        message: 'Missing or invalid values',
+
         values: invalidFields
       });
     }
@@ -63,7 +75,18 @@ export class AuthService {
     const payload = { sub: userFound.id, email: userFound.email };
     const token = this.jwtService.sign(payload);
 
-    return token;
+
+    return {
+      access_token: token,
+      user: {
+        id: userFound.id,
+        email: userFound.email,
+        first_name: userFound.first_name,
+        last_name: userFound.last_name,
+        phone_number: userFound.phone_number,
+      },
+    }
+
   }
 
 }

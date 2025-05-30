@@ -17,6 +17,7 @@ export class LicensePlatesMembershipPlansService {
     private readonly membershipPlanService: MembershipPlansService,
   ) { }
 
+
   async create(user: User, licensePlate: LicensePlate, membership_plan_id: number) {
     try {
       //Check fields
@@ -33,7 +34,6 @@ export class LicensePlatesMembershipPlansService {
           values: invalidFields
         });
       }
-
 
       // Check if user exists
       const lpmFound = await this.findByCompositeKey(user.id, licensePlate.id,membership_plan_id);
@@ -62,6 +62,9 @@ export class LicensePlatesMembershipPlansService {
         membershipPlan
       });
 
+      console.log(lpm);
+      
+
       return await this.licensePlateMembershipPlanRepository.save(lpm);
     } catch (e) {
       console.log(e);
@@ -76,6 +79,7 @@ export class LicensePlatesMembershipPlansService {
         },
       });
     }
+
 
   }
 

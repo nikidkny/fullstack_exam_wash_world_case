@@ -56,7 +56,7 @@ export class LicensePlatesService {
   }
 
   findAll() {
-    return `This action returns all licensePlates`;
+    return this.licensPlatesRepository.find();
   }
 
   async findByPlate(plate: string) {

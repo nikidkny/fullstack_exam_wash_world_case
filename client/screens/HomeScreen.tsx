@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Box, Text } from "@gluestack-ui/themed";
 import NavigationBar from "@/components/ui/NavigationBar";
@@ -10,11 +11,15 @@ import { FlatList, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/App";
+import { RootState } from '@/store/store';
+import { StyleSheet, Text, View } from 'react-native';
+
 
 export default function HomeScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const dispatch = useDispatch<AppDispatch>();
   const locations = useSelector((state: RootState) => state.locations.locations);
+     const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     dispatch(fetchLocations());
@@ -30,6 +35,9 @@ export default function HomeScreen() {
 
   return (
     <Box flex={1} bg="$white">
+      <View style={styles.container}>
+      <Text style={styles.text}>Welcome {user?.first_name}</Text>
+    </View>
       <NavigationBar />
       {locations && locations.length > 0 && (
         <FlatList
@@ -47,3 +55,10 @@ export default function HomeScreen() {
     </Box>
   );
 }
+        const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  text: { fontSize: 20 },
+});
+
+
+
