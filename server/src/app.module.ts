@@ -12,6 +12,11 @@ import { LicensePlatesMembershipPlansModule } from './license-plates_membership-
 import { MembershipPlansModule } from './membership-plans/membership-plans.module';
 import { AuthModule } from './auth/auth.module';
 
+import { CardsModule } from './cards/cards.module';
+import { BillingsHistoryModule } from './billings_history/billings_history.module';
+
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -22,7 +27,11 @@ import { AuthModule } from './auth/auth.module';
     WashHistoryModule,
     LicensePlatesMembershipPlansModule,
     MembershipPlansModule,
-    AuthModule
+
+    AuthModule,
+    CardsModule,
+    BillingsHistoryModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
