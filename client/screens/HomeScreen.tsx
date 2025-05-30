@@ -3,7 +3,7 @@ import { Box, Text } from "@gluestack-ui/themed";
 import NavigationBar from "@/components/ui/NavigationBar";
 import LocationCard from "@/components/ui/LocationCard";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store/store";
+import { AppDispatch } from "@/store/store";
 import { fetchLocations } from "@/locations/locationsSlice";
 import { LocationEntity } from "@/locations/locationEntity";
 import { FlatList, TouchableOpacity } from "react-native";
