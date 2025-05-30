@@ -1,10 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet } from "react-native";
-
 import { AppDispatch, RootState, store } from "./store/store";
 import * as SecureStore from "expo-secure-store";
 import { Provider, useDispatch, useSelector } from "react-redux";
-
 
 // Navigation components
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -17,37 +15,32 @@ import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
 
 // React Query for server state management
-
 import WashFlowScreen from "./screens/WashFlowScreen";
-
 import PersonalInfo from "./screens/settings/PersonalInfo";
 import PaymentMethods from "./screens/settings/PaymentMethods";
 import MembershipSettings from "./screens/settings/MembershipSettings";
 import WashHistory from "./screens/settings/WashHistory";
 import BillingHistory from "./screens/settings/BillingHistory";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
+
 import { useEffect } from "react";
 import { RootStackParamList } from "./navigationType";
 import { logout, reloadJwtFromStorage } from "./screens/auth/authSlice";
 import Toast from "react-native-toast-message";
 import "./global.css";
-
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-
 // Create a QueryClient instance for React Query
 
-
-export type RootStackParamList = {
-  Home: undefined;
-  WashFlowScreen: { locationId: number; locationName: string };
-};
-
-
+// export type RootStackParamList = {
+//   Home: undefined;
+//   WashFlowScreen: { locationId: number; locationName: string };
+// };
 
 // Create a QueryClient instance for React Query
 const queryClient = new QueryClient();
@@ -55,7 +48,6 @@ const queryClient = new QueryClient();
 const AuthStack = createNativeStackNavigator();
 
 function AuthNavigator() {
-
   return (
     <AuthStack.Navigator initialRouteName="Login">
       <AuthStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -66,7 +58,13 @@ function AuthNavigator() {
 
 const HomeStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+    <Stack.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
     <Stack.Screen
       name="WashFlowScreen"
       component={WashFlowScreen}
@@ -93,7 +91,6 @@ function TabNavigator() {
             // Replace this with dispatch(logout()) when auth is implemented
 
             <Button title="Logout" onPress={() => dispatch(logout())} />
-
           ),
         }}
       />
@@ -133,7 +130,7 @@ function MainApp() {
       }
 
       await ensureMembershipPlansExist();
-      // await ensureLocansionExist();
+      // await ensureLocationExist();
     }
     getToken();
   }, [dispatch]);
@@ -166,7 +163,7 @@ function MainApp() {
     }
   }
 
-  async function ensureLocansionExist() {
+  async function ensureLocationExist() {
     try {
       const checkResponse = await fetch("http://localhost:3000/locations/", {
         method: "GET",
@@ -195,7 +192,6 @@ function MainApp() {
   }
 
   return <NavigationContainer>{token ? <TabNavigator /> : <AuthNavigator />}</NavigationContainer>;
-
 }
 
 /**

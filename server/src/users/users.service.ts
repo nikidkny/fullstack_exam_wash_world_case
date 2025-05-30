@@ -1,39 +1,49 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  BadRequestException,
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+// import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from "bcrypt"
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) { }
-
+  ) {}
 
   async findAll() {
-      try {
+    try {
       const usersFound = await this.usersRepository.find();
       if (!usersFound) {
         throw new NotFoundException({
           statusCode: HttpStatus.BAD_REQUEST,
           message: `users  not found`,
-        })
+        });
       }
 
       return usersFound;
     } catch (error) {
-      console.error(error) ;
+      console.error(error);
       throw error;
     }
-  };
+  }
 
-
-  async create(first_name: string, last_name: string, email: string, password: string, phone_number: number) {
+  async create(
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
+    phone_number: number,
+  ) {
     try {
-
       //Check fields
       const invalidFields: string[] = [];
 
@@ -47,14 +57,15 @@ export class UsersService {
         throw new BadRequestException({
           statusCode: HttpStatus.BAD_REQUEST,
           message: 'Missing or invalid input values',
-          values: invalidFields
+          values: invalidFields,
         });
       }
 
-
       // Check if user exists
 
-      const userFound = await this.usersRepository.findOne({ where: { email } });
+      const userFound = await this.usersRepository.findOne({
+        where: { email },
+      });
 
       if (userFound) {
         throw new ConflictException({
@@ -69,7 +80,7 @@ export class UsersService {
         last_name,
         email,
         password: hashedPassword,
-        phone_number
+        phone_number,
       });
 
       return await this.usersRepository.save(newUser);
@@ -90,7 +101,7 @@ export class UsersService {
 
   async findById(id: number): Promise<User> {
     const user = await this.usersRepository.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!user) {
@@ -100,7 +111,6 @@ export class UsersService {
     return user;
   }
 
-
   async findByEmail(email: string): Promise<User | null> {
     const userFound = await this.usersRepository.findOne({ where: { email } });
 
@@ -108,18 +118,15 @@ export class UsersService {
       throw new NotFoundException({
         statusCode: HttpStatus.BAD_REQUEST,
         message: `User with email ${email} does not exists`,
-      })
+      });
     }
 
     return userFound;
-
   }
 
-
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} user`;

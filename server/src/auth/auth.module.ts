@@ -18,12 +18,9 @@ import { JwtStrategy } from './jwt/jwt.strategy';
     LicensePlatesModule,
     LicensePlatesMembershipPlansModule,
 
-    MembershipPlansModule
-
+    MembershipPlansModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
 })
-
-export class AuthModule { }
-
+export class AuthModule {}

@@ -9,5 +9,5 @@ export type RootStackParamList = {
   MembershipSettings: undefined;
   WashHistory: undefined;
   BillingHistory: undefined;
+  WashFlowScreen: { locationId: number; locationName: string };
 };
-

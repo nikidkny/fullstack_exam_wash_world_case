@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Delete, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, HttpStatus } from '@nestjs/common';
 import { MembershipPlansService } from './membership-plans.service';
 
 @Controller('membership-plans')
@@ -13,19 +13,16 @@ export class MembershipPlansController {
   }
 
   @Get()
-
   async findAll() {
-    try {
-      const membershipPlansFound = await this.membershipPlansService.findAll();
-        return {
-            statusCode: HttpStatus.OK,
-            message: 'Membership Plan successful',
-            data: membershipPlansFound,
-          };
-    } catch (error) {
-      throw error;
-    }
-  };
-
-
+    // try {
+    const membershipPlansFound = await this.membershipPlansService.findAll();
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Membership Plan successful',
+      data: membershipPlansFound,
+    };
+    // } catch (error) {
+    //   throw error;
+    // }
+  }
 }

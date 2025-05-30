@@ -1,6 +1,6 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { Box, Text } from "@gluestack-ui/themed";
-import { RootStackParamList } from "@/App";
+import { RootStackParamList } from "@/navigationType";
 
 export default function WashFlowScreen() {
   type WashFlowRouteProp = RouteProp<RootStackParamList, "WashFlowScreen">;

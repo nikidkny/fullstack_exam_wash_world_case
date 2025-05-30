@@ -20,9 +20,8 @@ export class LocationsController {
   @Get()
   async findAll() {
     const locations = await this.locationsService.findAll();
-    console.log(locations)
+    console.log(locations);
     return locations;
-    
   }
 
   @Get(':id')

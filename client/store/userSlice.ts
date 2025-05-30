@@ -1,20 +1,17 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { UsersAPI } from '../screens/auth/users/userApi';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { UsersAPI } from "../screens/auth/users/userApi";
 
-export const fetchUserById = createAsyncThunk(
-  'user/fetchUserById',
-  async (userId: number, { rejectWithValue }) => {
-    try {
-      const user = await UsersAPI.getUserById(userId);
-      return user;
-    } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to fetch user');
-    }
+export const fetchUserById = createAsyncThunk("user/fetchUserById", async (userId: number, { rejectWithValue }) => {
+  try {
+    const user = await UsersAPI.getUserById(userId);
+    return user;
+  } catch (err: any) {
+    return rejectWithValue(err.message || "Failed to fetch user");
   }
-);
+});
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
     data: null,
     loading: false,
@@ -38,10 +35,10 @@ const userSlice = createSlice({
         // Transform the data from the database into the desired format
         const user = action.payload;
         state.data = {
-          firstName: user.first_name || '',
-          lastName: user.last_name || '',
-          email: user.email || '',
-          phoneNumber: user.phone_number || '',
+          firstName: user.first_name || "",
+          lastName: user.last_name || "",
+          email: user.email || "",
+          phoneNumber: user.phone_number || "",
           userId: user.id || null,
         };
       })

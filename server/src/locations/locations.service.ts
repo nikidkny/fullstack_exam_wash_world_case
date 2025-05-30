@@ -38,7 +38,7 @@ export class LocationsService {
 
   async findAll(): Promise<Location[]> {
     const locations = await this.locationRepository.find();
-    
+
     return locations;
   }
 
