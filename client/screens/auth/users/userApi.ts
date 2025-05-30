@@ -2,8 +2,8 @@ import { CreateUserDto } from './createUserDto';
 import { LoginUserDto } from './loginUserDto';
 
 export class UsersAPI {
-  static authURl = 'http://localhost:3000/auth/';
-  static usersURl = 'http://localhost:3000/users/';
+  static authURl = 'http://10.0.0.8:3000/auth/';
+  static usersURl = 'http://10.0.0.8:3000/users/';
 
   static async signup(userDto: CreateUserDto) {
     try {
@@ -93,6 +93,51 @@ export class UsersAPI {
       return await response.json();
     } catch (error) {
       console.error('Get User API error:', error);
+      throw error;
+    }
+  }
+  static async updateUserById(userId: number, userData: Partial<CreateUserDto>) {
+    try {
+      const response = await fetch(`${this.usersURl}${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update user');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Update User API error:', error);
+      throw error;
+    }
+  }
+
+  static async deleteUserById(userId: number) {
+    try {
+      const response = await fetch(`${this.usersURl}${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Response status:', response.status);
+        console.error('Response text:', text);
+        throw new Error('Failed to delete user');
+      }
+
+      return { message: 'User deleted successfully' };
+    } catch (error) {
+      console.error('Delete User API error:', error);
       throw error;
     }
   }

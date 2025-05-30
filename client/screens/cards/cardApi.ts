@@ -4,6 +4,7 @@ export class CardAPI {
   static cardsUrl = 'http://10.0.0.8:3000/cards/';
 
   static async createCard(cardDto: createCardDto) {
+    console.log('Creating card with DTO:', cardDto);
     try {
       const response = await fetch(this.cardsUrl, {
         method: 'POST',
@@ -14,7 +15,7 @@ export class CardAPI {
       });
 
       const data = await response.json();
-
+      console.log('Create Card API response:', data);
       if (!response.ok) {
         throw new Error(data.message || 'Card creation failed');
       }

@@ -4,17 +4,24 @@ import { Input, InputField } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@gluestack-ui/themed';
 import { useRoute } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateUserById } from '@/store/userSlice';
 
 export default function PersonalInfo() {
-  const route = useRoute();
-  const { user } = route.params;
+  // const route = useRoute();
+  // const { user } = route.params;
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
 
+  // destructure user data
+  const { email, first_name, last_name, address, phone_number } = user;
   const [isEditing, setIsEditing] = useState(false);
-  const [editedEmail, setEditedEmail] = useState(user.email);
-  const [editedFirstName, setEditedFirstName] = useState(user.firstName);
-  const [editedLastName, setEditedLastName] = useState(user.lastName);
+  const [editedEmail, setEditedEmail] = useState(email);
+  const [editedFirstName, setEditedFirstName] = useState(first_name);
+  const [editedLastName, setEditedLastName] = useState(last_name);
   // const [editedName, setEditedName] = useState(`${user.firstName} ${user.lastName}`);
-  const [editedAddress, setEditedAddress] = useState(user.address);
+  const [editedAddress, setEditedAddress] = useState(address);
+  const [editedPhoneNumber, setEditedPhoneNumber] = useState(phone_number.toString());
 
   // Update profile logic
   const handleEdit = () => {
@@ -22,20 +29,41 @@ export default function PersonalInfo() {
   };
 
   const handleSave = () => {
-    setUser((prev) => ({
-      ...prev,
-      firstName: editedFirstName,
-      lastName: editedLastName,
+    const updatedUser = {
+      first_name: editedFirstName,
+      last_name: editedLastName,
       email: editedEmail,
       address: editedAddress,
-    }));
-    setIsEditing(false);
+      phone_number: editedPhoneNumber,
+    };
+
+    dispatch(updateUserById({ userId: user.id, userData: updatedUser }))
+      .unwrap()
+      .then(() => {
+        Alert.alert('Success', 'Profile updated successfully!');
+        setIsEditing(false);
+      })
+      .catch((error) => {
+        Alert.alert('Error', error || 'Failed to update profile.');
+      });
   };
 
   const handleDeleteAccount = () => {
     Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => console.log('Account deleted!') },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await dispatch(deleteUserById(user.id)).unwrap();
+            Alert.alert('Success', 'Account deleted successfully!');
+            // Optionally, navigate to a different screen after deletion
+          } catch (error) {
+            Alert.alert('Error', error || 'Failed to delete account.');
+          }
+        },
+      },
     ]);
   };
 
@@ -55,8 +83,10 @@ export default function PersonalInfo() {
               style={styles.inputField}
             />
           </Input>
+        ) : email ? (
+          <Text style={styles.value}>{email}</Text>
         ) : (
-          <Text style={styles.value}>{user.email}</Text>
+          <Text style={styles.placeholder}>example@example.com</Text>
         )}
       </View>
       {/* Edit First Name section*/}
@@ -78,8 +108,10 @@ export default function PersonalInfo() {
               style={styles.inputField}
             />
           </Input>
+        ) : first_name ? (
+          <Text style={styles.value}>{first_name}</Text>
         ) : (
-          <Text style={styles.value}>{user.firstName}</Text>
+          <Text style={styles.placeholder}>First Name</Text>
         )}
       </View>
       {/* Edit Last Name section */}
@@ -101,8 +133,10 @@ export default function PersonalInfo() {
               style={styles.inputField}
             />
           </Input>
+        ) : last_name ? (
+          <Text style={styles.value}>{last_name}</Text>
         ) : (
-          <Text style={styles.value}>{user.lastName}</Text>
+          <Text style={styles.placeholder}>Last Name</Text>
         )}
       </View>
       {/* Edit Address section*/}
@@ -119,8 +153,30 @@ export default function PersonalInfo() {
               style={styles.inputField}
             />
           </Input>
+        ) : address ? (
+          <Text style={styles.value}>{address}</Text>
         ) : (
-          <Text style={styles.value}>{user.address}</Text>
+          <Text style={styles.placeholder}>Address</Text>
+        )}
+      </View>
+      {/* Edit Phone Number section */}
+      <View style={styles.section}>
+        <Text style={styles.label}>Phone Number</Text>
+        {isEditing ? (
+          <Input variant="outline" size="xl" style={[styles.input]}>
+            <InputField
+              placeholder="+45 1234 5678"
+              value={editedPhoneNumber}
+              onChangeText={setEditedPhoneNumber}
+              keyboardType="phone-pad"
+              autoCapitalize="none"
+              style={styles.inputField}
+            />
+          </Input>
+        ) : phone_number ? (
+          <Text style={styles.value}>{phone_number}</Text>
+        ) : (
+          <Text style={styles.placeholder}>+45 1234 5678</Text>
         )}
       </View>
       <View style={styles.row}>
@@ -232,6 +288,10 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   value: {
+    fontSize: 16,
+  },
+  placeholder: {
+    color: 'lightgray',
     fontSize: 16,
   },
   input: {

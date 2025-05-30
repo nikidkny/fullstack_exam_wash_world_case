@@ -41,27 +41,27 @@ export default function ProfileScreen() {
       <SettingRow
         label="Personal Information"
         icon={<UserIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('PersonalInfo', { user })}
+        onPress={() => navigation.navigate('PersonalInfo')}
       />
       <SettingRow
         label="Payment Methods"
         icon={<CreditCardIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('PaymentMethods', { user })}
+        onPress={() => navigation.navigate('PaymentMethods')}
       />
       <SettingRow
         label="Membership Settings"
         icon={<CreditCardIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('MembershipSettings', { user })}
+        onPress={() => navigation.navigate('MembershipSettings')}
       />
       <SettingRow
         label="Wash History"
         icon={<FileTextIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('WashHistory', { user })}
+        onPress={() => navigation.navigate('WashHistory')}
       />
       <SettingRow
         label="Billing History"
         icon={<ShieldIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('BillingHistory', { user })}
+        onPress={() => navigation.navigate('BillingHistory')}
       />
     </ScrollView>
   );

@@ -1,1 +1,9 @@
-export class CreateUserDto {}
+export interface CreateUserDto {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  phone_number: number;
+  plate_number: string;
+  membership_plan_id: number;
+}

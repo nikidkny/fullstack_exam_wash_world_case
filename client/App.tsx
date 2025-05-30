@@ -127,7 +127,7 @@ function MainApp() {
 
   async function ensureMembershipPlansExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
+      const checkResponse = await fetch('http://10.0.0.8:3000/membership-plans', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -140,7 +140,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
+      const seedResponse = await fetch('http://10.0.0.8:3000/membership-plans/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -155,7 +155,7 @@ function MainApp() {
 
   async function ensureLocansionExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/locations/', {
+      const checkResponse = await fetch('http://10.0.0.8:3000/locations/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -168,7 +168,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
+      const seedResponse = await fetch('http://10.0.0.8:3000/locations/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });

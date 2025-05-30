@@ -1,7 +1,7 @@
 import {
   Controller,
   Get,
-  Post,
+  Put,
   Body,
   Patch,
   Param,
@@ -53,6 +53,33 @@ export class UsersController {
         statusCode: HttpStatus.OK,
         message: 'User found',
         data: userFound,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      const updatedUser = await this.usersService.update(id, updateUserDto);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User updated successfully',
+        data: updatedUser,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: number) {
+    try {
+      const deletedUser = await this.usersService.remove(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User deleted successfully',
+        data: deletedUser,
       };
     } catch (error) {
       throw error;

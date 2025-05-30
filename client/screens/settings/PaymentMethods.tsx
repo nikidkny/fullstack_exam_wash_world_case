@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { getCardsByUserId, createCard } from '@/store/cardSlice';
-import { get } from '@gluestack-style/react';
+import { getCardsByUserId, createCard, updateCard } from '@/store/cardSlice';
+import { ScrollView, Text, View, Alert } from '@gluestack-ui/themed';
 
 export default function PaymentMethods() {
   // const route = useRoute();
@@ -19,9 +19,8 @@ export default function PaymentMethods() {
   console.log('PaymentMethods cards:', card);
   // fetch the cards details from cards table using userId
   useEffect(() => {
-    if (user?.userId) {
-      // only do it it if the result from the cards table is not empty
-      dispatch(getCardsByUserId(user.userId));
+    if (user?.id) {
+      dispatch(getCardsByUserId(user.id));
     }
   }, [user]);
 
@@ -30,31 +29,48 @@ export default function PaymentMethods() {
   const [cardNumber, setCardNumber] = useState(card.card_number || '');
   const [expiryDate, setExpiryDate] = useState(card.expiry_date || '');
   const [cvc, setCvc] = useState(card.cvc || '');
-  const handleUpdatePaymentMethod = () => {
+
+  // useEffect(() => {
+  //   if (card) {
+  //     setCardholderName(card.cardholder_name || '');
+  //     setCardNumber(card.card_number || '');
+  //     setExpiryDate(card.expiry_date || '');
+  //     setCvc(card.cvc || '');
+  //   }
+  // }, [card]);
+  const handleSavePaymentMethod = () => {
     if (!cardNumber || !expiryDate || !cvc) {
       Alert.alert('Missing info', 'Please fill in all fields.');
       return;
     }
 
     const cardDto = {
-      user_id: user?.userId,
+      user_id: user?.id,
       cardholder_name: cardholderName,
-      card_number: cardNumber, // Remove spaces
+      card_number: cardNumber,
       expiry_date: expiryDate,
       cvc: cvc,
     };
-    // Add API call here to update payment method
-    console.log('Payload being sent:', cardDto);
-    dispatch(createCard(cardDto));
 
-    Alert.alert('Success', 'Your payment method was updated!');
+    if (card?.id) {
+      // Update existing card
+      console.log('Updating card:', cardDto);
+      dispatch(updateCard(card.id, cardDto)); // Replace `updateCard` with the correct action
+      alert('Success', 'Your payment method was updated!');
+    } else {
+      // Create new card
+      console.log('Creating card:', cardDto);
+      dispatch(createCard(cardDto));
+      alert('Success', 'Your payment method was added!');
+    }
+
     setIsEditing(false);
   };
 
-  console.log('id type' + typeof user?.userId);
+  console.log('id type' + typeof user?.id);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Payment Method</Text>
       <View style={styles.section}>
         <Text style={styles.label}>Cardholder Name</Text>
@@ -148,7 +164,7 @@ export default function PaymentMethods() {
                 size="xl"
                 variant="solid"
                 action="primary"
-                onPress={handleUpdatePaymentMethod}
+                onPress={handleSavePaymentMethod}
                 style={styles.saveButton}
               >
                 <Text style={styles.saveText}>Save</Text>
@@ -164,12 +180,14 @@ export default function PaymentMethods() {
               onPress={() => setIsEditing(true)}
               style={styles.saveButton}
             >
-              <Text style={styles.saveText}>Edit Payment Method</Text>
+              <Text style={styles.saveText}>
+                {cardNumber && expiryDate && cvc ? 'Edit Card Details' : 'Add Card Details'}
+              </Text>
             </Button>
           </View>
         )}
-      </View>{' '}
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 

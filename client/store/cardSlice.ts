@@ -28,15 +28,15 @@ export const getCardsByUserId = createAsyncThunk(
   }
 );
 
-export const createCardByUserId = createAsyncThunk(
-  'card/createCardByUserId',
-  async ({ userId, createCardDto }, thunkAPI) => {
+export const updateCard = createAsyncThunk(
+  'card/updateCard',
+  async ({ id, cardDto }: { id: number; cardDto: createCardDto }, thunkAPI) => {
     try {
-      const card = await CardAPI.createCardByUserId(userId, createCardDto);
-      return card;
+      const response = await CardAPI.updateCard(id, cardDto);
+      return response;
     } catch (error) {
-      console.error('Error creating card:', error);
-      return thunkAPI.rejectWithValue('Failed to create card');
+      console.error('Error updating card:', error);
+      return thunkAPI.rejectWithValue('Failed to update card');
     }
   }
 );
@@ -76,15 +76,18 @@ const cardSlice = createSlice({
         state.error = action.payload;
         state.cards = [];
       })
-      .addCase(createCardByUserId.pending, (state) => {
+      .addCase(updateCard.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createCardByUserId.fulfilled, (state, action) => {
+      .addCase(updateCard.fulfilled, (state, action) => {
         state.loading = false;
-        state.cards.push(action.payload);
+        const index = state.cards.findIndex((card) => card.id === action.payload.id);
+        if (index !== -1) {
+          state.cards[index] = action.payload;
+        }
       })
-      .addCase(createCardByUserId.rejected, (state, action) => {
+      .addCase(updateCard.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

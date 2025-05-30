@@ -35,14 +35,6 @@ export class CardsController {
     return this.cardsService.findByUserId(+userId);
   }
 
-  @Post('/user/:userId')
-  createByUserId(
-    @Param('userId') userId: number,
-    @Body() createCardDto: CreateCardDto,
-  ) {
-    return this.cardsService.createByUserId(+userId, createCardDto);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCardDto: UpdateCardDto) {
     return this.cardsService.update(+id, updateCardDto);
