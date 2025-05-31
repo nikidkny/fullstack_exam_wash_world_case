@@ -1,10 +1,8 @@
 import { LicensePlateMembershipPlan } from 'src/license-plates_membership-plans/entities/license-plates_membership-plan.entity';
-import { WashHistory } from 'src/wash-history/entities/wash-history.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
@@ -32,7 +30,4 @@ export class BillingsHistory {
 
   @Column({ default: false })
   is_fulfilled: boolean;
-
-  @OneToMany(() => WashHistory, (wash) => wash.billingsHistory)
-  washHistory: WashHistory[];
 }

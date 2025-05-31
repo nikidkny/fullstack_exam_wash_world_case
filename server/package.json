@@ -47,7 +47,7 @@
     "pg": "^8.15.6",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.23",
+    "typeorm": "^0.3.24",
     "typescript-eslint": "^8.32.0"
   },
   "devDependencies": {

@@ -11,4 +11,5 @@ export type RootStackParamList = {
   WashHistory: undefined;
   BillingHistory: undefined;
   WashFlowScreen: { locationId: number; locationName: string };
+  WashDetailsScreen: { washId: number; washName: string; locationId: number };
 };

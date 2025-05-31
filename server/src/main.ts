@@ -6,8 +6,8 @@ import { urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-    // Enable global validation pipe
+
+  // Enable global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

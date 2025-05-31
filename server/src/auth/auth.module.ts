@@ -7,13 +7,19 @@ import { LicensePlatesModule } from 'src/license-plates/license-plates.module';
 import { LicensePlatesMembershipPlansModule } from 'src/license-plates_membership-plans/license-plates_membership-plans.module';
 import { MembershipPlansModule } from 'src/membership-plans/membership-plans.module';
 import { JwtStrategy } from './jwt/jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
+      }),
+      inject: [ConfigService],
     }),
+
     UsersModule,
     LicensePlatesModule,
     LicensePlatesMembershipPlansModule,

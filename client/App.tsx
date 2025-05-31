@@ -6,7 +6,7 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 
 // Navigation components
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 // Screens
 import HomeScreen from "./screens/HomeScreen";
@@ -30,10 +30,13 @@ import Toast from "react-native-toast-message";
 import "./global.css";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
+import WashDetailsScreen from "./screens/WashDetailsScreen";
+import NavigationBar from "./components/ui/NavigationBar";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Create navigators
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
 // Create a QueryClient instance for React Query
 
@@ -57,21 +60,14 @@ function AuthNavigator() {
 }
 
 const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Homepage"
-      component={HomeScreen}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="WashFlowScreen"
-      component={WashFlowScreen}
-      options={({ route }) => ({
-        title: `${route.params?.locationName ?? "Unknown"}`,
-      })}
-    />
+  <Stack.Navigator
+    screenOptions={{
+      header: (props) => <NavigationBar {...props} />,
+    }}
+  >
+    <Stack.Screen name="Homepage" component={HomeScreen} />
+    <Stack.Screen name="WashFlowScreen" component={WashFlowScreen} />
+    <Stack.Screen name="WashDetailsScreen" component={WashDetailsScreen} />
   </Stack.Navigator>
 );
 /**
@@ -83,17 +79,7 @@ function TabNavigator() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          headerRight: () => (
-            // Replace this with dispatch(logout()) when auth is implemented
-
-            <Button title="Logout" onPress={() => dispatch(logout())} />
-          ),
-        }}
-      />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 }
@@ -101,8 +87,12 @@ function TabNavigator() {
 /** Stack navigation*/
 export function ProfileStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ headerShown: false }} />
+    <Stack.Navigator
+      screenOptions={{
+        header: (props) => <NavigationBar {...props} />,
+      }}
+    >
+      <Stack.Screen name="ProfileHome" component={ProfileScreen} />
       <Stack.Screen name="PersonalInfo" component={PersonalInfo} options={{ headerTitle: "Edit Personal Information" }} />
       <Stack.Screen name="PaymentMethods" component={PaymentMethods} options={{ headerTitle: "Edit Payment Methods" }} />
       <Stack.Screen name="MembershipSettings" component={MembershipSettings} options={{ headerTitle: "Edit Membership Details" }} />
@@ -117,16 +107,19 @@ export function ProfileStack() {
  * depending on whether the user is authenticated.
  */
 function MainApp() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const token = useSelector((state: RootState) => state.auth.token);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     async function getToken() {
       const storedToken = await SecureStore.getItemAsync("jwt");
 
-      if (storedToken) {
+      if (storedToken && user) {
         dispatch(reloadJwtFromStorage(storedToken));
+      } else {
+        dispatch(logout());
       }
 
       await ensureMembershipPlansExist();
@@ -204,7 +197,6 @@ export default function App() {
         <Provider store={store}>
           <Toast />
           <MainApp />
-
           <StatusBar style="auto" />
         </Provider>
       </GluestackUIProvider>

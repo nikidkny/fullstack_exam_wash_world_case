@@ -1,4 +1,10 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateLicensePlatesMembershipPlanDto } from './dto/create-license-plates_membership-plan.dto';
 import { UpdateLicensePlatesMembershipPlanDto } from './dto/update-license-plates_membership-plan.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,15 +16,17 @@ import { MembershipPlansService } from 'src/membership-plans/membership-plans.se
 
 @Injectable()
 export class LicensePlatesMembershipPlansService {
-
   constructor(
     @InjectRepository(LicensePlateMembershipPlan)
     private licensePlateMembershipPlanRepository: Repository<LicensePlateMembershipPlan>,
     private readonly membershipPlanService: MembershipPlansService,
-  ) { }
+  ) {}
 
-
-  async create(user: User, licensePlate: LicensePlate, membership_plan_id: number) {
+  async create(
+    user: User,
+    licensePlate: LicensePlate,
+    membership_plan_id: number,
+  ) {
     try {
       //Check fields
       const invalidFields: string[] = [];
@@ -31,12 +39,16 @@ export class LicensePlatesMembershipPlansService {
         throw new BadRequestException({
           statusCode: HttpStatus.BAD_REQUEST,
           message: 'Missing or invalid input values',
-          values: invalidFields
+          values: invalidFields,
         });
       }
 
       // Check if user exists
-      const lpmFound = await this.findByCompositeKey(user.id, licensePlate.id,membership_plan_id);
+      const lpmFound = await this.findByCompositeKey(
+        user.id,
+        licensePlate.id,
+        membership_plan_id,
+      );
       if (lpmFound) {
         throw new ConflictException({
           statusCode: HttpStatus.CONFLICT,
@@ -51,19 +63,18 @@ export class LicensePlatesMembershipPlansService {
       // End date
       const end_date = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-
-      const membershipPlan = await this.membershipPlanService.findById(membership_plan_id);
+      const membershipPlan =
+        await this.membershipPlanService.findById(membership_plan_id);
       const lpm = this.licensePlateMembershipPlanRepository.create({
         start_date,
         end_date,
         is_active: true,
         user,
         licensePlate,
-        membershipPlan
+        membershipPlan,
       });
 
       console.log(lpm);
-      
 
       return await this.licensePlateMembershipPlanRepository.save(lpm);
     } catch (e) {
@@ -79,8 +90,6 @@ export class LicensePlatesMembershipPlansService {
         },
       });
     }
-
-
   }
 
   async findByPlateId(licensePlateId: number) {
@@ -91,15 +100,17 @@ export class LicensePlatesMembershipPlansService {
     return found;
   }
 
-  async findByCompositeKey(userId: number, licensePlateId: number, membershipPlanId: number) {
-  return await this.licensePlateMembershipPlanRepository.findOne({
-    where: {
-      user: { id: userId },
-      licensePlate: { id: licensePlateId },
-      membershipPlan: { id: membershipPlanId },
-    },
-  });
-}
-
-
+  async findByCompositeKey(
+    userId: number,
+    licensePlateId: number,
+    membershipPlanId: number,
+  ) {
+    return await this.licensePlateMembershipPlanRepository.findOne({
+      where: {
+        user: { id: userId },
+        licensePlate: { id: licensePlateId },
+        membershipPlan: { id: membershipPlanId },
+      },
+    });
+  }
 }
