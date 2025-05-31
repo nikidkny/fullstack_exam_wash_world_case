@@ -59,7 +59,7 @@ function AuthNavigator() {
 const HomeStack = () => (
   <Stack.Navigator>
     <Stack.Screen
-      name="Home"
+      name="Homepage"
       component={HomeScreen}
       options={{
         headerShown: false,

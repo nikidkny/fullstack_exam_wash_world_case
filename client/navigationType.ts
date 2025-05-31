@@ -3,6 +3,7 @@ export type RootStackParamList = {
   Signup: undefined;
   Home: undefined;
   Profile: undefined;
+  Homepage: undefined;
   ProfileHome: undefined;
   PersonalInfo: undefined;
   PaymentMethods: undefined;
