@@ -18,32 +18,32 @@ export class AuthService {
   //TODO check if this is correct when implementing the front end if split the logic
   async signup(body: CreateUserDto) {
     console.log(body);
+    // try {
+    // // Create LicensePlate
+    const responseLicensePlate = await this.licensePlateService.create(
+      body.plate_number,
+    );
 
-    try {
-      // // Create LicensePlate
-      const responseLicensePlate = await this.licensePlateService.create(
-        body.plate_number,
+    // Create User
+    const responseUser = await this.userService.create(
+      body.first_name,
+      body.last_name,
+      body.email,
+      body.password,
+      body.phone_number,
+    );
+
+    // Create a membership
+    const responseLicensePlateMemberShipPlan =
+      await this.licensePlateMembershipPlanService.create(
+        responseUser,
+        responseLicensePlate,
+        body.membership_plan_id,
       );
-
-      // Create User
-      const responseUser = await this.userService.create(
-        body.first_name,
-        body.last_name,
-        body.email,
-        body.password,
-        body.phone_number,
-      );
-
-      // Create a membership
-      const responseLicensePlateMemberShipPlan =
-        await this.licensePlateMembershipPlanService.create(
-          responseUser,
-          responseLicensePlate,
-          body.membership_plan_id,
-        );
-    } catch (error) {
-      throw error;
-    }
+    // } catch (error) {
+    //   throw error;
+    // }
+    return responseLicensePlateMemberShipPlan;
   }
 
   async login(email: string, password: string) {
@@ -56,6 +56,7 @@ export class AuthService {
     if (invalidFields.length > 0) {
       throw new BadRequestException({
         statusCode: HttpStatus.BAD_REQUEST,
+
         message: 'Missing or invalid values',
         values: invalidFields,
       });

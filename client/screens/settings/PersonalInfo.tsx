@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Alert } from '@gluestack-ui/themed';
 import { useRoute } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserById } from '@/store/userSlice';
+import { deleteUserById, updateUserById } from '../auth/userSlice';
 
 export default function PersonalInfo() {
   // const route = useRoute();

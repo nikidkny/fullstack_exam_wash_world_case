@@ -1,6 +1,6 @@
-import { Text, ScrollView } from '@gluestack-ui/themed';
+import { Text, ScrollView, View } from '@gluestack-ui/themed';
 import { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
@@ -15,25 +15,25 @@ import {
 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUserById } from '@/store/userSlice';
 import { RootState } from '@/store/store';
+import { fetchUserById } from './auth/userSlice';
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const user = useSelector((state: RootState) => state.auth.user);
-  // const userData = useSelector((state: RootState) => state.user.data);
+
   // const [user, setUser] = useState({
   //   firstName: 'Testing',
   //   lastName: 'Person',
   //   email: 'testperson@gmail.com',
   //   address: '1234 Test Street, Springfield',
   // });
-  useEffect(() => {
-    if (!user) {
-      dispatch(fetchUserById(user.userId));
-    }
-  }, [dispatch, user?.userId]);
+  // useEffect(() => {
+  //   if (!user.id) {
+  //     dispatch(fetchUserById(user.id));
+  //   }
+  // }, [dispatch, user?.id]);
   console.log('user', user);
   return (
     <ScrollView>
