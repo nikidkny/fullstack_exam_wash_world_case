@@ -65,6 +65,19 @@ export const checkUserEmail = createAsyncThunk("auth/email", async (email: strin
   }
 });
 
+// New async thunk for logout side effect
+export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+  try {
+    // await SecureStore.deleteItemAsync("jwt");
+    await SecureStore.setItemAsync("jwt", "");
+    // After clearing storage, dispatch synchronous logout reducer action
+    thunkAPI.dispatch(logoutUser());
+  } catch (error) {
+    console.error("Logout error:", error);
+    // Optional: reject or ignore logout errors
+  }
+});
+
 // Create user slice
 const authSlice = createSlice({
   name: "user",
@@ -73,11 +86,10 @@ const authSlice = createSlice({
     reloadJwtFromStorage: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
     },
-    logout: (state) => {
+    logoutUser: (state) => {
       state.token = null;
       state.user = null;
       state.error = null;
-      SecureStore.deleteItemAsync("jwt");
     },
   },
   extraReducers: (builder) => {
@@ -120,5 +132,5 @@ const authSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { reloadJwtFromStorage, logout } = authSlice.actions;
+export const { reloadJwtFromStorage, logoutUser } = authSlice.actions;
 export default authSlice.reducer;
