@@ -8,14 +8,12 @@ import { SettingRow } from "@/components/ui/settings-row";
 import { UserIcon, CreditCardIcon, ShieldIcon, BellIcon, GlobeIcon, FileTextIcon } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUserById } from "@/store/userSlice";
 import { RootState } from "@/store/store";
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const user = useSelector((state: RootState) => state.auth.user);
-  const userData = useSelector((state: RootState) => state.user.data);
   // const [user, setUser] = useState({
   //   firstName: 'Testing',
   //   lastName: 'Person',
