@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
@@ -20,6 +28,11 @@ export class CardsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.cardsService.findOne(+id);
+  }
+
+  @Get('/user/:userId')
+  findByUserId(@Param('userId') userId: number) {
+    return this.cardsService.findByUserId(+userId);
   }
 
   @Patch(':id')

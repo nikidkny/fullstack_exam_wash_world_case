@@ -25,6 +25,10 @@ export class CardsService {
     return this.cardRepository.findOneBy({ id });
   }
 
+  findByUserId(userId: number) {
+    return this.cardRepository.find({ where: { user: { id: userId } } });
+  }
+
   update(id: number, updateCardDto: UpdateCardDto) {
     return this.cardRepository.update(id, updateCardDto);
   }

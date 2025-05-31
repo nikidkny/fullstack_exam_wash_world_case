@@ -12,7 +12,7 @@ export const dbConfig: TypeOrmModuleOptions = {
   database: process.env.DB_NAME,
   // this should be turned on when testing
   autoLoadEntities: true,
-  synchronize: false, // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data.
+  synchronize: true, // Setting synchronize: true shouldn't be used in production - otherwise you can lose production data.
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/src/migrations/*{.ts,.js}'],
 };

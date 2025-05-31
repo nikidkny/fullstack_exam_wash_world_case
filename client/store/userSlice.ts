@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { UsersAPI } from '../screens/auth/users/userApi';
+import { createCardDto } from '@/screens/cards/createCardDto';
 
 export const fetchUserById = createAsyncThunk(
   'user/fetchUserById',
@@ -9,6 +10,33 @@ export const fetchUserById = createAsyncThunk(
       return user;
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch user');
+    }
+  }
+);
+
+export const updateUserById = createAsyncThunk(
+  'user/updateUserById',
+  async (
+    { userId, userData }: { userId: number; userData: createCardDto },
+    { rejectWithValue }
+  ) => {
+    try {
+      const updatedUser = await UsersAPI.updateUserById(userId, userData);
+      return updatedUser;
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Failed to update user');
+    }
+  }
+);
+
+export const deleteUserById = createAsyncThunk(
+  'user/deleteUserById',
+  async (userId: number, { rejectWithValue }) => {
+    try {
+      await UsersAPI.deleteUserById(userId);
+      return userId; // Return the userId to remove it from the state
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Failed to delete user');
     }
   }
 );
@@ -36,14 +64,7 @@ const userSlice = createSlice({
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.loading = false;
         // Transform the data from the database into the desired format
-        const user = action.payload;
-        state.data = {
-          firstName: user.first_name || '',
-          lastName: user.last_name || '',
-          email: user.email || '',
-          phoneNumber: user.phone_number || '',
-          userId: user.id || null,
-        };
+        state.data = action.payload;
       })
       .addCase(fetchUserById.rejected, (state, action) => {
         state.loading = false;

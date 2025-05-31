@@ -1,56 +1,94 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Input, InputField } from '@/components/ui/input';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { getCardsByUserId, createCard, updateCard } from '@/store/cardSlice';
+import { ScrollView, Text, View, Alert } from '@gluestack-ui/themed';
 
 export default function PaymentMethods() {
-  const route = useRoute();
-  const { user } = route.params;
+  // const route = useRoute();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const card = useSelector((state: RootState) => state.card.cards);
+  console.log('PaymentMethods user:', user);
+  console.log('PaymentMethods cards:', card);
+  // fetch the cards details from cards table using userId
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(getCardsByUserId(user.id));
+    }
+  }, [user]);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editedCardholderName, setEditedCardholderName] = useState(user.cardholderName || '');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
+  const [cardholderName, setCardholderName] = useState(card.cardholder_name || '');
+  const [cardNumber, setCardNumber] = useState(card.card_number || '');
+  const [expiryDate, setExpiryDate] = useState(card.expiry_date || '');
+  const [cvc, setCvc] = useState(card.cvc || '');
 
-  const handleUpdatePaymentMethod = () => {
-    if (!cardNumber || !expiryDate || !cvv) {
+  // useEffect(() => {
+  //   if (card) {
+  //     setCardholderName(card.cardholder_name || '');
+  //     setCardNumber(card.card_number || '');
+  //     setExpiryDate(card.expiry_date || '');
+  //     setCvc(card.cvc || '');
+  //   }
+  // }, [card]);
+  const handleSavePaymentMethod = () => {
+    if (!cardNumber || !expiryDate || !cvc) {
       Alert.alert('Missing info', 'Please fill in all fields.');
       return;
     }
 
-    // Add API call here to update payment method
-    console.log('Updating payment method:', {
-      cardNumber,
-      expiryDate,
-      cvv,
-    });
+    const cardDto = {
+      user_id: user?.id,
+      cardholder_name: cardholderName,
+      card_number: cardNumber,
+      expiry_date: expiryDate,
+      cvc: cvc,
+    };
 
-    Alert.alert('Success', 'Your payment method was updated!');
+    if (card?.id) {
+      // Update existing card
+      console.log('Updating card:', cardDto);
+      dispatch(updateCard(card.id, cardDto)); // Replace `updateCard` with the correct action
+      alert('Success', 'Your payment method was updated!');
+    } else {
+      // Create new card
+      console.log('Creating card:', cardDto);
+      dispatch(createCard(cardDto));
+      alert('Success', 'Your payment method was added!');
+    }
+
     setIsEditing(false);
   };
 
+  console.log('id type' + typeof user?.id);
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Payment Method</Text>
       <View style={styles.section}>
         <Text style={styles.label}>Cardholder Name</Text>
         {isEditing ? (
           <Input variant="outline" size="xl" style={[styles.input]}>
             <InputField
-              placeholder="Name on card"
-              value={editedCardholderName}
-              onChangeText={setEditedCardholderName}
+              placeholder="Cardholder Name"
+              value={cardholderName}
+              onChangeText={setCardholderName}
               keyboardType="default"
               autoCapitalize="words"
               style={styles.inputField}
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{user.cardholderName}</Text>
+          <Text style={cardholderName ? styles.value : styles.placeholder}>
+            {cardholderName || 'Cardholder Name'}
+          </Text>
         )}
       </View>
       <View style={styles.section}>
@@ -66,7 +104,9 @@ export default function PaymentMethods() {
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{cardNumber || 'Not set'}</Text>
+          <Text style={cardNumber ? styles.value : styles.placeholder}>
+            {cardNumber || '1234 5678 9012 3456'}
+          </Text>
         )}
       </View>
       <View style={styles.section}>
@@ -82,24 +122,27 @@ export default function PaymentMethods() {
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{expiryDate || 'Not set'}</Text>
+          <Text style={expiryDate ? styles.value : styles.placeholder}>
+            {expiryDate || 'MM/YY'}
+          </Text>
         )}
       </View>
       <View style={styles.section}>
-        <Text style={styles.label}>CVV</Text>
+        <Text style={styles.label}>CVC</Text>
+
         {isEditing ? (
           <Input variant="outline" size="xl" style={styles.input}>
             <InputField
               placeholder="123"
-              value={cvv}
-              onChangeText={setCvv}
+              value={cvc}
+              onChangeText={setCvc}
               keyboardType="number-pad"
               secureTextEntry
               style={styles.inputField}
             />
           </Input>
         ) : (
-          <Text style={styles.value}>{cvv ? '***' : 'Not set'}</Text>
+          <Text style={cvc ? styles.value : styles.placeholder}>{cvc ? '***' : '123'}</Text>
         )}
       </View>
       <View style={styles.row}>
@@ -121,7 +164,7 @@ export default function PaymentMethods() {
                 size="xl"
                 variant="solid"
                 action="primary"
-                onPress={handleUpdatePaymentMethod}
+                onPress={handleSavePaymentMethod}
                 style={styles.saveButton}
               >
                 <Text style={styles.saveText}>Save</Text>
@@ -137,12 +180,14 @@ export default function PaymentMethods() {
               onPress={() => setIsEditing(true)}
               style={styles.saveButton}
             >
-              <Text style={styles.saveText}>Edit Payment Method</Text>
+              <Text style={styles.saveText}>
+                {cardNumber && expiryDate && cvc ? 'Edit Card Details' : 'Add Card Details'}
+              </Text>
             </Button>
           </View>
         )}
-      </View>{' '}
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -165,6 +210,11 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginBottom: 4,
   },
+  placeholder: {
+    color: 'lightgray',
+    fontSize: 16,
+  },
+
   value: {
     fontSize: 16,
   },

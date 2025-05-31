@@ -22,7 +22,7 @@ export default function ProfileScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const user = useSelector((state: RootState) => state.auth.user);
-  const userData = useSelector((state: RootState) => state.user.data);
+  // const userData = useSelector((state: RootState) => state.user.data);
   // const [user, setUser] = useState({
   //   firstName: 'Testing',
   //   lastName: 'Person',
@@ -30,18 +30,30 @@ export default function ProfileScreen() {
   //   address: '1234 Test Street, Springfield',
   // });
   useEffect(() => {
-    if (user?.userId) {
+    if (!user) {
       dispatch(fetchUserById(user.userId));
     }
   }, [dispatch, user?.userId]);
   console.log('user', user);
   return (
     <ScrollView>
-      <Text style={styles.heading}>Hey {user.first_name}!</Text>
+      {user.first_name ? (
+        <Text style={styles.heading}>Hey {user?.first_name}!</Text>
+      ) : (
+        <View>
+          <Text>Please login or sign up to see your profile!</Text>
+          <Button onPress={() => navigation.navigate('Login')} style={{ margin: 16 }}>
+            Login
+          </Button>
+          <Button onPress={() => navigation.navigate('Signup')} style={{ margin: 16 }}>
+            Sign Up
+          </Button>
+        </View>
+      )}
       <SettingRow
         label="Personal Information"
         icon={<UserIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('PersonalInfo', { user })}
+        onPress={() => navigation.navigate('PersonalInfo')}
       />
       <SettingRow
         label="Payment Methods"
