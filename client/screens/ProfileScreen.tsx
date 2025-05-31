@@ -22,7 +22,7 @@ export default function ProfileScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const user = useSelector((state: RootState) => state.auth.user);
-  const userData = useSelector((state: RootState) => state.user.data);
+  // const userData = useSelector((state: RootState) => state.user.data);
   // const [user, setUser] = useState({
   //   firstName: 'Testing',
   //   lastName: 'Person',
@@ -30,7 +30,7 @@ export default function ProfileScreen() {
   //   address: '1234 Test Street, Springfield',
   // });
   useEffect(() => {
-    if (user?.userId) {
+    if (!user) {
       dispatch(fetchUserById(user.userId));
     }
   }, [dispatch, user?.userId]);
@@ -53,7 +53,7 @@ export default function ProfileScreen() {
       <SettingRow
         label="Personal Information"
         icon={<UserIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('PersonalInfo', { user })}
+        onPress={() => navigation.navigate('PersonalInfo')}
       />
       <SettingRow
         label="Payment Methods"
