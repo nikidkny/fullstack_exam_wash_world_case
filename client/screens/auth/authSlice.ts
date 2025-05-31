@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as SecureStore from 'expo-secure-store';
-import { CreateUserDto } from './users/createUserDto';
-import { UsersAPI } from './users/userApi';
-import { LoginUserDto } from './users/loginUserDto';
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import * as SecureStore from "expo-secure-store";
+import { CreateUserDto } from "./users/createUserDto";
+import { UsersAPI } from "./users/userApi";
+import { LoginUserDto } from "./users/loginUserDto";
 
 interface UserState {
   token: string | null;
@@ -18,41 +18,35 @@ const initialState: UserState = {
 };
 
 // Async thunk for user signup
-export const signup = createAsyncThunk(
-  'auth/signup',
-  async (createUserDto: CreateUserDto, thunkAPI) => {
-    try {
-      const response = await UsersAPI.signup(createUserDto);
+export const signup = createAsyncThunk("auth/signup", async (createUserDto: CreateUserDto, thunkAPI) => {
+  try {
+    const response = await UsersAPI.signup(createUserDto);
 
-      return response;
-    } catch (error) {
-      console.error('Signup error:', error);
-      if (error instanceof Error) {
-        return thunkAPI.rejectWithValue(error.message);
-      }
-      return thunkAPI.rejectWithValue('Unknown error while signup');
+    return response;
+  } catch (error) {
+    console.error("Signup error:", error);
+    if (error instanceof Error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
+    return thunkAPI.rejectWithValue("Unknown error while signup");
   }
-);
+});
 
-export const login = createAsyncThunk(
-  'auth/login',
-  async (loginUserDto: LoginUserDto, thunkAPI) => {
-    try {
-      const response = await UsersAPI.login(loginUserDto);
+export const login = createAsyncThunk("auth/login", async (loginUserDto: LoginUserDto, thunkAPI) => {
+  try {
+    const response = await UsersAPI.login(loginUserDto);
 
-      return response;
-    } catch (error) {
-      console.log('Login error:', error);
-      if (error instanceof Error) {
-        return thunkAPI.rejectWithValue(error.message);
-      }
-      return thunkAPI.rejectWithValue('Unknown error while login');
+    return response;
+  } catch (error) {
+    console.log("Login error:", error);
+    if (error instanceof Error) {
+      return thunkAPI.rejectWithValue(error.message);
     }
+    return thunkAPI.rejectWithValue("Unknown error while login");
   }
-);
+});
 
-export const checkUserEmail = createAsyncThunk('auth/email', async (email: string, thunkAPI) => {
+export const checkUserEmail = createAsyncThunk("auth/email", async (email: string, thunkAPI) => {
   try {
     const response = await UsersAPI.checkUserEmail(email);
 
@@ -63,17 +57,17 @@ export const checkUserEmail = createAsyncThunk('auth/email', async (email: strin
 
     return thunkAPI.rejectWithValue(`User with email ${email} already exists`);
   } catch (error) {
-    console.error('checkUserEmail error:', error);
+    console.error("checkUserEmail error:", error);
     if (error instanceof Error) {
       return thunkAPI.rejectWithValue(error.message);
     }
-    return thunkAPI.rejectWithValue('Unknown error while checking email');
+    return thunkAPI.rejectWithValue("Unknown error while checking email");
   }
 });
 
 // Create user slice
 const authSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     reloadJwtFromStorage: (state, action: PayloadAction<string>) => {
@@ -83,7 +77,7 @@ const authSlice = createSlice({
       state.token = null;
       state.user = null;
       state.error = null;
-      SecureStore.deleteItemAsync('jwt');
+      SecureStore.deleteItemAsync("jwt");
     },
   },
   extraReducers: (builder) => {
@@ -112,13 +106,14 @@ const authSlice = createSlice({
         const { access_token, user } = action.payload.data;
         if (access_token && user) {
           console.log(access_token);
+          console.log(user);
 
-          SecureStore.setItemAsync('jwt', access_token);
+          SecureStore.setItemAsync("jwt", access_token);
           state.token = access_token;
           state.user = user;
           state.error = null;
         } else {
-          state.error = 'Invalid login response';
+          state.error = "Invalid login response";
         }
       });
   },
