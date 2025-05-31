@@ -197,7 +197,6 @@ export default function App() {
         <Provider store={store}>
           <Toast />
           <MainApp />
-
           <StatusBar style="auto" />
         </Provider>
       </GluestackUIProvider>

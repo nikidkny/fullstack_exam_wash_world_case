@@ -1,10 +1,10 @@
-// data.source.ts
-import { DataSource } from 'typeorm';
-import * as dotenv from 'dotenv';
+// ormconfig.ts
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
+import * as dotenv from 'dotenv';
 dotenv.config();
 
-const AppDataSource = new DataSource({
+export const dbConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
   port: +process.env.DB_PORT,
@@ -13,7 +13,6 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/src/migrations/*{.ts,.js}'],
+  autoLoadEntities: true,
   synchronize: true,
-});
-
-export default AppDataSource;
+};

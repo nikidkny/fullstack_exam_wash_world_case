@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { dbConfig } from '../data.source';
+
 import { UsersModule } from './users/users.module';
 import { LocationsModule } from './locations/locations.module';
 import { LicensePlatesModule } from './license-plates/license-plates.module';
@@ -14,8 +14,7 @@ import { AuthModule } from './auth/auth.module';
 
 import { CardsModule } from './cards/cards.module';
 import { BillingsHistoryModule } from './billings_history/billings_history.module';
-
-
+import { dbConfig } from 'ormconfig';
 
 @Module({
   imports: [
@@ -31,7 +30,6 @@ import { BillingsHistoryModule } from './billings_history/billings_history.modul
     AuthModule,
     CardsModule,
     BillingsHistoryModule,
-
   ],
   controllers: [AppController],
   providers: [AppService],

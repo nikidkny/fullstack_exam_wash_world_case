@@ -1,4 +1,3 @@
-import { BillingsHistory } from 'src/billings_history/entities/billings_history.entity';
 import { LicensePlateMembershipPlan } from 'src/license-plates_membership-plans/entities/license-plates_membership-plan.entity';
 import {
   Entity,
@@ -13,12 +12,11 @@ export class WashHistory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => LicensePlateMembershipPlan, (lpmp) => lpmp.washes)
-  @JoinColumn({ name: 'license_plate_membership_plan_id' })
-  licensePlateMembershipPlan: LicensePlateMembershipPlan;
+  @Column()
+  plate_number: string;
 
   @Column()
-  terminal_id: number;
+  location_address: string;
 
   @Column()
   membership_plan: string;
@@ -30,12 +28,9 @@ export class WashHistory {
   date: string;
 
   @Column({ type: 'numeric', precision: 5, scale: 2 })
-  price_addons: number;
-
-  @Column({ type: 'numeric', precision: 5, scale: 2 })
   price_membership: number;
 
-  @ManyToOne(() => BillingsHistory, (billings) => billings.washHistory)
-  @JoinColumn({ name: 'billings_history_id' })
-  billingsHistory: BillingsHistory;
+  @ManyToOne(() => LicensePlateMembershipPlan, (lpmp) => lpmp.washes)
+  @JoinColumn({ name: 'license_plate_membership_plan_id' })
+  licensePlateMembershipPlan: LicensePlateMembershipPlan;
 }

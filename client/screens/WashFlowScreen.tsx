@@ -20,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RootStackParamList } from "@/navigationType";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { MembershipPlanDto } from "./auth/membershipPlans/membershipPlansDto";
+import { TouchableOpacity } from "react-native";
 
 type WashFlowRouteProp = RouteProp<RootStackParamList, "WashFlowScreen">;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -27,7 +28,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export default function WashFlowScreen() {
   const route = useRoute<WashFlowRouteProp>();
   const navigation = useNavigation<NavigationProp>();
-  const { locationId } = route.params;
+  const { locationId, locationName } = route.params;
 
   const {
     data: washes,
@@ -47,21 +48,20 @@ export default function WashFlowScreen() {
 
   return (
     <Box p="$4" flex={1} bg="$backgroundLight0">
-      <Text size="xl" fontWeight="bold" mb="$4">
-        Choose Your Wash Plan
+      <Text fontSize="$xl" color="$black" fontWeight="$bold" mb="$4" ml="$1" mt="$4">
+        Choose Your Wash Plan:
+      </Text>
+      <Text fontSize="$md" color="$textLight800" fontWeight="$normal" mb="$4" ml="$1">
+        Washing at {locationName}
       </Text>
 
       <VStack space="lg">
         {washes
           .filter((wash: MembershipPlanDto) => !wash.is_business) // exclude business plans
           .map((wash: MembershipPlanDto) => (
-            <Pressable
+            <TouchableOpacity
               key={wash.id}
-              borderWidth={2}
-              borderColor="$primary500"
-              p="$5"
-              rounded="$2xl"
-              bg="$primary100"
+              className="px-6 border rounded-xl max-w-[360px] m-3 my-2 bg-gray-100 py-10 border-gray-500"
               onPress={() =>
                 navigation.navigate("WashDetailsScreen", {
                   washId: wash.id,
@@ -70,11 +70,13 @@ export default function WashFlowScreen() {
                 })
               }
             >
-              <Text size="lg" fontWeight="semibold">
+              <Text size="lg" fontWeight="$bold">
                 {wash.name}
               </Text>
-              <Text color="$textLight500">{wash.price} DKK/month</Text>
-            </Pressable>
+              <Text color="$textLight500" fontWeight="$semibold">
+                {wash.price} DKK/month
+              </Text>
+            </TouchableOpacity>
           ))}
       </VStack>
     </Box>
