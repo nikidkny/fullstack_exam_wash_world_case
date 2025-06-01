@@ -5,7 +5,6 @@ import {
   FormControl,
   FormControlError,
   FormControlErrorText,
-
   FormControlLabel,
   FormControlLabelText,
 } from '@/components/ui/form-control';
@@ -17,7 +16,6 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '@/navigationType';
 import { useLogin } from './users/useLogin';
-
 
 export default function LoginScreen() {
   const { login: loginUser } = useLogin();
@@ -33,11 +31,11 @@ export default function LoginScreen() {
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
-      newErrors.email = "Please enter a valid email address.";
+      newErrors.email = 'Please enter a valid email address.';
     }
 
     if (!password.trim()) {
-      newErrors.password = "Password cannot be empty.";
+      newErrors.password = 'Password cannot be empty.';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -52,19 +50,18 @@ export default function LoginScreen() {
       };
       const result = await loginUser(userDto);
 
-      setEmail("")
-      setPassword("")
+      setEmail('');
+      setPassword('');
       if (!result.success) {
-        if (result.error?.includes("User with email")) {
-          setErrors({ login: "Invalid Credentials. Please try again." });
+        if (result.error?.includes('User with email')) {
+          setErrors({ login: 'Invalid Credentials. Please try again.' });
         } else {
-          setErrors({ login: result.error || "Login failed. Please try again." });
+          setErrors({ login: result.error || 'Login failed. Please try again.' });
         }
         return;
       }
-      
     } catch (error) {
-      setErrors({ login: "Something went wrong. Please try again later." });
+      setErrors({ login: 'Something went wrong. Please try again later.' });
       console.error(error);
     }
   };
@@ -78,7 +75,11 @@ export default function LoginScreen() {
         <FormControlLabel>
           <FormControlLabelText style={{ fontSize: 18 }}>Email</FormControlLabelText>
         </FormControlLabel>
-        <Input variant="outline" size="xl" style={[authStyle.input, !!errors.email && { borderColor: 'red' }]}>
+        <Input
+          variant="outline"
+          size="xl"
+          style={[authStyle.input, !!errors.email && { borderColor: 'red' }]}
+        >
           <InputField
             placeholder="you@example.com"
             value={email}
@@ -100,7 +101,11 @@ export default function LoginScreen() {
         <FormControlLabel>
           <FormControlLabelText style={{ fontSize: 18 }}>Password</FormControlLabelText>
         </FormControlLabel>
-        <Input variant="outline" size="xl" style={[authStyle.input, !!errors.password && { borderColor: 'red' }]}>
+        <Input
+          variant="outline"
+          size="xl"
+          style={[authStyle.input, !!errors.password && { borderColor: 'red' }]}
+        >
           <InputField
             placeholder="••••••••"
             value={password}
@@ -117,10 +122,7 @@ export default function LoginScreen() {
       </FormControl>
 
       {/* General login error */}
-      {errors.login && (
-        <Text style={{ color: 'red', marginBottom: 10 }}>{errors.login}</Text>
-      )}
-
+      {errors.login && <Text style={{ color: 'red', marginBottom: 10 }}>{errors.login}</Text>}
 
       {/* Login Button */}
       <Button
@@ -133,10 +135,8 @@ export default function LoginScreen() {
           width: '90%',
           paddingVertical: 14,
           borderRadius: 8,
-
-
+          height: 50,
           backgroundColor: '#1D4ED8',
-
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: '600', color: 'white', textAlign: 'center' }}>
@@ -152,4 +152,3 @@ export default function LoginScreen() {
     </View>
   );
 }
-

@@ -140,13 +140,22 @@ export class UsersService {
             10,
           );
         }
-
+        console.log('updateUserDto in users/update', updateUserDto);
+        console.log('user in users/update', user);
         Object.assign(user, updateUserDto);
+        console.log('user after assign in users/update', user);
         return this.usersRepository.save(user);
       });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.usersRepository
+      .findOne({ where: { id } })
+      .then(async (user) => {
+        if (!user) {
+          throw new NotFoundException(`User with ID ${id} not found`);
+        }
+        return this.usersRepository.remove(user);
+      });
   }
 }

@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as SecureStore from 'expo-secure-store';
 import { CreateUserDto } from './createUserDto';
-import { UsersAPI } from './userApi';
+import { UsersAPI } from './users/userApi';
 import { createCardDto } from '@/screens/cards/createCardDto';
+import { LoginUserDto } from './users/loginUserDto';
 
 interface UserState {
   token: string | null;
@@ -22,18 +23,54 @@ export const signup = createAsyncThunk(
   'auth/signup',
   async (createUserDto: CreateUserDto, thunkAPI) => {
     try {
-      const data = await UsersAPI.signup(createUserDto);
+      const response = await UsersAPI.signup(createUserDto);
 
-      return data;
+      return response;
     } catch (error) {
       console.error('Signup error:', error);
       if (error instanceof Error) {
         return thunkAPI.rejectWithValue(error.message);
       }
-      return thunkAPI.rejectWithValue('Unknown error');
+      return thunkAPI.rejectWithValue('Unknown error while signup');
     }
   }
 );
+
+export const login = createAsyncThunk(
+  'auth/login',
+  async (loginUserDto: LoginUserDto, thunkAPI) => {
+    try {
+      const response = await UsersAPI.login(loginUserDto);
+
+      return response;
+    } catch (error) {
+      console.log('Login error:', error);
+      if (error instanceof Error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+      return thunkAPI.rejectWithValue('Unknown error while login');
+    }
+  }
+);
+
+export const checkUserEmail = createAsyncThunk('auth/email', async (email: string, thunkAPI) => {
+  try {
+    const response = await UsersAPI.checkUserEmail(email);
+
+    // If response is undefined, user doesn't exist → allow signup
+    if (response === undefined) {
+      return null;
+    }
+
+    return thunkAPI.rejectWithValue(`User with email ${email} already exists`);
+  } catch (error) {
+    console.error('checkUserEmail error:', error);
+    if (error instanceof Error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+    return thunkAPI.rejectWithValue('Unknown error while checking email');
+  }
+});
 
 export const fetchUserById = createAsyncThunk(
   'user/fetchUserById',
@@ -50,12 +87,13 @@ export const fetchUserById = createAsyncThunk(
 export const updateUserById = createAsyncThunk(
   'user/updateUserById',
   async (
-    { userId, userData }: { userId: number; userData: createCardDto },
+    { userId, userData }: { userId: number; userData: Partial<CreateUserDto> },
     { rejectWithValue }
   ) => {
     try {
-      const updatedUser = await UsersAPI.updateUserById(userId, userData);
-      return updatedUser;
+      const response = await UsersAPI.updateUserById(userId, userData);
+      console.log('Updated user in thunk:', response.data);
+      return response.data; // return only the data fields
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to update user');
     }
@@ -86,7 +124,7 @@ const userSlice = createSlice({
       state.token = null;
       state.user = null;
       state.error = null;
-      SecureStore.deleteItemAsync('userToken');
+      SecureStore.deleteItemAsync('jwt');
     },
   },
   extraReducers: (builder) => {
@@ -102,6 +140,29 @@ const userSlice = createSlice({
       .addCase(signup.rejected, (state, action) => {
         state.error = action.payload as string;
       })
+      .addCase(checkUserEmail.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(checkUserEmail.fulfilled, (state, action) => {
+        state.error = null;
+      })
+      .addCase(checkUserEmail.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        const { access_token, user } = action.payload.data;
+        if (access_token && user) {
+          console.log(access_token);
+          console.log(user);
+
+          SecureStore.setItemAsync('jwt', access_token);
+          state.token = access_token;
+          state.user = user;
+          state.error = null;
+        } else {
+          state.error = 'Invalid login response';
+        }
+      })
       .addCase(fetchUserById.pending, (state) => {
         state.user = null;
         state.error = null;
@@ -116,11 +177,13 @@ const userSlice = createSlice({
       .addCase(updateUserById.pending, (state) => {
         state.error = null;
       })
-      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<CreateUserDto>) => {
+      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<Partial<CreateUserDto>>) => {
         state.user = action.payload;
+        console.log('User updated in slice:', state.user);
         state.error = null;
       })
       .addCase(updateUserById.rejected, (state, action) => {
+        console.error('Update user rejected with:', action.payload);
         state.error = action.payload as string;
       })
       .addCase(deleteUserById.pending, (state) => {

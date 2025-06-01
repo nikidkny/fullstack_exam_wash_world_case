@@ -97,26 +97,22 @@ export class UsersAPI {
     }
   }
   static async updateUserById(userId: number, userData: Partial<CreateUserDto>) {
-    try {
-      const response = await fetch(`${this.usersURl}${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+    console.log('Update User API called with userId:', userId, 'and userData:', userData);
+    const response = await fetch(`${this.usersURl}${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update user');
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Update User API error:', error);
-      throw error;
+    const data = await response.json();
+    console.log('Update User Response:', data);
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to update user');
     }
+    console.log('User updated successfully userApi:', data);
+    return data;
   }
 
   static async deleteUserById(userId: number) {

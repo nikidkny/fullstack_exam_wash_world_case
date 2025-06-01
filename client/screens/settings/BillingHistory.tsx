@@ -5,7 +5,7 @@ import { RootState } from '@/store/store';
 
 export default function BillingHistory() {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.user.user);
   const [billingHistory, setBillingHistory] = useState([
     { id: 1, date: '2024-05-01', amount: 80 },
     { id: 2, date: '2024-05-10', amount: 120 },

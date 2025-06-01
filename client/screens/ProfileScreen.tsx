@@ -21,7 +21,7 @@ import { fetchUserById } from './auth/userSlice';
 export default function ProfileScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.user.user);
 
   // const [user, setUser] = useState({
   //   firstName: 'Testing',
@@ -34,22 +34,10 @@ export default function ProfileScreen() {
   //     dispatch(fetchUserById(user.id));
   //   }
   // }, [dispatch, user?.id]);
-  console.log('user', user);
+  console.log('user in profilescreen', user);
   return (
     <ScrollView>
-      {user.first_name ? (
-        <Text style={styles.heading}>Hey {user?.first_name}!</Text>
-      ) : (
-        <View>
-          <Text>Please login or sign up to see your profile!</Text>
-          <Button onPress={() => navigation.navigate('Login')} style={{ margin: 16 }}>
-            Login
-          </Button>
-          <Button onPress={() => navigation.navigate('Signup')} style={{ margin: 16 }}>
-            Sign Up
-          </Button>
-        </View>
-      )}
+      <Text style={styles.heading}>Hey {user?.first_name}!</Text>
       <SettingRow
         label="Personal Information"
         icon={<UserIcon size={20} color="black" />}

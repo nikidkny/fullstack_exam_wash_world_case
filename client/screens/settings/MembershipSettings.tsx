@@ -5,7 +5,7 @@ import { RootState } from '@/store/store';
 
 export default function MembershipSettings() {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.user.user);
   return (
     <View>
       <Text>MembershipSettings</Text>

@@ -5,7 +5,7 @@ import { RootState } from '@/store/store';
 
 export default function WashHistory() {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.user.user);
 
   const [washHistory, setWashHistory] = useState([
     { id: 1, date: '2024-05-01', location: 'QuickWash Downtown' },

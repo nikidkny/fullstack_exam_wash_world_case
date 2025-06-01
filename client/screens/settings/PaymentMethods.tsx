@@ -13,7 +13,7 @@ import { ScrollView, Text, View, Alert } from '@gluestack-ui/themed';
 export default function PaymentMethods() {
   // const route = useRoute();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.user.user);
   const card = useSelector((state: RootState) => state.card.cards);
   console.log('PaymentMethods user:', user);
   console.log('PaymentMethods cards:', card);
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 14,
     borderRadius: 8,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -256,6 +257,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 14,
     borderRadius: 8,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },

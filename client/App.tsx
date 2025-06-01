@@ -25,7 +25,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
-import { logout, reloadJwtFromStorage } from './screens/auth/authSlice';
+import { logout, reloadJwtFromStorage } from './screens/auth/userSlice';
 import Toast from 'react-native-toast-message';
 import './global.css';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
@@ -140,7 +140,7 @@ export function ProfileStack() {
 function MainApp() {
   const dispatch = useDispatch();
 
-  const token = useSelector((state: RootState) => state.auth.token);
+  const token = useSelector((state: RootState) => state.user.token);
 
   useEffect(() => {
     async function getToken() {
@@ -158,7 +158,7 @@ function MainApp() {
 
   async function ensureMembershipPlansExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
+      const checkResponse = await fetch('http://10.0.0.8:3000/membership-plans', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -171,7 +171,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
+      const seedResponse = await fetch('http://10.0.0.8:3000/membership-plans/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -186,7 +186,7 @@ function MainApp() {
 
   async function ensureLocationExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/locations/', {
+      const checkResponse = await fetch('http://10.0.0.8:3000/locations/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -199,7 +199,7 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
+      const seedResponse = await fetch('http://10.0.0.8:3000/locations/seed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });

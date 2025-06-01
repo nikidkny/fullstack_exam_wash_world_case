@@ -1,17 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { Input, InputField } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Alert } from '@gluestack-ui/themed';
-import { useRoute } from '@react-navigation/native';
+// import { Alert } from '@gluestack-ui/themed';
+import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUserById, updateUserById } from '../auth/userSlice';
+import { deleteUserById, logout, updateUserById } from '../auth/userSlice';
 
 export default function PersonalInfo() {
-  // const route = useRoute();
-  // const { user } = route.params;
+  const navigation = useNavigation();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.user.user);
 
   // destructure user data
   const { email, first_name, last_name, address, phone_number } = user;
@@ -19,9 +18,19 @@ export default function PersonalInfo() {
   const [editedEmail, setEditedEmail] = useState(email);
   const [editedFirstName, setEditedFirstName] = useState(first_name);
   const [editedLastName, setEditedLastName] = useState(last_name);
-  // const [editedName, setEditedName] = useState(`${user.firstName} ${user.lastName}`);
-  const [editedAddress, setEditedAddress] = useState(address);
+  // const [editedAddress, setEditedAddress] = useState(address);
   const [editedPhoneNumber, setEditedPhoneNumber] = useState(phone_number.toString());
+
+  useEffect(() => {
+    console.log('useEffect triggered');
+    if (user) {
+      console.log('UseEffect in PersonalInfo:', user);
+      setEditedEmail(user.email);
+      setEditedFirstName(user.first_name);
+      setEditedLastName(user.last_name);
+      setEditedPhoneNumber(user.phone_number.toString());
+    }
+  }, [user]);
 
   // Update profile logic
   const handleEdit = () => {
@@ -29,21 +38,39 @@ export default function PersonalInfo() {
   };
 
   const handleSave = () => {
+    // only if the user has changed the data
+    if (
+      editedEmail === email &&
+      editedFirstName === first_name &&
+      editedLastName === last_name &&
+      editedPhoneNumber === phone_number.toString()
+    ) {
+      Alert.alert('No changes made', 'You have not made any changes to your profile.');
+      return;
+    }
+
     const updatedUser = {
       first_name: editedFirstName,
       last_name: editedLastName,
       email: editedEmail,
-      address: editedAddress,
-      phone_number: editedPhoneNumber,
+      // address: editedAddress,
+      phone_number: parseInt(editedPhoneNumber, 10),
     };
-
+    // console.log('Dispatching updateUserById with:', { userId: user.id, userData: updatedUser });
     dispatch(updateUserById({ userId: user.id, userData: updatedUser }))
       .unwrap()
       .then(() => {
-        Alert.alert('Success', 'Profile updated successfully!');
+        // console.log('Inside then block after updateUserById', updatedUser, user.id);
+        Alert.alert('Profile updated successfully!', 'Profile updated successfully!', [
+          {
+            text: 'OK',
+            onPress: () => setIsEditing(false),
+          },
+        ]);
         setIsEditing(false);
       })
       .catch((error) => {
+        console.error('Error updating profile handlleSave:', error);
         Alert.alert('Error', error || 'Failed to update profile.');
       });
   };
@@ -58,7 +85,7 @@ export default function PersonalInfo() {
           try {
             await dispatch(deleteUserById(user.id)).unwrap();
             Alert.alert('Success', 'Account deleted successfully!');
-            // Optionally, navigate to a different screen after deletion
+            dispatch(logout()); // Navigate to login screen after deletting the profile
           } catch (error) {
             Alert.alert('Error', error || 'Failed to delete account.');
           }
@@ -140,7 +167,7 @@ export default function PersonalInfo() {
         )}
       </View>
       {/* Edit Address section*/}
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <Text style={styles.label}>Address</Text>
         {isEditing ? (
           <Input variant="outline" size="xl" style={[styles.input]}>
@@ -158,7 +185,7 @@ export default function PersonalInfo() {
         ) : (
           <Text style={styles.placeholder}>Address</Text>
         )}
-      </View>
+      </View> */}
       {/* Edit Phone Number section */}
       <View style={styles.section}>
         <Text style={styles.label}>Phone Number</Text>
@@ -192,6 +219,7 @@ export default function PersonalInfo() {
                 style={{
                   paddingVertical: 14,
                   borderRadius: 8,
+                  height: 50,
                   backgroundColor: '#F7F7F7',
                   borderColor: '#666666',
                   borderWidth: 1,
@@ -213,6 +241,7 @@ export default function PersonalInfo() {
                 style={{
                   paddingVertical: 14,
                   borderRadius: 8,
+                  height: 50,
                   backgroundColor: '#06C167',
                   borderColor: '#06C167',
                   borderWidth: 1,
@@ -236,6 +265,7 @@ export default function PersonalInfo() {
               style={{
                 paddingVertical: 14,
                 borderRadius: 8,
+                height: 50,
                 backgroundColor: '#06C167',
                 borderColor: '#06C167',
                 borderWidth: 1,
@@ -260,6 +290,7 @@ export default function PersonalInfo() {
           style={{
             paddingVertical: 14,
             borderRadius: 8,
+            height: 50,
             backgroundColor: 'red',
             borderColor: 'red',
             borderWidth: 1,
