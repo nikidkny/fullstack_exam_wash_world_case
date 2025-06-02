@@ -89,13 +89,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-
-            <Button
-              title="Logout"
-              onPress={() => {
-                dispatch(logout());
-              }}
-            />
+            <Button title="Logout" onPress={() => dispatch(logout())} />
           ),
         }}
       />

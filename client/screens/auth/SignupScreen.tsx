@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { authStyle } from './authStyle';
@@ -6,6 +7,7 @@ import {
   FormControl,
   FormControlLabel,
   FormControlLabelText,
+
   FormControlError,
   FormControlErrorText,
 } from '@/components/ui/form-control';
@@ -477,3 +479,4 @@ export default function SignupScreen() {
     </ScrollView>
   );
 }
+
