@@ -66,54 +66,54 @@ describe('LoginScreen logic', () => {
         expect(mockLogin).not.toHaveBeenCalled();
     });
 
-    // it('shows error for empty password', async () => {
-    //     const { getByPlaceholderText, getByText } = render(<LoginScreen />);
+    it('shows error for empty password', async () => {
+        const { getByPlaceholderText, getByText } = render(<LoginScreen />);
 
-    //     fireEvent.changeText(getByPlaceholderText('you@example.com'), 'user@example.com');
-    //     fireEvent.changeText(getByPlaceholderText('••••••••'), '');
+        fireEvent.changeText(getByPlaceholderText('you@example.com'), 'user@example.com');
+        fireEvent.changeText(getByPlaceholderText('••••••••'), '');
 
-    //     fireEvent.press(getByText('Login'));
+        fireEvent.press(getByText('LoginButton'));
 
-    //     await waitFor(() => {
-    //         expect(getByText('Password cannot be empty.')).toBeTruthy();
-    //     });
+        await waitFor(() => {
+            expect(getByText('Password cannot be empty.')).toBeTruthy();
+        });
 
-    //     expect(mockLogin).not.toHaveBeenCalled();
-    // });
+        expect(mockLogin).not.toHaveBeenCalled();
+    });
 
-    // it('calls loginUser with trimmed input', async () => {
-    //     mockLogin.mockResolvedValueOnce({ success: true });
+    it('calls loginUser with trimmed input', async () => {
+        mockLogin.mockResolvedValueOnce({ success: true });
 
-    //     const { getByPlaceholderText, getByText } = render(<LoginScreen />);
+        const { getByPlaceholderText, getByText } = render(<LoginScreen />);
 
-    //     fireEvent.changeText(getByPlaceholderText('you@example.com'), '  user@example.com  ');
-    //     fireEvent.changeText(getByPlaceholderText('••••••••'), '  pass123  ');
+        fireEvent.changeText(getByPlaceholderText('you@example.com'), '  user@example.com  ');
+        fireEvent.changeText(getByPlaceholderText('••••••••'), '  pass123  ');
 
-    //     fireEvent.press(getByText('Login'));
+        fireEvent.press(getByText('LoginButton'));
 
-    //     await waitFor(() => {
-    //         expect(mockLogin).toHaveBeenCalledWith({
-    //             email: 'user@example.com',
-    //             password: 'pass123',
-    //         });
-    //     });
-    // });
+        await waitFor(() => {
+            expect(mockLogin).toHaveBeenCalledWith({
+                email: 'user@example.com',
+                password: 'pass123',
+            });
+        });
+    });
 
-    // it('shows login error when login fails', async () => {
-    //     mockLogin.mockResolvedValueOnce({
-    //         success: false,
-    //         error: 'User with email does not exist',
-    //     });
+    it('shows login error when login fails', async () => {
+        mockLogin.mockResolvedValueOnce({
+            success: false,
+            error: 'User with email does not exist',
+        });
 
-    //     const { getByPlaceholderText, getByText } = render(<LoginScreen />);
+        const { getByPlaceholderText, getByText } = render(<LoginScreen />);
 
-    //     fireEvent.changeText(getByPlaceholderText('you@example.com'), 'user@example.com');
-    //     fireEvent.changeText(getByPlaceholderText('••••••••'), 'wrongpass');
+        fireEvent.changeText(getByPlaceholderText('you@example.com'), 'user@example.com');
+        fireEvent.changeText(getByPlaceholderText('••••••••'), 'wrongpass');
 
-    //     fireEvent.press(getByText('Login'));
+        fireEvent.press(getByText('LoginButton'));
 
-    //     await waitFor(() => {
-    //         expect(getByText('Invalid Credentials. Please try again.')).toBeTruthy();
-    //     });
-    // });
+        await waitFor(() => {
+            expect(getByText('Invalid Credentials. Please try again.')).toBeTruthy();
+        });
+    });
 });
