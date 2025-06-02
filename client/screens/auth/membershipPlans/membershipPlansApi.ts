@@ -1,5 +1,5 @@
 export class MembershipPlansAPI {
-  static baseURl = 'http://10.0.0.8:3000/membership-plans/';
+  static baseURl = 'http://localhost:3000/membership-plans/';
 
   static async getAll() {
     try {

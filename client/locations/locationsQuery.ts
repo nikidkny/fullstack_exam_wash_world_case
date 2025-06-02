@@ -6,7 +6,7 @@ export const useGetLocations = () => {
   return useQuery({
     queryKey: ['locations'],
     queryFn: async () => {
-      const { data } = await axios.get('http://10.0.0.8:3000/locations');
+      const { data } = await axios.get('http://localhost:3000/locations');
       return data;
     },
   });

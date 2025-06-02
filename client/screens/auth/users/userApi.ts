@@ -2,8 +2,8 @@ import { CreateUserDto } from './createUserDto';
 import { LoginUserDto } from './loginUserDto';
 
 export class UsersAPI {
-  static authURl = 'http://10.0.0.8:3000/auth/';
-  static usersURl = 'http://10.0.0.8:3000/users/';
+  static authURl = 'http://localhost:3000/auth/';
+  static usersURl = 'http://localhost:3000/users/';
 
   static async signup(userDto: CreateUserDto) {
     try {

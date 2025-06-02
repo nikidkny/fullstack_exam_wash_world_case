@@ -1,7 +1,7 @@
 import { createCardDto } from './createCardDto';
 
 export class CardAPI {
-  static cardsUrl = 'http://10.0.0.8:3000/cards/';
+  static cardsUrl = 'http://localhost:3000/cards/';
 
   static async createCard(cardDto: createCardDto) {
     console.log('Creating card with DTO:', cardDto);
