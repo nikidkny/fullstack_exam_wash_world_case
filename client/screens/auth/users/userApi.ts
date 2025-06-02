@@ -1,5 +1,6 @@
 import { CreateUserDto } from './createUserDto';
 import { LoginUserDto } from './loginUserDto';
+import { UpdateUserDto } from './updateUserDto';
 
 export class UsersAPI {
   static authURl = 'http://localhost:3000/auth/';
@@ -96,7 +97,7 @@ export class UsersAPI {
       throw error;
     }
   }
-  static async updateUserById(userId: number, userData: Partial<CreateUserDto>) {
+  static async updateUserById(userId: number, userData: UpdateUserDto) {
     // console.log('Update User API called with userId:', userId, 'and userData:', userData);
     const response = await fetch(`${this.usersURl}${userId}`, {
       method: 'PUT',
