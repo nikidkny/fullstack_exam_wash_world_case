@@ -133,14 +133,11 @@ export default function LoginScreen() {
           width: '90%',
           paddingVertical: 14,
           borderRadius: 8,
-
-
           backgroundColor: '#1D4ED8',
-
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: '600', color: 'white', textAlign: 'center' }}>
-          Login
+          LoginButton
         </Text>
       </Button>
 
