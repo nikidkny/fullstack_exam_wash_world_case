@@ -152,9 +152,8 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         const { access_token, user } = action.payload.data;
         if (access_token && user) {
-          // console.log(access_token);
-          // console.log(user);
-
+          console.log(access_token);
+          console.log(user);
           SecureStore.setItemAsync('jwt', access_token);
           state.token = access_token;
           state.user = user;

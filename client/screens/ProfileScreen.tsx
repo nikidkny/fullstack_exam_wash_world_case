@@ -16,7 +16,6 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
-import { fetchUserById } from './auth/userSlice';
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
