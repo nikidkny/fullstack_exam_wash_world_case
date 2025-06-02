@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { getCardsByUserId, createCard, updateCard, deleteCard } from '@/store/cardSlice';
 import { ScrollView, Text, View } from '@gluestack-ui/themed';
+import { updateCardDto } from '../cards/updateCardDto';
+import { createCardDto } from '../cards/createCardDto';
 
 export default function PaymentMethods() {
   // const route = useRoute();
@@ -57,15 +59,9 @@ export default function PaymentMethods() {
       Alert.alert('Missing info', 'Please fill in all fields.');
       return;
     }
-    const cardDto = {
-      user: user.id,
-      cardholder_name: cardholderName,
-      card_number: cardNumber,
-      expiry_date: expiryDate,
-      cvc: cvcValue,
-    };
     // console.log('Card DTO:', cardDto);
     if (card?.id) {
+      const cardDto = new updateCardDto(cardholderName, cardNumber, expiryDate, cvcValue);
       // Update existing card
       dispatch(updateCard({ id: card.id, cardDto }))
         .unwrap()
@@ -88,6 +84,7 @@ export default function PaymentMethods() {
         });
     } else {
       // Create new card
+      const cardDto = new createCardDto(user.id, cardNumber, cardholderName, expiryDate, cvcValue);
       dispatch(createCard(cardDto))
         .unwrap()
         .then((result) => {

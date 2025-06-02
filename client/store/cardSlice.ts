@@ -33,7 +33,7 @@ export const getCardsByUserId = createAsyncThunk(
 
 export const updateCard = createAsyncThunk(
   'card/updateCard',
-  async ({ id, cardDto }: { id: number; cardDto: Partial<CreateCardDto> }, thunkAPI) => {
+  async ({ id, cardDto }: { id: number; cardDto: CreateCardDto }, thunkAPI) => {
     try {
       const response = await CardAPI.updateCard(id, cardDto);
       return response;

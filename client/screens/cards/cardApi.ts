@@ -1,4 +1,5 @@
 import { createCardDto } from './createCardDto';
+import { updateCardDto } from './updateCardDto';
 
 export class CardAPI {
   static cardsUrl = 'http://localhost:3000/cards/';
@@ -65,7 +66,7 @@ export class CardAPI {
       throw error;
     }
   }
-  static async updateCard(cardId: number, cardDto: UpdateCardDto) {
+  static async updateCard(cardId: number, cardDto: updateCardDto) {
     try {
       const response = await fetch(`${this.cardsUrl}${cardId}`, {
         method: 'PUT',
