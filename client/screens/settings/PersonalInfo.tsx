@@ -49,11 +49,10 @@ export default function PersonalInfo() {
       return;
     }
 
-    const updatedUser = {
+    const updatedUser: UpdateUserDto = {
       first_name: editedFirstName,
       last_name: editedLastName,
       email: editedEmail,
-      // address: editedAddress,
       phone_number: parseInt(editedPhoneNumber, 10),
     };
     // console.log('Dispatching updateUserById with:', { userId: user.id, userData: updatedUser });

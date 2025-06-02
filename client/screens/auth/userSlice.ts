@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as SecureStore from 'expo-secure-store';
-import { CreateUserDto } from './createUserDto';
+import { CreateUserDto } from './users/createUserDto';
 import { UsersAPI } from './users/userApi';
 import { createCardDto } from '@/screens/cards/createCardDto';
 import { LoginUserDto } from './users/loginUserDto';
+import { UpdateUserDto } from './users/updateUserDto';
 
 interface UserState {
   token: string | null;
@@ -87,7 +88,7 @@ export const fetchUserById = createAsyncThunk(
 export const updateUserById = createAsyncThunk(
   'user/updateUserById',
   async (
-    { userId, userData }: { userId: number; userData: Partial<CreateUserDto> },
+    { userId, userData }: { userId: number; userData: UpdateUserDto },
     { rejectWithValue }
   ) => {
     try {
