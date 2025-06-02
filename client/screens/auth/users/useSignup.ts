@@ -2,12 +2,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useState } from 'react';
 import { AppDispatch, RootState } from '@/store/store';
 import { CreateUserDto } from './createUserDto';
-import { signup } from '../authSlice';
+import { signup } from '../userSlice';
 
 export const useSignup = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { user, error } = useSelector((state: RootState) => state.auth);
+  const { user, error } = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(false);
 
   const signupUser = useCallback(
@@ -26,7 +26,6 @@ export const useSignup = () => {
     },
     [dispatch]
   );
-
 
   return {
     signup: signupUser,

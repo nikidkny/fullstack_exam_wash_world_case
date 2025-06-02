@@ -46,14 +46,14 @@ export class UsersAPI {
 
       return data;
     } catch (error) {
-      console.log('Login API error:', error);
+      // console.log('Login API error:', error);
       throw error;
     }
   }
 
   static async checkUserEmail(email: string) {
     try {
-      const response = await fetch(this.usersURl + "email/" + email, {
+      const response = await fetch(this.usersURl + '/email/' + email, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export class UsersAPI {
   static async getUserById(userId: number) {
     try {
       const url = this.usersURl + userId;
-      console.log('GET', url);
+      // console.log('GET', url);
 
       const response = await fetch(url, {
         method: 'GET',
@@ -93,6 +93,47 @@ export class UsersAPI {
       return await response.json();
     } catch (error) {
       console.error('Get User API error:', error);
+      throw error;
+    }
+  }
+  static async updateUserById(userId: number, userData: Partial<CreateUserDto>) {
+    // console.log('Update User API called with userId:', userId, 'and userData:', userData);
+    const response = await fetch(`${this.usersURl}${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+    // console.log('Update User Response:', data);
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to update user');
+    }
+    // console.log('User updated successfully userApi:', data);
+    return data;
+  }
+
+  static async deleteUserById(userId: number) {
+    try {
+      const response = await fetch(`${this.usersURl}${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Response status:', response.status);
+        console.error('Response text:', text);
+        throw new Error('Failed to delete user');
+      }
+
+      return { message: 'User deleted successfully' };
+    } catch (error) {
+      console.error('Delete User API error:', error);
       throw error;
     }
   }

@@ -1,17 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  ConflictException,
+} from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { CreateCardDto } from './dto/create-card.dto';
-import { UpdateCardDto } from './dto/update-card.dto';
+// import { UpdateCardDto } from './dto/update-card.dto';
 
 @Controller('cards')
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
   @Post()
-  create(@Body() createCardDto: CreateCardDto) {
-    return this.cardsService.create(createCardDto);
+  async create(@Body() createCardDto: CreateCardDto) {
+    try {
+      // Attempt to create a new card
+      return await this.cardsService.create(createCardDto);
+    } catch (error) {
+      // If a conflict occurs (e.g., user already has a card), throw a ConflictException
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
-
   @Get()
   findAll() {
     return this.cardsService.findAll();
@@ -22,13 +39,21 @@ export class CardsController {
     return this.cardsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCardDto: UpdateCardDto) {
+  @Get('/user/:userId')
+  findByUserId(@Param('userId') userId: number) {
+    return this.cardsService.findByUserId(+userId);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateCardDto: Partial<CreateCardDto>,
+  ) {
     return this.cardsService.update(+id, updateCardDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.cardsService.remove(+id);
   }
 }

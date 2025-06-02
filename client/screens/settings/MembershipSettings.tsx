@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { useRoute } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 export default function MembershipSettings() {
-  const route = useRoute();
-  const { user } = route.params;
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user.user);
   return (
     <View>
       <Text>MembershipSettings</Text>

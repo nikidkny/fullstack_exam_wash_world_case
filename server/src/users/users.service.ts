@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -124,11 +125,37 @@ export class UsersService {
     return userFound;
   }
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return this.usersRepository
+      .findOne({ where: { id } })
+      .then(async (user) => {
+        if (!user) {
+          throw new NotFoundException(`User with ID ${id} not found`);
+        }
+
+        // If password is being updated, hash it
+        if (updateUserDto.password) {
+          updateUserDto.password = await bcrypt.hash(
+            updateUserDto.password,
+            10,
+          );
+        }
+        console.log('updateUserDto in users/update', updateUserDto);
+        console.log('user in users/update', user);
+        Object.assign(user, updateUserDto);
+        console.log('user after assign in users/update', user);
+        return this.usersRepository.save(user);
+      });
+  }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.usersRepository
+      .findOne({ where: { id } })
+      .then(async (user) => {
+        if (!user) {
+          throw new NotFoundException(`User with ID ${id} not found`);
+        }
+        return this.usersRepository.remove(user);
+      });
   }
 }

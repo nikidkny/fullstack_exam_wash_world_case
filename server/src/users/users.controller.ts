@@ -1,7 +1,15 @@
-import { Controller, Get, Param, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Put,
+  Body,
+  Param,
+  Delete,
+  HttpStatus,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 // import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -44,8 +52,48 @@ export class UsersController {
       message: 'User found',
       data: userFound,
     };
+    // }
+    // catch (error) {
+    //   throw error;
+    // }
+  }
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    // try {
+    const updatedUser = await this.usersService.update(id, updateUserDto);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User updated successfully',
+      data: updatedUser,
+    };
     // } catch (error) {
     //   throw error;
     // }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: number) {
+    // try {
+    const deletedUser = await this.usersService.remove(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User deleted successfully',
+      data: deletedUser,
+    };
+    // } catch (error) {
+    //   throw error;
+    // }
+    // =======
+    //     // try {
+    //     const userFound = await this.usersService.findById(id);
+    //     return {
+    //       statusCode: HttpStatus.OK,
+    //       message: 'User found',
+    //       data: userFound,
+    //     };
+    //     // } catch (error) {
+    //     //   throw error;
+    //     // }
+    // >>>>>>> main
   }
 }
