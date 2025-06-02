@@ -25,7 +25,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 import { useEffect } from 'react';
 import { RootStackParamList } from './navigationType';
-import { logout, reloadJwtFromStorage } from './screens/auth/userSlice';
+import { logout, reloadJwtFromStorage, reloadUserFromStorage } from './screens/auth/userSlice';
 import Toast from 'react-native-toast-message';
 import './global.css';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
@@ -150,9 +150,12 @@ function MainApp() {
   useEffect(() => {
     async function getToken() {
       const storedToken = await SecureStore.getItemAsync('jwt');
+      const storedUser = await SecureStore.getItemAsync('user');
 
-      if (storedToken) {
+      if (storedToken && storedUser) {
         dispatch(reloadJwtFromStorage(storedToken));
+        const parsedUser = JSON.parse(storedUser);
+        dispatch(reloadUserFromStorage(parsedUser));
       }
 
       await ensureMembershipPlansExist();

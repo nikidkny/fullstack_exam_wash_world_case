@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Role } from './role';
 
 @Injectable()
 export class UsersService {
@@ -43,6 +44,7 @@ export class UsersService {
     email: string,
     password: string,
     phone_number: number,
+    role: Role
   ) {
     try {
       //Check fields
@@ -82,6 +84,7 @@ export class UsersService {
         email,
         password: hashedPassword,
         phone_number,
+        role
       });
 
       return await this.usersRepository.save(newUser);
