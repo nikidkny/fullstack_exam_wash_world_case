@@ -1,4 +1,6 @@
+
 import { Controller, Post, Body, HttpStatus, Get, UseGuards, Request } from '@nestjs/common';
+
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt/jwt.guard';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';;
@@ -8,10 +10,12 @@ import { SignupSwaggerDto } from './signup-user.dto';
 
 @Controller('auth')
 export class AuthController {
+
   constructor(private readonly authService: AuthService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get("tesGuard")
+
   async testGuard(@Request() req) {
     return { message: 'You have access!', user: req.user };
   }
@@ -68,7 +72,9 @@ export class AuthController {
       await this.authService.signup(body);
       return {
         statusCode: HttpStatus.OK,
+
         message: 'Singup successful'
+
       };
     } catch (error) {
       throw error;
@@ -121,7 +127,9 @@ export class AuthController {
   })
   async login(@Body() body: LoginDto) {
     try {
+
       const loginToken = await this.authService.login(body.email, body.password);
+
       return {
         statusCode: HttpStatus.OK,
         message: 'login successful',

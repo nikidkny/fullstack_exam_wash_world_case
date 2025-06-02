@@ -1,14 +1,17 @@
 import { useState } from 'react';
+
 import { View, Text, TouchableOpacity } from 'react-native';
 import {
   FormControl,
   FormControlError,
   FormControlErrorText,
+
   FormControlLabel,
   FormControlLabelText,
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+
 import { authStyle } from './authStyle';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -118,6 +121,7 @@ export default function LoginScreen() {
         <Text style={{ color: 'red', marginBottom: 10 }}>{errors.login}</Text>
       )}
 
+
       {/* Login Button */}
       <Button
         size="xl"
@@ -129,7 +133,10 @@ export default function LoginScreen() {
           width: '90%',
           paddingVertical: 14,
           borderRadius: 8,
+
+
           backgroundColor: '#1D4ED8',
+
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: '600', color: 'white', textAlign: 'center' }}>
@@ -138,9 +145,11 @@ export default function LoginScreen() {
       </Button>
 
       {/* Signup Link */}
+
       <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={{ paddingTop: 20 }}>
         <Text style={authStyle.signupLink}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
