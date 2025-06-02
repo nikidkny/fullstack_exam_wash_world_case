@@ -83,9 +83,12 @@ export default function PersonalInfo() {
         style: 'destructive',
         onPress: async () => {
           try {
-            await dispatch(deleteUserById(user.id)).unwrap();
-            Alert.alert('Success', 'Account deleted successfully!');
-            dispatch(logout()); // Navigate to login screen after deletting the profile
+            await dispatch(deleteUserById(user.id))
+              .unwrap()
+              .then(() => {
+                Alert.alert('Success', 'Account deleted successfully!');
+                dispatch(logout()); // Navigate to login screen after deletting the profile
+              });
           } catch (error) {
             Alert.alert('Error', error || 'Failed to delete account.');
           }

@@ -137,16 +137,18 @@ export function ProfileStack() {
  * depending on whether the user is authenticated.
  */
 function MainApp() {
-  const dispatch = useDispatch();
-
+  const dispatch = useDispatch<AppDispatch>();
   const token = useSelector((state: RootState) => state.user.token);
+  const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     async function getToken() {
       const storedToken = await SecureStore.getItemAsync('jwt');
 
-      if (storedToken) {
+      if (storedToken && user) {
         dispatch(reloadJwtFromStorage(storedToken));
+      } else {
+        dispatch(logout());
       }
 
       await ensureMembershipPlansExist();
@@ -211,7 +213,11 @@ function MainApp() {
     }
   }
 
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthNavigator />}</NavigationContainer>;
+  return (
+    <NavigationContainer>
+      {token && user ? <TabNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
 }
 
 /**

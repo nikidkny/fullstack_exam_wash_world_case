@@ -22,28 +22,6 @@ export default function HomeScreen() {
   useEffect(() => {
     dispatch(fetchLocations());
   }, []);
-  // console.log('locations!!', locations);
-  // console.log('user1', user);
-
-  // Render a single location card item
-  const renderItem = ({ item }: { item: LocationEntity }) => (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('WashFlowScreen', { locationId: item.id, locationName: item.name })
-      }
-    >
-      <LocationCard
-        name={item.name}
-        address={item.address}
-        open_hours={item.open_hours}
-        has_self_wash={item.has_self_wash}
-      />
-    </TouchableOpacity>
-  );
-
-  useEffect(() => {
-    dispatch(fetchLocations());
-  }, []);
   console.log('locations!!', locations);
   console.log('user1', user);
 
