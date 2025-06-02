@@ -12,12 +12,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LicensePlate } from 'src/license-plates/entities/license-plate.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(LicensePlate)
+    private licensePlateRepository: Repository<LicensePlate>,
   ) {}
 
   async findAll() {
@@ -148,14 +151,28 @@ export class UsersService {
       });
   }
 
-  remove(id: number) {
-    return this.usersRepository
-      .findOne({ where: { id } })
-      .then(async (user) => {
-        if (!user) {
-          throw new NotFoundException(`User with ID ${id} not found`);
-        }
-        return this.usersRepository.remove(user);
-      });
+  async remove(id: number) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: [
+        'licensePlateMembershipPlans',
+        'licensePlateMembershipPlans.licensePlate',
+      ],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    // Delete license plates that is connected to the user
+    const licensePlates = user.licensePlateMembershipPlans.map(
+      (lpmp) => lpmp.licensePlate,
+    );
+    for (const licensePlate of licensePlates) {
+      await this.licensePlateRepository.remove(licensePlate);
+    }
+
+    // Remove the user
+    return await this.usersRepository.remove(user);
   }
 }
