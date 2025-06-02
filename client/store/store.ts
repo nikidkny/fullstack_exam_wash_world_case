@@ -1,13 +1,15 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "../screens/auth/authSlice";
-import membershipPlanReducer from "../screens/auth/membershipPlans/membershipPlansSlice";
-import locationsReducer from "../locations/locationsSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import membershipPlanReducer from '../screens/auth/membershipPlans/membershipPlansSlice';
+import cardReducer from './cardSlice';
+import locationsReducer from '../locations/locationsSlice';
+import userReducer from '../screens/auth/userSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
     membershipPlans: membershipPlanReducer,
+    card: cardReducer,
     locations: locationsReducer,
+    user: userReducer,
   },
 });
 

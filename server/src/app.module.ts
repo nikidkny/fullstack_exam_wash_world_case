@@ -15,8 +15,6 @@ import { AuthModule } from './auth/auth.module';
 import { CardsModule } from './cards/cards.module';
 import { BillingsHistoryModule } from './billings_history/billings_history.module';
 
-
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -31,7 +29,6 @@ import { BillingsHistoryModule } from './billings_history/billings_history.modul
     AuthModule,
     CardsModule,
     BillingsHistoryModule,
-
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -26,7 +26,9 @@ export class LicensePlateMembershipPlan {
   @Column()
   is_active: boolean;
 
-  @ManyToOne(() => User, (user) => user.licensePlateMembershipPlans)
+  @ManyToOne(() => User, (user) => user.licensePlateMembershipPlans, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

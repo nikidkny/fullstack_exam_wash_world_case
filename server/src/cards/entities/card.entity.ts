@@ -19,12 +19,21 @@ export class Card {
   @Column()
   cardholder_name: string;
 
-  @Column({ type: 'bigint' })
+  @Column()
   card_number: string;
 
-  @Column({ type: 'bigint' })
+  @Column()
   cvc: string;
 
-  @Column({ type: 'date' })
+  @Column()
   expiry_date: string;
+
+  // @Column({ type: 'bigint' })
+  // card_number: string;
+
+  // @Column({ type: 'bigint' })
+  // cvc: string;
+
+  // @Column({ type: 'date' })
+  // expiry_date: string;
 }

@@ -2,7 +2,7 @@ import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { LicensePlatesService } from 'src/license-plates/license-plates.service';
 import { LicensePlatesMembershipPlansService } from 'src/license-plates_membership-plans/license-plates_membership-plans.service';
-import { SignupDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -16,9 +16,8 @@ export class AuthService {
   ) {}
 
   //TODO check if this is correct when implementing the front end if split the logic
-  async signup(body: SignupDto) {
-    console.log(body);
-
+  async signup(body: CreateUserDto) {
+    // console.log(body);
     // try {
     // // Create LicensePlate
     const responseLicensePlate = await this.licensePlateService.create(
@@ -59,7 +58,6 @@ export class AuthService {
         statusCode: HttpStatus.BAD_REQUEST,
 
         message: 'Missing or invalid values',
-
         values: invalidFields,
       });
     }
