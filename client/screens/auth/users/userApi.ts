@@ -46,7 +46,7 @@ export class UsersAPI {
 
       return data;
     } catch (error) {
-      console.log('Login API error:', error);
+      // console.log('Login API error:', error);
       throw error;
     }
   }
@@ -74,7 +74,7 @@ export class UsersAPI {
   static async getUserById(userId: number) {
     try {
       const url = this.usersURl + userId;
-      console.log('GET', url);
+      // console.log('GET', url);
 
       const response = await fetch(url, {
         method: 'GET',
@@ -97,7 +97,7 @@ export class UsersAPI {
     }
   }
   static async updateUserById(userId: number, userData: Partial<CreateUserDto>) {
-    console.log('Update User API called with userId:', userId, 'and userData:', userData);
+    // console.log('Update User API called with userId:', userId, 'and userData:', userData);
     const response = await fetch(`${this.usersURl}${userId}`, {
       method: 'PUT',
       headers: {
@@ -107,11 +107,11 @@ export class UsersAPI {
     });
 
     const data = await response.json();
-    console.log('Update User Response:', data);
+    // console.log('Update User Response:', data);
     if (!response.ok) {
       throw new Error(data.message || 'Failed to update user');
     }
-    console.log('User updated successfully userApi:', data);
+    // console.log('User updated successfully userApi:', data);
     return data;
   }
 

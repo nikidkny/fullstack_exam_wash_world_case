@@ -44,7 +44,7 @@ export const login = createAsyncThunk(
 
       return response;
     } catch (error) {
-      console.log('Login error:', error);
+      // console.log('Login error:', error);
       if (error instanceof Error) {
         return thunkAPI.rejectWithValue(error.message);
       }
@@ -92,7 +92,7 @@ export const updateUserById = createAsyncThunk(
   ) => {
     try {
       const response = await UsersAPI.updateUserById(userId, userData);
-      console.log('Updated user in thunk:', response.data);
+      // console.log('Updated user in thunk:', response.data);
       return response.data; // return only the data fields
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to update user');
@@ -152,8 +152,8 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         const { access_token, user } = action.payload.data;
         if (access_token && user) {
-          console.log(access_token);
-          console.log(user);
+          // console.log(access_token);
+          // console.log(user);
 
           SecureStore.setItemAsync('jwt', access_token);
           state.token = access_token;
@@ -179,7 +179,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUserById.fulfilled, (state, action: PayloadAction<Partial<CreateUserDto>>) => {
         state.user = action.payload;
-        console.log('User updated in slice:', state.user);
+        // console.log('User updated in slice:', state.user);
         state.error = null;
       })
       .addCase(updateUserById.rejected, (state, action) => {

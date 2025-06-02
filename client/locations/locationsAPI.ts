@@ -4,7 +4,7 @@ import { LocationEntity } from './locationEntity';
 
 export const LocationsAPI = {
   async getLocations(): Promise<LocationEntity[]> {
-    console.log('fetching locations');
+    // console.log('fetching locations');
     const response = await axios.get('http://10.0.0.8:3000/locations'); // change to your actual URL
     return response.data;
   },

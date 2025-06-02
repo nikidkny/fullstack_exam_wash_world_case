@@ -106,7 +106,7 @@ export default function SignupScreen() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      console.log(errors);
+      // console.log(errors);
       return;
     }
 
@@ -229,6 +229,7 @@ export default function SignupScreen() {
               paddingVertical: 14,
               borderRadius: 8,
               backgroundColor: '#1D4ED8',
+              height: 50,
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: '600', color: 'white', textAlign: 'center' }}>

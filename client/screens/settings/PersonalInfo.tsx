@@ -22,9 +22,9 @@ export default function PersonalInfo() {
   const [editedPhoneNumber, setEditedPhoneNumber] = useState(phone_number.toString());
 
   useEffect(() => {
-    console.log('useEffect triggered');
+    // console.log('useEffect triggered');
     if (user) {
-      console.log('UseEffect in PersonalInfo:', user);
+      // console.log('UseEffect in PersonalInfo:', user);
       setEditedEmail(user.email);
       setEditedFirstName(user.first_name);
       setEditedLastName(user.last_name);

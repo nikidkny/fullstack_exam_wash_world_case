@@ -90,7 +90,12 @@ function TabNavigator() {
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
 
-            <Button title="Logout" onPress={() => dispatch(logout())} />
+            <Button
+              title="Logout"
+              onPress={() => {
+                dispatch(logout());
+              }}
+            />
           ),
         }}
       />
@@ -178,7 +183,7 @@ function MainApp() {
 
       if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
 
-      console.log('Membership plans seeded');
+      // console.log('Membership plans seeded');
     } catch (error: any) {
       console.error('Error while checking/seeding:', error.message);
     }
@@ -206,7 +211,7 @@ function MainApp() {
 
       if (!seedResponse.ok) throw new Error('Failed to seed locations plans');
 
-      console.log(' locations  seeded');
+      // console.log(' locations  seeded');
     } catch (error: any) {
       console.error('Error while checking/seeding:', error.message);
     }

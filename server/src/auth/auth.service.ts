@@ -17,7 +17,7 @@ export class AuthService {
 
   //TODO check if this is correct when implementing the front end if split the logic
   async signup(body: CreateUserDto) {
-    console.log(body);
+    // console.log(body);
     // try {
     // // Create LicensePlate
     const responseLicensePlate = await this.licensePlateService.create(

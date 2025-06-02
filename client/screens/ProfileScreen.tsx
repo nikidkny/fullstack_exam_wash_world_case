@@ -34,7 +34,7 @@ export default function ProfileScreen() {
   //     dispatch(fetchUserById(user.id));
   //   }
   // }, [dispatch, user?.id]);
-  console.log('user in profilescreen', user);
+  // console.log('user in profilescreen', user);
   return (
     <ScrollView>
       <Text style={styles.heading}>Hey {user?.first_name}!</Text>
@@ -46,7 +46,7 @@ export default function ProfileScreen() {
       <SettingRow
         label="Payment Methods"
         icon={<CreditCardIcon size={20} color="black" />}
-        onPress={() => navigation.navigate('PaymentMethods', { user })}
+        onPress={() => navigation.navigate('PaymentMethods')}
       />
       <SettingRow
         label="Membership Settings"

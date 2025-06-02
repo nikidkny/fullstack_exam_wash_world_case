@@ -15,7 +15,6 @@ export class CardAPI {
       });
 
       const data = await response.json();
-      console.log('Create Card API response:', data);
       if (!response.ok) {
         throw new Error(data.message || 'Card creation failed');
       }
@@ -52,23 +51,21 @@ export class CardAPI {
 
   static async getCardsByUserId(userId: number) {
     try {
-      const response = await fetch(`${this.cardsUrl}user/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
+      const response = await fetch(`${this.cardsUrl}user/${userId}`);
+
       if (!response.ok) {
-        throw new Error(data.message);
+        throw new Error('Failed to fetch cards');
       }
-      return data.length ? data : [''];
+
+      const data = await response.json();
+      console.log('Fetched cards:', data);
+      return data;
     } catch (error) {
       console.error('Get Cards by User ID API error:', error);
-      return [''];
+      throw error;
     }
   }
-  static async updateCard(cardId: string, cardDto: UpdateCardDto) {
+  static async updateCard(cardId: number, cardDto: UpdateCardDto) {
     try {
       const response = await fetch(`${this.cardsUrl}${cardId}`, {
         method: 'PUT',
@@ -79,7 +76,7 @@ export class CardAPI {
       });
 
       const data = await response.json();
-
+      console.log('Update Card response IN CARDaPI:', data);
       if (!response.ok) {
         throw new Error(data.message || 'Card update failed');
       }
@@ -87,6 +84,22 @@ export class CardAPI {
       return data;
     } catch (error) {
       console.error('Update Card API error:', error);
+      throw error;
+    }
+  }
+  static async deleteCard(cardId: number) {
+    try {
+      const response = await fetch(`${this.cardsUrl}${cardId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete card');
+      }
+
+      return { message: 'Card deleted successfully' };
+    } catch (error) {
+      console.error('Delete Card API error:', error);
       throw error;
     }
   }
