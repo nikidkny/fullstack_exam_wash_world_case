@@ -4,6 +4,7 @@ import { CreateUserDto } from './createUserDto';
 import { UsersAPI } from './users/userApi';
 import { createCardDto } from '@/screens/cards/createCardDto';
 import { LoginUserDto } from './users/loginUserDto';
+import { UpdateUserDto } from './users/updateuserDto';
 
 interface UserState {
   token: string | null;
@@ -44,7 +45,6 @@ export const login = createAsyncThunk(
 
       return response;
     } catch (error) {
-      // console.log('Login error:', error);
       if (error instanceof Error) {
         return thunkAPI.rejectWithValue(error.message);
       }
@@ -87,12 +87,12 @@ export const fetchUserById = createAsyncThunk(
 export const updateUserById = createAsyncThunk(
   'user/updateUserById',
   async (
-    { userId, userData }: { userId: number; userData: Partial<CreateUserDto> },
+    { userId, userData }: { userId: number; userData: Partial<UpdateUserDto> },
     { rejectWithValue }
   ) => {
     try {
       const response = await UsersAPI.updateUserById(userId, userData);
-      // console.log('Updated user in thunk:', response.data);
+      console.log('UPDATED USER:', response.data.licensePlateMembershipPlans); //TODO not working
       return response.data; // return only the data fields
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to update user');
@@ -119,6 +119,9 @@ const userSlice = createSlice({
   reducers: {
     reloadJwtFromStorage: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
+    },
+    reloadUserFromStorage: (state, action: PayloadAction<CreateUserDto>) => {
+      state.user = action.payload;
     },
     logout: (state) => {
       state.token = null;
@@ -152,10 +155,8 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         const { access_token, user } = action.payload.data;
         if (access_token && user) {
-          // console.log(access_token);
-          // console.log(user);
-
           SecureStore.setItemAsync('jwt', access_token);
+          SecureStore.setItemAsync('user', JSON.stringify(user));
           state.token = access_token;
           state.user = user;
           state.error = null;
@@ -177,8 +178,9 @@ const userSlice = createSlice({
       .addCase(updateUserById.pending, (state) => {
         state.error = null;
       })
-      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<Partial<CreateUserDto>>) => {
+      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<CreateUserDto>) => {
         state.user = action.payload;
+        SecureStore.setItem("user", JSON.stringify(state.user))
         // console.log('User updated in slice:', state.user);
         state.error = null;
       })
@@ -190,7 +192,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteUserById.fulfilled, (state, action: PayloadAction<number>) => {
-        state.user = null; // Clear user data on deletion
+        state.user = null;
         state.error = null;
       })
       .addCase(deleteUserById.rejected, (state, action) => {
@@ -200,5 +202,5 @@ const userSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { reloadJwtFromStorage, logout } = userSlice.actions;
+export const { reloadJwtFromStorage, reloadUserFromStorage, logout } = userSlice.actions;
 export default userSlice.reducer;

@@ -137,4 +137,5 @@ export class UsersAPI {
       throw error;
     }
   }
+
 }

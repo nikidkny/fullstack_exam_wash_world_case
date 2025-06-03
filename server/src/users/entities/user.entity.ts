@@ -1,6 +1,7 @@
 import { Card } from 'src/cards/entities/card.entity';
 import { LicensePlateMembershipPlan } from 'src/license-plates_membership-plans/entities/license-plates_membership-plan.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Role } from '../role';
 
 @Entity({ name: 'users' })
 export class User {
@@ -21,6 +22,12 @@ export class User {
 
   @Column()
   phone_number: number;
+
+  @Column({
+    type: "enum",
+    enum: Role
+  })
+  role: Role;
 
   @OneToMany(
     () => LicensePlateMembershipPlan,

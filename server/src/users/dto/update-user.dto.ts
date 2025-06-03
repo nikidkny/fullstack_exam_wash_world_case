@@ -29,6 +29,10 @@ export class UpdateUserDto {
   plate_number?: string;
 
   @IsOptional()
+  @IsString()
+  role?:string;
+
+  @IsOptional()
   @IsNumber()
   membership_plan_id?: number;
 }
