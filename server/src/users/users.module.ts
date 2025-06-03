@@ -9,10 +9,9 @@ import { LicensePlatesMembershipPlansModule } from 'src/license-plates_membershi
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, LicensePlate]),
     MembershipPlansModule,
     LicensePlatesMembershipPlansModule,
-    LicensePlate,
   ],
   controllers: [UsersController],
   providers: [UsersService],

@@ -173,7 +173,6 @@ function MainApp() {
       });
 
       if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
-
     } catch (error: any) {
       console.error('Error while checking/seeding:', error.message);
     }
@@ -200,7 +199,6 @@ function MainApp() {
       });
 
       if (!seedResponse.ok) throw new Error('Failed to seed locations plans');
-
     } catch (error: any) {
       console.error('Error while checking/seeding:', error.message);
     }

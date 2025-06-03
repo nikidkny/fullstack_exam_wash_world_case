@@ -22,7 +22,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-
     @InjectRepository(LicensePlate)
     private licensePlateRepository: Repository<LicensePlate>,
     private membershipPlanService: MembershipPlansService,
