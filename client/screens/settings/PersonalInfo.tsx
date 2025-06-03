@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 // import { Alert } from '@gluestack-ui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUserById, logout, updateUserById } from '../auth/userSlice';
+import { deleteUserById, logoutUser, updateUserById } from '../auth/userSlice';
 
 export default function PersonalInfo() {
   const navigation = useNavigation();
@@ -84,11 +84,11 @@ export default function PersonalInfo() {
           try {
             await dispatch(deleteUserById(user.id)).unwrap();
             Alert.alert('Success', 'Account deleted successfully!');
-            dispatch(logout()); // Navigate to login screen after deletting the profile
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Auth', state: { routes: [{ name: 'LoginScreen' }] } }],
-            });
+            dispatch(logoutUser()); // Navigate to login screen after deletting the profile
+            // navigation.reset({
+            //   index: 0,
+            //   routes: [{ name: 'Auth', state: { routes: [{ name: 'LoginScreen' }] } }],
+            // });
           } catch (error) {
             Alert.alert('Error', error || 'Failed to delete account.');
           }
