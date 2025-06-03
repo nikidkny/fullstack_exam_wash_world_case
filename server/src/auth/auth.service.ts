@@ -30,6 +30,15 @@ export class AuthService {
     const membershipResponse = await this.membershipPlanService.findById(
       body.membership_plan_id,
     );
+
+    // Determine the role based on email and membership.is_business
+    const role =
+      body.email === 'admin@admin.com'
+        ? Role.admin
+        : membershipResponse.is_business
+          ? Role.business
+          : Role.private;
+
     // Create User
     const responseUser = await this.userService.create(
       body.first_name,
@@ -37,7 +46,7 @@ export class AuthService {
       body.email,
       body.password,
       body.phone_number,
-      membershipResponse.is_business ? Role.business : Role.private,
+      role,
     );
 
     // Create a membership
