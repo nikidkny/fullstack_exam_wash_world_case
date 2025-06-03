@@ -14,14 +14,19 @@ import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LicensePlate } from 'src/license-plates/entities/license-plate.entity';
 import { Role } from './role';
+import { MembershipPlansService } from 'src/membership-plans/membership-plans.service';
+import { LicensePlatesMembershipPlansService } from 'src/license-plates_membership-plans/license-plates_membership-plans.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
     @InjectRepository(LicensePlate)
     private licensePlateRepository: Repository<LicensePlate>,
+    private membershipPlanService: MembershipPlansService,
+    private licensePlateMembershipPlanService: LicensePlatesMembershipPlansService,
   ) {}
 
   async findAll() {
@@ -119,7 +124,13 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const userFound = await this.usersRepository.findOne({ where: { email } });
+    const userFound = await this.usersRepository.findOne({
+      where: { email },
+      relations: [
+        'licensePlateMembershipPlans',
+        'licensePlateMembershipPlans.membershipPlan',
+      ],
+    });
 
     if (!userFound) {
       throw new NotFoundException({
@@ -131,27 +142,48 @@ export class UsersService {
     return userFound;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository
-      .findOne({ where: { id } })
-      .then(async (user) => {
-        if (!user) {
-          throw new NotFoundException(`User with ID ${id} not found`);
-        }
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: [
+        'licensePlateMembershipPlans',
+        'licensePlateMembershipPlans.membershipPlan',
+      ],
+    });
 
-        // If password is being updated, hash it
-        if (updateUserDto.password) {
-          updateUserDto.password = await bcrypt.hash(
-            updateUserDto.password,
-            10,
-          );
-        }
-        console.log('updateUserDto in users/update', updateUserDto);
-        console.log('user in users/update', user);
-        Object.assign(user, updateUserDto);
-        console.log('user after assign in users/update', user);
-        return this.usersRepository.save(user);
-      });
+    if (!user) throw new NotFoundException(`User with ID ${id} not found`);
+
+    const activeLPM = user.licensePlateMembershipPlans?.[0];
+    const prevPlanId = activeLPM?.membershipPlan?.id;
+    const newPlanId = updateUserDto.membership_plan_id;
+
+    if (newPlanId && newPlanId !== prevPlanId && activeLPM) {
+      // Update LPM membershipPlan
+      await this.licensePlateMembershipPlanService.update(
+        activeLPM.id,
+        newPlanId,
+      );
+
+      // Update user role based on the new plan
+      const newPlan = await this.membershipPlanService.findById(newPlanId);
+      updateUserDto.role = newPlan.is_business ? Role.business : Role.private;
+    }
+
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+
+    Object.assign(user, updateUserDto);
+    await this.usersRepository.save(user);
+
+    // 🔥 Refetch updated user with nested relations
+    return await this.usersRepository.findOne({
+      where: { id },
+      relations: [
+        'licensePlateMembershipPlans',
+        'licensePlateMembershipPlans.membershipPlan',
+      ],
+    });
   }
 
   async remove(id: number) {
@@ -177,5 +209,28 @@ export class UsersService {
 
     // Remove the user
     return await this.usersRepository.remove(user);
+
+    // update(id: number, updateUserDto: UpdateUserDto) {
+    //   return this.usersRepository
+    //     .findOne({ where: { id } })
+    //     .then(async (user) => {
+    //       if (!user) {
+    //         throw new NotFoundException(`User with ID ${id} not found`);
+    //       }
+
+    //       // If password is being updated, hash it
+    //       if (updateUserDto.password) {
+    //         updateUserDto.password = await bcrypt.hash(
+    //           updateUserDto.password,
+    //           10,
+    //         );
+    //       }
+    //       console.log('updateUserDto in users/update', updateUserDto);
+    //       console.log('user in users/update', user);
+    //       Object.assign(user, updateUserDto);
+    //       console.log('user after assign in users/update', user);
+    //       return this.usersRepository.save(user);
+    //     });
+    // }
   }
 }

@@ -146,7 +146,7 @@ function MainApp() {
         dispatch(reloadUserFromStorage(parsedUser));
       }
 
-      await ensureMembershipPlansExist();
+      // await ensureMembershipPlansExist();
       // await ensureLocationExist();
     }
     getToken();
@@ -174,7 +174,6 @@ function MainApp() {
 
       if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
 
-      // console.log('Membership plans seeded');
     } catch (error: any) {
       console.error('Error while checking/seeding:', error.message);
     }
@@ -202,7 +201,6 @@ function MainApp() {
 
       if (!seedResponse.ok) throw new Error('Failed to seed locations plans');
 
-      // console.log(' locations  seeded');
     } catch (error: any) {
       console.error('Error while checking/seeding:', error.message);
     }

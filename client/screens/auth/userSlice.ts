@@ -45,7 +45,6 @@ export const login = createAsyncThunk(
 
       return response;
     } catch (error) {
-      // console.log('Login error:', error);
       if (error instanceof Error) {
         return thunkAPI.rejectWithValue(error.message);
       }
@@ -101,12 +100,12 @@ export const fetchUserById = createAsyncThunk(
 export const updateUserById = createAsyncThunk(
   'user/updateUserById',
   async (
-    { userId, userData }: { userId: number; userData: UpdateUserDto },
+    { userId, userData }: { userId: number; userData: Partial<UpdateUserDto> },
     { rejectWithValue }
   ) => {
     try {
       const response = await UsersAPI.updateUserById(userId, userData);
-      // console.log('Updated user in thunk:', response.data);
+      console.log('UPDATED USER:', response.data.licensePlateMembershipPlans); //TODO not working
       return response.data; // return only the data fields
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to update user');
@@ -196,8 +195,9 @@ const userSlice = createSlice({
       .addCase(updateUserById.pending, (state) => {
         state.error = null;
       })
-      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<Partial<CreateUserDto>>) => {
+      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<CreateUserDto>) => {
         state.user = action.payload;
+        SecureStore.setItem('user', JSON.stringify(state.user));
         // console.log('User updated in slice:', state.user);
         state.error = null;
       })
@@ -209,7 +209,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteUserById.fulfilled, (state, action: PayloadAction<number>) => {
-        state.user = null; // Clear user data on deletion
+        state.user = null;
         state.error = null;
       })
       .addCase(deleteUserById.rejected, (state, action) => {

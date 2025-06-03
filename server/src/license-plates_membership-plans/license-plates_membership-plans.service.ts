@@ -4,9 +4,10 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
-import { CreateLicensePlatesMembershipPlanDto } from './dto/create-license-plates_membership-plan.dto';
-import { UpdateLicensePlatesMembershipPlanDto } from './dto/update-license-plates_membership-plan.dto';
+// import { CreateLicensePlatesMembershipPlanDto } from './dto/create-license-plates_membership-plan.dto';
+// import { UpdateLicensePlatesMembershipPlanDto } from './dto/update-license-plates_membership-plan.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LicensePlateMembershipPlan } from './entities/license-plates_membership-plan.entity';
 import { Repository } from 'typeorm';
@@ -44,6 +45,7 @@ export class LicensePlatesMembershipPlansService {
       }
 
       // Check if user exists
+
       const lpmFound = await this.findByCompositeKey(
         user.id,
         licensePlate.id,
@@ -112,5 +114,31 @@ export class LicensePlatesMembershipPlansService {
         membershipPlan: { id: membershipPlanId },
       },
     });
+  }
+
+  async update(
+    id: number,
+    newMembershipPlanId: number,
+  ): Promise<LicensePlateMembershipPlan> {
+    const lpm = await this.licensePlateMembershipPlanRepository.findOne({
+      where: { id },
+      relations: ['membershipPlan'],
+    });
+
+    if (!lpm) {
+      throw new NotFoundException(
+        `LicensePlateMembershipPlan with ID ${id} not found`,
+      );
+    }
+
+    const newPlan =
+      await this.membershipPlanService.findById(newMembershipPlanId);
+
+    // Use Object.assign to update the membershipPlan
+    Object.assign(lpm, { membershipPlan: newPlan });
+
+    const savedLpm = await this.licensePlateMembershipPlanRepository.save(lpm);
+    console.log('UPDATED LPM:', savedLpm);
+    return savedLpm;
   }
 }

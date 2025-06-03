@@ -4,9 +4,16 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { LicensePlate } from 'src/license-plates/entities/license-plate.entity';
+import { MembershipPlansModule } from 'src/membership-plans/membership-plans.module';
+import { LicensePlatesMembershipPlansModule } from 'src/license-plates_membership-plans/license-plates_membership-plans.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, LicensePlate])],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    MembershipPlansModule,
+    LicensePlatesMembershipPlansModule,
+    LicensePlate,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

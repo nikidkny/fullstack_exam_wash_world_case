@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   HttpStatus,
+  Post,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 // import { CreateUserDto } from './dto/create-user.dto';
@@ -57,6 +58,7 @@ export class UsersController {
     //   throw error;
     // }
   }
+
   @Put(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     // try {
