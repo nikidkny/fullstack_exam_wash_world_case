@@ -18,26 +18,22 @@
 // }
 
 // NavigationBar.tsx
-import React from 'react';
-import { Box, HStack, Text } from '@gluestack-ui/themed';
-import { TouchableOpacity } from 'react-native';
-import { ArrowLeft, LogOut } from 'lucide-react-native';
-import { StackHeaderProps } from '@react-navigation/stack';
-import { useDispatch } from 'react-redux';
-import { logoutUser } from '@/screens/auth/userSlice';
-import { AppDispatch } from '@/store/store';
+import React from "react";
+import { Box, HStack, Text } from "@gluestack-ui/themed";
+import { TouchableOpacity } from "react-native";
+import { ArrowLeft, LogOut } from "lucide-react-native";
+import { StackHeaderProps } from "@react-navigation/stack";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/screens/auth/userSlice";
+import { AppDispatch } from "@/store/store";
 
 export default function NavigationBar({ navigation, back, options }: StackHeaderProps) {
   const dispatch = useDispatch<AppDispatch>();
 
-  const title = options.title ?? 'WashWorld';
+  const title = options.title ?? "WashWorld";
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Auth', state: { routes: [{ name: 'LoginScreen' }] } }],
-    });
   };
 
   return (

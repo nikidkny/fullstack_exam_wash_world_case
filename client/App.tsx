@@ -1,38 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet } from 'react-native';
-import { AppDispatch, RootState, store } from './store/store';
-import * as SecureStore from 'expo-secure-store';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { StatusBar } from "expo-status-bar";
+import { Button, StyleSheet } from "react-native";
+import { AppDispatch, RootState, store } from "./store/store";
+import * as SecureStore from "expo-secure-store";
+import { Provider, useDispatch, useSelector } from "react-redux";
 
 // Navigation components
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
-import NavigationBar from './components/ui/NavigationBar';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import NavigationBar from "./components/ui/NavigationBar";
+import { createStackNavigator } from "@react-navigation/stack";
 
 // Screens
-import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import LoginScreen from './screens/auth/LoginScreen';
-import SignupScreen from './screens/auth/SignupScreen';
-import PersonalInfo from './screens/settings/PersonalInfo';
-import PaymentMethods from './screens/settings/PaymentMethods';
-import MembershipSettings from './screens/settings/MembershipSettings';
-import WashHistory from './screens/settings/WashHistory';
-import BillingHistory from './screens/settings/BillingHistory';
-import WashFlowScreen from './screens/WashFlowScreen';
-import WashDetailsScreen from './screens/WashDetailsScreen';
+import HomeScreen from "./screens/HomeScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import LoginScreen from "./screens/auth/LoginScreen";
+import SignupScreen from "./screens/auth/SignupScreen";
+import PersonalInfo from "./screens/settings/PersonalInfo";
+import PaymentMethods from "./screens/settings/PaymentMethods";
+import MembershipSettings from "./screens/settings/MembershipSettings";
+import WashHistory from "./screens/settings/WashHistory";
+import BillingHistory from "./screens/settings/BillingHistory";
+import WashFlowScreen from "./screens/WashFlowScreen";
+import WashDetailsScreen from "./screens/WashDetailsScreen";
 
 // React Query for server state management
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { RootStackParamList } from './navigationType';
-import { logout, reloadJwtFromStorage, reloadUserFromStorage } from './screens/auth/userSlice';
-import Toast from 'react-native-toast-message';
-import './global.css';
-import { GluestackUIProvider } from '@gluestack-ui/themed';
-import { config } from '@gluestack-ui/config';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { RootStackParamList } from "./navigationType";
+import { logout, reloadJwtFromStorage, reloadUserFromStorage } from "./screens/auth/userSlice";
+import Toast from "react-native-toast-message";
+import "./global.css";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
 // import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 
 // Create navigators
@@ -76,7 +76,6 @@ const HomeStack = () => (
  * Includes Home and Profile tabs.
  */
 function TabNavigator() {
-  const dispatch = useDispatch<AppDispatch>();
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeStack} />
@@ -95,31 +94,11 @@ export function ProfileStack() {
       }}
     >
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
-      <Stack.Screen
-        name="PersonalInfo"
-        component={PersonalInfo}
-        options={{ headerTitle: 'Edit Personal Information' }}
-      />
-      <Stack.Screen
-        name="PaymentMethods"
-        component={PaymentMethods}
-        options={{ headerTitle: 'Edit Payment Methods' }}
-      />
-      <Stack.Screen
-        name="MembershipSettings"
-        component={MembershipSettings}
-        options={{ headerTitle: 'Edit Membership Details' }}
-      />
-      <Stack.Screen
-        name="WashHistory"
-        component={WashHistory}
-        options={{ headerTitle: 'See Wash History' }}
-      />
-      <Stack.Screen
-        name="BillingHistory"
-        component={BillingHistory}
-        options={{ headerTitle: 'See Billing History' }}
-      />
+      <Stack.Screen name="PersonalInfo" component={PersonalInfo} options={{ headerTitle: "Edit Personal Information" }} />
+      <Stack.Screen name="PaymentMethods" component={PaymentMethods} options={{ headerTitle: "Edit Payment Methods" }} />
+      <Stack.Screen name="MembershipSettings" component={MembershipSettings} options={{ headerTitle: "Edit Membership Details" }} />
+      <Stack.Screen name="WashHistory" component={WashHistory} options={{ headerTitle: "See Wash History" }} />
+      <Stack.Screen name="BillingHistory" component={BillingHistory} options={{ headerTitle: "See Billing History" }} />
     </Stack.Navigator>
   );
 }
@@ -137,8 +116,8 @@ function MainApp() {
 
   useEffect(() => {
     async function getToken() {
-      const storedToken = await SecureStore.getItemAsync('jwt');
-      const storedUser = await SecureStore.getItemAsync('user');
+      const storedToken = await SecureStore.getItemAsync("jwt");
+      const storedUser = await SecureStore.getItemAsync("user");
 
       if (storedToken && storedUser) {
         dispatch(reloadJwtFromStorage(storedToken));
@@ -154,12 +133,12 @@ function MainApp() {
 
   async function ensureMembershipPlansExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/membership-plans', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+      const checkResponse = await fetch("http://localhost:3000/membership-plans", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
 
-      if (!checkResponse.ok) throw new Error('Failed to check membership plans');
+      if (!checkResponse.ok) throw new Error("Failed to check membership plans");
 
       const { data } = await checkResponse.json();
 
@@ -167,25 +146,25 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/membership-plans/seed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const seedResponse = await fetch("http://localhost:3000/membership-plans/seed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
 
-      if (!seedResponse.ok) throw new Error('Failed to seed membership plans');
+      if (!seedResponse.ok) throw new Error("Failed to seed membership plans");
     } catch (error: any) {
-      console.error('Error while checking/seeding:', error.message);
+      console.error("Error while checking/seeding:", error.message);
     }
   }
 
   async function ensureLocationExist() {
     try {
-      const checkResponse = await fetch('http://localhost:3000/locations/', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+      const checkResponse = await fetch("http://localhost:3000/locations/", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
 
-      if (!checkResponse.ok) throw new Error('Failed to check locations');
+      if (!checkResponse.ok) throw new Error("Failed to check locations");
 
       const { data } = await checkResponse.json();
 
@@ -193,22 +172,18 @@ function MainApp() {
         return;
       }
 
-      const seedResponse = await fetch('http://localhost:3000/locations/seed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const seedResponse = await fetch("http://localhost:3000/locations/seed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
 
-      if (!seedResponse.ok) throw new Error('Failed to seed locations plans');
+      if (!seedResponse.ok) throw new Error("Failed to seed locations plans");
     } catch (error: any) {
-      console.error('Error while checking/seeding:', error.message);
+      console.error("Error while checking/seeding:", error.message);
     }
   }
 
-  return (
-    <NavigationContainer>
-      {token && user ? <TabNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
-  );
+  return <NavigationContainer>{token && user ? <TabNavigator /> : <AuthNavigator />}</NavigationContainer>;
 }
 
 /**
@@ -231,12 +206,12 @@ export default function App() {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   contentContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
