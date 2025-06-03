@@ -83,6 +83,8 @@ export class UsersService {
           message: 'User already exists with this email',
         });
       }
+      // Automatically assign admin role if email is admin@admin.com
+      const assignedRole = email === 'admin@admin.com' ? Role.admin : role;
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = this.usersRepository.create({
@@ -91,7 +93,7 @@ export class UsersService {
         email,
         password: hashedPassword,
         phone_number,
-        role,
+        role: assignedRole,
       });
 
       return await this.usersRepository.save(newUser);

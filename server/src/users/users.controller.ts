@@ -7,10 +7,12 @@ import {
   Delete,
   HttpStatus,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 // import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RolesGuard } from 'src/auth/RolesGuard';
 
 @Controller('users')
 export class UsersController {
@@ -82,5 +84,11 @@ export class UsersController {
       message: 'User deleted successfully',
       data: deletedUser,
     };
+  }
+
+  @UseGuards(RolesGuard) // Apply the guard directly
+  @Get('all')
+  async getAllUsers() {
+    return this.usersService.findAll();
   }
 }
