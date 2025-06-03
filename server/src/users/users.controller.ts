@@ -80,20 +80,5 @@ export class UsersController {
       message: 'User deleted successfully',
       data: deletedUser,
     };
-    // } catch (error) {
-    //   throw error;
-    // }
-    // =======
-    //     // try {
-    //     const userFound = await this.usersService.findById(id);
-    //     return {
-    //       statusCode: HttpStatus.OK,
-    //       message: 'User found',
-    //       data: userFound,
-    //     };
-    //     // } catch (error) {
-    //     //   throw error;
-    //     // }
-    // >>>>>>> main
   }
 }

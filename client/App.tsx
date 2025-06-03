@@ -89,13 +89,7 @@ function TabNavigator() {
         options={{
           headerRight: () => (
             // Replace this with dispatch(logout()) when auth is implemented
-
-            <Button
-              title="Logout"
-              onPress={() => {
-                dispatch(logout());
-              }}
-            />
+            <Button title="Logout" onPress={() => dispatch(logout())} />
           ),
         }}
       />
@@ -144,6 +138,7 @@ export function ProfileStack() {
  */
 function MainApp() {
   const dispatch = useDispatch();
+
 
   const token = useSelector((state: RootState) => state.user.token);
 

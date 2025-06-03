@@ -1,5 +1,3 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as SecureStore from 'expo-secure-store';
 import { CreateUserDto } from './users/createUserDto';
 import { UsersAPI } from './users/userApi';
 import { createCardDto } from '@/screens/cards/createCardDto';
@@ -124,6 +122,7 @@ const userSlice = createSlice({
     reloadUserFromStorage: (state, action: PayloadAction<CreateUserDto>) => {
       state.user = action.payload;
     },
+
     logout: (state) => {
       state.token = null;
       state.user = null;
@@ -158,6 +157,9 @@ const userSlice = createSlice({
         if (access_token && user) {
           SecureStore.setItemAsync('jwt', access_token);
           SecureStore.setItemAsync('user', JSON.stringify(user));
+          console.log(access_token);
+          console.log(user);
+
           state.token = access_token;
           state.user = user;
           state.error = null;

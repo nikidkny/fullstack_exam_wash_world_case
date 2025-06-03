@@ -18,7 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-
+  //TODO check if this is correct when implementing the front end if split the logic
   async signup(body: CreateUserDto) {
     // console.log(body);
     // try {
@@ -27,7 +27,9 @@ export class AuthService {
       body.plate_number,
     );
 
-    const membershipResponse = await this.membershipPlanService.findById(body.membership_plan_id);
+    const membershipResponse = await this.membershipPlanService.findById(
+      body.membership_plan_id,
+    );
     // Create User
     const responseUser = await this.userService.create(
       body.first_name,
@@ -35,7 +37,7 @@ export class AuthService {
       body.email,
       body.password,
       body.phone_number,
-      membershipResponse.is_business ? Role.business : Role.private
+      membershipResponse.is_business ? Role.business : Role.private,
     );
 
     // Create a membership
@@ -95,7 +97,7 @@ export class AuthService {
         first_name: userFound.first_name,
         last_name: userFound.last_name,
         phone_number: userFound.phone_number,
-        role: userFound.role
+        role: userFound.role,
       },
     };
   }

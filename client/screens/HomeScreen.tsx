@@ -22,7 +22,7 @@ export default function HomeScreen() {
   useEffect(() => {
     dispatch(fetchLocations());
   }, []);
-  // console.log('locations!!', locations);
+  console.log('locations!!', locations);
   console.log('user1', user);
 
   // Render a single location card item
