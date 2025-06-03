@@ -22,7 +22,6 @@ export default function MembershipSettings() {
     console.log((user as any)?.role);
   }, []);
 
-  //TODO Then fix dropdown logic
   const handleUpdateMembership = () => {
     if (!membershipPlanId) {
       Alert.alert('Error', 'Please select a membership plan.');
@@ -79,7 +78,7 @@ export default function MembershipSettings() {
           <Text style={styles.label}>Choose a membership plan:</Text>
           <Dropdown
             data={filteredPlans!.map((plan) => ({
-              label: plan.name + plan.id.toString(),
+              label: plan.name,
               value: plan.id.toString(),
             }))}
             labelField="label"
