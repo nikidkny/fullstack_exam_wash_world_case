@@ -85,10 +85,6 @@ export default function PersonalInfo() {
             await dispatch(deleteUserById(user.id)).unwrap();
             Alert.alert('Success', 'Account deleted successfully!');
             dispatch(logoutUser()); // Navigate to login screen after deletting the profile
-            // navigation.reset({
-            //   index: 0,
-            //   routes: [{ name: 'Auth', state: { routes: [{ name: 'LoginScreen' }] } }],
-            // });
           } catch (error) {
             Alert.alert('Error', error || 'Failed to delete account.');
           }
