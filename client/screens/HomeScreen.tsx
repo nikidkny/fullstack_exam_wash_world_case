@@ -1,4 +1,6 @@
 // import NavigationBar from '@/components/ui/NavigationBar';
+import React, { useEffect } from 'react';
+import { Box, Text } from '@gluestack-ui/themed';
 import LocationCard from '@/components/ui/LocationCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/store/store';

@@ -14,15 +14,15 @@
 //   );
 // }
 
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { Box, Text, Pressable, VStack } from "@gluestack-ui/themed";
-import { useQuery } from "@tanstack/react-query";
-import { RootStackParamList } from "@/navigationType";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { MembershipPlanDto } from "./auth/membershipPlans/membershipPlansDto";
-import { TouchableOpacity } from "react-native";
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { Box, Text, Pressable, VStack } from '@gluestack-ui/themed';
+import { useQuery } from '@tanstack/react-query';
+import { RootStackParamList } from '@/navigationType';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MembershipPlanDto } from './auth/membershipPlans/membershipPlansDto';
+import { TouchableOpacity } from 'react-native';
 
-type WashFlowRouteProp = RouteProp<RootStackParamList, "WashFlowScreen">;
+type WashFlowRouteProp = RouteProp<RootStackParamList, 'WashFlowScreen'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function WashFlowScreen() {
@@ -35,9 +35,9 @@ export default function WashFlowScreen() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["membershipPlans"],
+    queryKey: ['membershipPlans'],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3000/membership-plans");
+      const res = await fetch('http://localhost:3000/membership-plans');
       const json = await res.json();
       return json.data;
     },
@@ -63,7 +63,7 @@ export default function WashFlowScreen() {
               key={wash.id}
               className="px-6 border rounded-xl max-w-[360px] m-3 my-2 bg-gray-100 py-10 border-gray-500"
               onPress={() =>
-                navigation.navigate("WashDetailsScreen", {
+                navigation.navigate('WashDetailsScreen', {
                   washId: wash.id,
                   washName: wash.name,
                   locationId,

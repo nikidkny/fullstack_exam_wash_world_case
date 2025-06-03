@@ -8,7 +8,8 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import NavigationBar from "./components/ui/NavigationBar";
+import NavigationBar from './components/ui/NavigationBar';
+import { createStackNavigator } from '@react-navigation/stack';
 
 // Screens
 import HomeScreen from './screens/HomeScreen';
@@ -20,24 +21,18 @@ import PaymentMethods from './screens/settings/PaymentMethods';
 import MembershipSettings from './screens/settings/MembershipSettings';
 import WashHistory from './screens/settings/WashHistory';
 import BillingHistory from './screens/settings/BillingHistory';
-import WashFlowScreen from "./screens/WashFlowScreen";
-import PersonalInfo from "./screens/settings/PersonalInfo";
-import PaymentMethods from "./screens/settings/PaymentMethods";
-import MembershipSettings from "./screens/settings/MembershipSettings";
-import WashHistory from "./screens/settings/WashHistory";
-import BillingHistory from "./screens/settings/BillingHistory";
-import WashDetailsScreen from "./screens/WashDetailsScreen";
+import WashFlowScreen from './screens/WashFlowScreen';
+import WashDetailsScreen from './screens/WashDetailsScreen';
 
 // React Query for server state management
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-import { useEffect } from "react";
-import { RootStackParamList } from "./navigationType";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { RootStackParamList } from './navigationType';
 import { logout, reloadJwtFromStorage, reloadUserFromStorage } from './screens/auth/userSlice';
-import Toast from "react-native-toast-message";
-import "./global.css";
-import { GluestackUIProvider } from "@gluestack-ui/themed";
-import { config } from "@gluestack-ui/config";
+import Toast from 'react-native-toast-message';
+import './global.css';
+import { GluestackUIProvider } from '@gluestack-ui/themed';
+import { config } from '@gluestack-ui/config';
 // import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 
 // Create navigators
@@ -66,7 +61,6 @@ function AuthNavigator() {
 }
 
 const HomeStack = () => (
-
   <Stack.Navigator
     screenOptions={{
       header: (props) => <NavigationBar {...props} />,
@@ -101,11 +95,31 @@ export function ProfileStack() {
       }}
     >
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
-      <Stack.Screen name="PersonalInfo" component={PersonalInfo} options={{ headerTitle: "Edit Personal Information" }} />
-      <Stack.Screen name="PaymentMethods" component={PaymentMethods} options={{ headerTitle: "Edit Payment Methods" }} />
-      <Stack.Screen name="MembershipSettings" component={MembershipSettings} options={{ headerTitle: "Edit Membership Details" }} />
-      <Stack.Screen name="WashHistory" component={WashHistory} options={{ headerTitle: "See Wash History" }} />
-      <Stack.Screen name="BillingHistory" component={BillingHistory} options={{ headerTitle: "See Billing History" }} />
+      <Stack.Screen
+        name="PersonalInfo"
+        component={PersonalInfo}
+        options={{ headerTitle: 'Edit Personal Information' }}
+      />
+      <Stack.Screen
+        name="PaymentMethods"
+        component={PaymentMethods}
+        options={{ headerTitle: 'Edit Payment Methods' }}
+      />
+      <Stack.Screen
+        name="MembershipSettings"
+        component={MembershipSettings}
+        options={{ headerTitle: 'Edit Membership Details' }}
+      />
+      <Stack.Screen
+        name="WashHistory"
+        component={WashHistory}
+        options={{ headerTitle: 'See Wash History' }}
+      />
+      <Stack.Screen
+        name="BillingHistory"
+        component={BillingHistory}
+        options={{ headerTitle: 'See Billing History' }}
+      />
     </Stack.Navigator>
   );
 }
@@ -116,7 +130,6 @@ export function ProfileStack() {
  */
 function MainApp() {
   const dispatch = useDispatch<AppDispatch>();
-
 
   const token = useSelector((state: RootState) => state.user.token);
 
