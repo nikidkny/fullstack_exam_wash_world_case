@@ -155,6 +155,8 @@ function MainApp() {
       if (storedToken && storedUser) {
         dispatch(reloadJwtFromStorage(storedToken));
         const parsedUser = JSON.parse(storedUser);
+        console.log(parsedUser);
+        
         dispatch(reloadUserFromStorage(parsedUser));
       }
 

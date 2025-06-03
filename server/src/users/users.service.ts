@@ -129,6 +129,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
+    console.log("REACHED", updateUserDto);
     return this.usersRepository
       .findOne({ where: { id } })
       .then(async (user) => {

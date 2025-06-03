@@ -4,6 +4,7 @@ import { CreateUserDto } from './createUserDto';
 import { UsersAPI } from './users/userApi';
 import { createCardDto } from '@/screens/cards/createCardDto';
 import { LoginUserDto } from './users/loginUserDto';
+import { UpdateUserDto } from './users/updateuserDto';
 
 interface UserState {
   token: string | null;
@@ -87,7 +88,7 @@ export const fetchUserById = createAsyncThunk(
 export const updateUserById = createAsyncThunk(
   'user/updateUserById',
   async (
-    { userId, userData }: { userId: number; userData: Partial<CreateUserDto> },
+    { userId, userData }: { userId: number; userData: Partial<UpdateUserDto> },
     { rejectWithValue }
   ) => {
     try {
@@ -178,8 +179,9 @@ const userSlice = createSlice({
       .addCase(updateUserById.pending, (state) => {
         state.error = null;
       })
-      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<Partial<CreateUserDto>>) => {
+      .addCase(updateUserById.fulfilled, (state, action: PayloadAction<CreateUserDto>) => {
         state.user = action.payload;
+        SecureStore.setItem("user", JSON.stringify(state.user))
         // console.log('User updated in slice:', state.user);
         state.error = null;
       })
@@ -191,7 +193,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteUserById.fulfilled, (state, action: PayloadAction<number>) => {
-        state.user = null; // Clear user data on deletion
+        state.user = null;
         state.error = null;
       })
       .addCase(deleteUserById.rejected, (state, action) => {
