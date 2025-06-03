@@ -20,7 +20,7 @@ import { useLogin } from './users/useLogin';
 export default function LoginScreen() {
   const { login: loginUser } = useLogin();
   const [email, setEmail] = useState('admin@admin.com');
-  const [password, setPassword] = useState('Admin1');
+  const [password, setPassword] = useState('123456A');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'Login'>>();
 
@@ -140,7 +140,7 @@ export default function LoginScreen() {
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: '600', color: 'white', textAlign: 'center' }}>
-          Login
+          LoginButton
         </Text>
       </Button>
 
