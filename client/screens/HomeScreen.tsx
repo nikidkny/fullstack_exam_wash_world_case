@@ -23,7 +23,7 @@ export default function HomeScreen() {
     dispatch(fetchLocations());
   }, []);
   // console.log('locations!!', locations);
-  // console.log('user1', user);
+  console.log('user1', user);
 
   // Render a single location card item
   const renderItem = ({ item }: { item: LocationEntity }) => (

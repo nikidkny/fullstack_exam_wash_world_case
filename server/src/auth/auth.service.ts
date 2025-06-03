@@ -5,6 +5,8 @@ import { LicensePlatesMembershipPlansService } from 'src/license-plates_membersh
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { MembershipPlansService } from 'src/membership-plans/membership-plans.service';
+import { Role } from 'src/users/role';
 
 @Injectable()
 export class AuthService {
@@ -12,10 +14,11 @@ export class AuthService {
     private readonly userService: UsersService,
     private readonly licensePlateService: LicensePlatesService,
     private readonly licensePlateMembershipPlanService: LicensePlatesMembershipPlansService,
+    private readonly membershipPlanService: MembershipPlansService,
     private readonly jwtService: JwtService,
   ) {}
 
-  //TODO check if this is correct when implementing the front end if split the logic
+
   async signup(body: CreateUserDto) {
     // console.log(body);
     // try {
@@ -24,6 +27,7 @@ export class AuthService {
       body.plate_number,
     );
 
+    const membershipResponse = await this.membershipPlanService.findById(body.membership_plan_id);
     // Create User
     const responseUser = await this.userService.create(
       body.first_name,
@@ -31,6 +35,7 @@ export class AuthService {
       body.email,
       body.password,
       body.phone_number,
+      membershipResponse.is_business ? Role.business : Role.private
     );
 
     // Create a membership
@@ -90,6 +95,7 @@ export class AuthService {
         first_name: userFound.first_name,
         last_name: userFound.last_name,
         phone_number: userFound.phone_number,
+        role: userFound.role
       },
     };
   }

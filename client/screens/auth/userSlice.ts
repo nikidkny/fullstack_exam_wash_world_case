@@ -121,6 +121,9 @@ const userSlice = createSlice({
     reloadJwtFromStorage: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
     },
+    reloadUserFromStorage: (state, action: PayloadAction<CreateUserDto>) => {
+      state.user = action.payload;
+    },
     logout: (state) => {
       state.token = null;
       state.user = null;
@@ -153,10 +156,8 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         const { access_token, user } = action.payload.data;
         if (access_token && user) {
-          // console.log(access_token);
-          // console.log(user);
-
           SecureStore.setItemAsync('jwt', access_token);
+          SecureStore.setItemAsync('user', JSON.stringify(user));
           state.token = access_token;
           state.user = user;
           state.error = null;
@@ -201,5 +202,5 @@ const userSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { reloadJwtFromStorage, logout } = userSlice.actions;
+export const { reloadJwtFromStorage, reloadUserFromStorage, logout } = userSlice.actions;
 export default userSlice.reducer;
