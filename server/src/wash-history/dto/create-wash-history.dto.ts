@@ -1,10 +1,8 @@
 export class CreateWashHistoryDto {
   plate_number: string;
-  terminal_id: number;
-  membership_plan: string;
-  membership_used: string;
-  date: string;
-  price_addons: number;
+  location_address: string;
   price_membership: number;
-  billing_history_id: number;
+  membership_used: string;
+  membership_plan: string;
+  date: string;
 }

@@ -14,11 +14,11 @@ export class MembershipPlansService {
   async create() {
     //seeding the plans into the db, checking if they are already added to avoid duplicates
     const plans = [
-      { name: 'Gold', price: 139, is_business: false },
-      { name: 'Premium', price: 169, is_business: false },
-      { name: 'Brilliant (All Inclusive)', price: 199, is_business: false },
-      { name: 'Gold Business', price: 111, is_business: true },
-      { name: 'Premium Business', price: 135, is_business: true },
+      { name: 'Gold', price: 139.0, is_business: false },
+      { name: 'Premium', price: 169.0, is_business: false },
+      { name: 'Brilliant (All Inclusive)', price: 199.0, is_business: false },
+      { name: 'Gold Business', price: 111.0, is_business: true },
+      { name: 'Premium Business', price: 135.0, is_business: true },
       {
         name: 'Brilliant (All Inclusive) Business',
         price: 159,
@@ -34,6 +34,7 @@ export class MembershipPlansService {
       if (!existing) {
         const newPlan = this.membershipPlanRepository.create(plan);
         await this.membershipPlanRepository.save(newPlan);
+        console.log(`Seeded plan: ${plan.name} with price ${plan.price}`);
       }
     }
   }

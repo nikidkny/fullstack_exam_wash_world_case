@@ -1,13 +1,10 @@
-
 import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { authStyle } from './authStyle';
-
 import {
   FormControl,
   FormControlLabel,
   FormControlLabelText,
-
   FormControlError,
   FormControlErrorText,
 } from '@/components/ui/form-control';
@@ -159,6 +156,7 @@ export default function SignupScreen() {
     const result = await signupUser(newUser);
     if (!result.success) {
       if (result.error?.includes('License Plate')) setErrors({ licensePlate: result.error! });
+
       return;
     }
     setEmail('');
@@ -472,11 +470,10 @@ export default function SignupScreen() {
       {step <= 1 && (
         <>
           <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingTop: 20 }}>
-            <Text style={authStyle.signupLink}>login with existing account</Text>
+            <Text style={authStyle.signupLink}>Login with an existing account</Text>
           </TouchableOpacity>
         </>
       )}
     </ScrollView>
   );
 }
-

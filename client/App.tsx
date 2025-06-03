@@ -8,6 +8,8 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+import NavigationBar from "./components/ui/NavigationBar";
+
 // Screens
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
@@ -18,22 +20,29 @@ import PaymentMethods from './screens/settings/PaymentMethods';
 import MembershipSettings from './screens/settings/MembershipSettings';
 import WashHistory from './screens/settings/WashHistory';
 import BillingHistory from './screens/settings/BillingHistory';
+import WashFlowScreen from "./screens/WashFlowScreen";
+import PersonalInfo from "./screens/settings/PersonalInfo";
+import PaymentMethods from "./screens/settings/PaymentMethods";
+import MembershipSettings from "./screens/settings/MembershipSettings";
+import WashHistory from "./screens/settings/WashHistory";
+import BillingHistory from "./screens/settings/BillingHistory";
+import WashDetailsScreen from "./screens/WashDetailsScreen";
 
 // React Query for server state management
-import WashFlowScreen from './screens/WashFlowScreen';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-// import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
-import { useEffect } from 'react';
-import { RootStackParamList } from './navigationType';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { useEffect } from "react";
+import { RootStackParamList } from "./navigationType";
 import { logout, reloadJwtFromStorage, reloadUserFromStorage } from './screens/auth/userSlice';
-import Toast from 'react-native-toast-message';
-import './global.css';
-import { GluestackUIProvider } from '@gluestack-ui/themed';
-import { config } from '@gluestack-ui/config';
+import Toast from "react-native-toast-message";
+import "./global.css";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
+// import { GluestackUIProvider } from './components/ui/gluestack-ui-provider';
 
 // Create navigators
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
 // Create a QueryClient instance for React Query
 
@@ -57,21 +66,15 @@ function AuthNavigator() {
 }
 
 const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="Homepage"
-      component={HomeScreen}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="WashFlowScreen"
-      component={WashFlowScreen}
-      options={({ route }) => ({
-        title: `${route.params?.locationName ?? 'Unknown'}`,
-      })}
-    />
+
+  <Stack.Navigator
+    screenOptions={{
+      header: (props) => <NavigationBar {...props} />,
+    }}
+  >
+    <Stack.Screen name="Homepage" component={HomeScreen} />
+    <Stack.Screen name="WashFlowScreen" component={WashFlowScreen} />
+    <Stack.Screen name="WashDetailsScreen" component={WashDetailsScreen} />
   </Stack.Navigator>
 );
 /**
@@ -83,16 +86,7 @@ function TabNavigator() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          headerRight: () => (
-            // Replace this with dispatch(logout()) when auth is implemented
-            <Button title="Logout" onPress={() => dispatch(logout())} />
-          ),
-        }}
-      />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 }
@@ -101,33 +95,17 @@ function TabNavigator() {
 
 export function ProfileStack() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ headerShown: false }} />
-      <Stack.Screen
-        name="PersonalInfo"
-        component={PersonalInfo}
-        options={{ headerTitle: 'Edit Personal Information' }}
-      />
-      <Stack.Screen
-        name="PaymentMethods"
-        component={PaymentMethods}
-        options={{ headerTitle: 'Edit Payment Methods' }}
-      />
-      <Stack.Screen
-        name="MembershipSettings"
-        component={MembershipSettings}
-        options={{ headerTitle: 'Edit Membership Details' }}
-      />
-      <Stack.Screen
-        name="WashHistory"
-        component={WashHistory}
-        options={{ headerTitle: 'See Wash History' }}
-      />
-      <Stack.Screen
-        name="BillingHistory"
-        component={BillingHistory}
-        options={{ headerTitle: 'See Billing History' }}
-      />
+    <Stack.Navigator
+      screenOptions={{
+        header: (props) => <NavigationBar {...props} />,
+      }}
+    >
+      <Stack.Screen name="ProfileHome" component={ProfileScreen} />
+      <Stack.Screen name="PersonalInfo" component={PersonalInfo} options={{ headerTitle: "Edit Personal Information" }} />
+      <Stack.Screen name="PaymentMethods" component={PaymentMethods} options={{ headerTitle: "Edit Payment Methods" }} />
+      <Stack.Screen name="MembershipSettings" component={MembershipSettings} options={{ headerTitle: "Edit Membership Details" }} />
+      <Stack.Screen name="WashHistory" component={WashHistory} options={{ headerTitle: "See Wash History" }} />
+      <Stack.Screen name="BillingHistory" component={BillingHistory} options={{ headerTitle: "See Billing History" }} />
     </Stack.Navigator>
   );
 }
@@ -137,10 +115,12 @@ export function ProfileStack() {
  * depending on whether the user is authenticated.
  */
 function MainApp() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
 
   const token = useSelector((state: RootState) => state.user.token);
+
+  const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     async function getToken() {

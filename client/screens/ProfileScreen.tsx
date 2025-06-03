@@ -15,13 +15,14 @@ import {
 } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/store/store';
+import { AppDispatch, RootState } from '@/store/store';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/navigationType';
 
 export default function ProfileScreen() {
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const user = useSelector((state: RootState) => state.user.user);
-
   // const [user, setUser] = useState({
   //   firstName: 'Testing',
   //   lastName: 'Person',
