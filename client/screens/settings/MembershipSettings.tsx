@@ -1,49 +1,104 @@
-import { StyleSheet, Text, View, Button, Alert } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
 import { updateUserById } from '../auth/userSlice';
 import { UpdateUserDto } from '../auth/users/updateuserDto';
+import { useMembershipPlans } from '../auth/membershipPlans/useMembershipPlans';
+import { Dropdown } from 'react-native-element-dropdown';
 
 export default function MembershipSettings() {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
+  const [membershipPlanId, setMembershipPlanId] = useState(0);
+  const { membershipPlans } = useMembershipPlans();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const currentMembershipName = (user as any)?.licensePlateMembershipPlans?.[0]?.membershipPlan?.name ?? null;
 
-  const handleSwitchRole = () => {
+  useEffect(() => {
+    console.log(currentMembershipName);
+    console.log((user as any)?.licensePlateMembershipPlans?.[0]?.membershipPlan?.name);
+    console.log((user as any)?.role);
+  }, []);
+
+  //TODO Then fix dropdown logic
+  const handleUpdateMembership = () => {
+    if (!membershipPlanId) {
+      Alert.alert('Error', 'Please select a membership plan.');
+      return;
+    }
+
     const updatedUser: UpdateUserDto = {
-      role: user?.role === "business" ? "private" : "business"
+      membership_plan_id: membershipPlanId,
     };
-    
-    // console.log('Dispatching updateUserById with:', { userId: user.id, userData: updatedUser });
+
+
     dispatch(updateUserById({ userId: user!.id, userData: updatedUser }))
       .unwrap()
       .then(() => {
-        // console.log('Inside then block after updateUserById', updatedUser, user.id);
-        Alert.alert('Profile updated successfully!', 'Profile updated successfully!', [
-          {
-            text: 'OK',
-          },
-        ]);
+        Alert.alert('Success', 'Membership updated successfully!');
+        setShowDropdown(false);
       })
       .catch((error) => {
-        console.error('Error updating profile handlleSave:', error);
-        Alert.alert('Error', error || 'Failed to update profile.');
+        console.error('Error updating membership:', error);
+        Alert.alert('Error', error || 'Failed to update membership.');
       });
   };
 
-  //TODO fix in the backend 'property role should not exists'
+  const filteredPlans = membershipPlans?.filter((plan) =>
+    user?.role === 'business' ? !plan.is_business : plan.is_business
+  ) || [];
+
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>MembershipSettings</Text>
 
-      {user && user.role && (
+      {currentMembershipName && (
+        <Text >
+          Current Membership: {currentMembershipName}
+        </Text>
+      )}
+
+      {user && user.role && !showDropdown && (
         <Button
-          title={
-            user.role === 'business' ? 'Switch to Private' : 'Switch to Business'
-          }
-          onPress={handleSwitchRole}
-        />
+          size="lg"
+          variant="outline"
+          action="primary"
+          onPress={() => setShowDropdown(true)}
+        >
+          <Text>
+            {user.role === 'business' ? 'Switch to Private' : 'Switch to Business'}
+          </Text>
+        </Button>
+      )}
+
+      {showDropdown && (
+        <>
+          <Text style={styles.label}>Choose a membership plan:</Text>
+          <Dropdown
+            data={filteredPlans!.map((plan) => ({
+              label: plan.name + plan.id.toString(),
+              value: plan.id.toString(),
+            }))}
+            labelField="label"
+            valueField="value"
+            placeholder="Select option"
+            value={membershipPlanId?.toString()}
+            onChange={(item) => setMembershipPlanId(Number(item.value))}
+            style={styles.dropdown}
+          />
+
+          <Button
+            size="lg"
+            variant="outline"
+            action="primary"
+            onPress={handleUpdateMembership}
+          >
+            <Text>Update Membership</Text>
+          </Button>
+        </>
       )}
     </View>
   );
@@ -56,5 +111,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginBottom: 12,
+  },
+  label: {
+    fontSize: 16,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  dropdown: {
+    marginBottom: 16,
   },
 });

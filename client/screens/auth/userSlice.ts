@@ -45,7 +45,6 @@ export const login = createAsyncThunk(
 
       return response;
     } catch (error) {
-      // console.log('Login error:', error);
       if (error instanceof Error) {
         return thunkAPI.rejectWithValue(error.message);
       }
@@ -93,7 +92,7 @@ export const updateUserById = createAsyncThunk(
   ) => {
     try {
       const response = await UsersAPI.updateUserById(userId, userData);
-      // console.log('Updated user in thunk:', response.data);
+      console.log('UPDATED USER:', response.data.licensePlateMembershipPlans); //TODO not working
       return response.data; // return only the data fields
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to update user');

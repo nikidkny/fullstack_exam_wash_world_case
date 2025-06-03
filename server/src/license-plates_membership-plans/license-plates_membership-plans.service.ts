@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateLicensePlatesMembershipPlanDto } from './dto/create-license-plates_membership-plan.dto';
 import { UpdateLicensePlatesMembershipPlanDto } from './dto/update-license-plates_membership-plan.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,7 +36,7 @@ export class LicensePlatesMembershipPlansService {
       }
 
       // Check if user exists
-      const lpmFound = await this.findByCompositeKey(user.id, licensePlate.id,membership_plan_id);
+      const lpmFound = await this.findByCompositeKey(user.id, licensePlate.id, membership_plan_id);
       if (lpmFound) {
         throw new ConflictException({
           statusCode: HttpStatus.CONFLICT,
@@ -63,7 +63,7 @@ export class LicensePlatesMembershipPlansService {
       });
 
       console.log(lpm);
-      
+
 
       return await this.licensePlateMembershipPlanRepository.save(lpm);
     } catch (e) {
@@ -92,14 +92,34 @@ export class LicensePlatesMembershipPlansService {
   }
 
   async findByCompositeKey(userId: number, licensePlateId: number, membershipPlanId: number) {
-  return await this.licensePlateMembershipPlanRepository.findOne({
-    where: {
-      user: { id: userId },
-      licensePlate: { id: licensePlateId },
-      membershipPlan: { id: membershipPlanId },
-    },
-  });
-}
+    return await this.licensePlateMembershipPlanRepository.findOne({
+      where: {
+        user: { id: userId },
+        licensePlate: { id: licensePlateId },
+        membershipPlan: { id: membershipPlanId },
+      },
+    });
+  }
+
+  async update(id: number, newMembershipPlanId: number): Promise<LicensePlateMembershipPlan> {
+    const lpm = await this.licensePlateMembershipPlanRepository.findOne({
+      where: { id },
+      relations: ['membershipPlan'],
+    });
+
+    if (!lpm) {
+      throw new NotFoundException(`LicensePlateMembershipPlan with ID ${id} not found`);
+    }
+
+    const newPlan = await this.membershipPlanService.findById(newMembershipPlanId);
+
+    // Use Object.assign to update the membershipPlan
+    Object.assign(lpm, { membershipPlan: newPlan });
+
+    const savedLpm = await this.licensePlateMembershipPlanRepository.save(lpm);
+    console.log("UPDATED LPM:", savedLpm);
+    return savedLpm;
+  }
 
 
 }

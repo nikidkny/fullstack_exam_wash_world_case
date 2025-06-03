@@ -6,5 +6,6 @@ export class UpdateUserDto {
         public phone_number?: number,
         public role?: string,
         public plate_number?: string,
+        public membership_plan_id?: number,
     ) {}
 }

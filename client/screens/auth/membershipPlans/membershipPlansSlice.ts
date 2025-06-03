@@ -4,7 +4,7 @@ import { MembershipPlanDto } from './membershipPlansDto';
 import { MembershipPlansAPI } from './membershipPlansApi';
 
 interface MembershipPlanState {
-  membershipPlans: MembershipPlanDto | MembershipPlanDto[] | null;
+  membershipPlans: MembershipPlanDto[] | null;
   error: string | null;
 }
 
