@@ -53,8 +53,10 @@ export class UsersAPI {
   }
 
   static async checkUserEmail(email: string) {
+    console.log("REACHED", email);
+    
     try {
-      const response = await fetch(this.usersURl + '/email/' + email, {
+      const response = await fetch(this.usersURl + 'email/' + email, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
