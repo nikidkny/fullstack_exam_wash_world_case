@@ -142,7 +142,7 @@ const userSlice = createSlice({
       state.token = null;
       state.user = null;
       state.error = null;
-      // SecureStore.deleteItemAsync('jwt');
+      SecureStore.deleteItemAsync('jwt');
     },
   },
   extraReducers: (builder) => {

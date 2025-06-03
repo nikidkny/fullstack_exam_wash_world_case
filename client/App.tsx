@@ -208,7 +208,11 @@ function MainApp() {
     }
   }
 
-  return <NavigationContainer>{token ? <TabNavigator /> : <AuthNavigator />}</NavigationContainer>;
+  return (
+    <NavigationContainer>
+      {token && user ? <TabNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
 }
 
 /**
